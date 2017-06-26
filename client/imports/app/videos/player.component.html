@@ -1,0 +1,82 @@
+
+<!-- <video *ngIf="videoMeta.video" class="video-main-image" controls>
+	<source [src]="videoMeta.video | displayVideo" type="video/mp4">
+	Your browser does not support HTML5 video.
+</video> -->
+<!-- <div> -->
+	<!-- <vg-player>
+    <vg-overlay-play></vg-overlay-play>
+    <vg-buffering></vg-buffering>
+
+    <vg-scrub-bar>
+        <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+        <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+    </vg-scrub-bar>
+
+    <vg-controls>
+        <vg-play-pause></vg-play-pause>
+        <vg-playback-button></vg-playback-button>
+
+        <vg-time-display vgProperty="current" vgFormat="mm:ss"></vg-time-display>
+
+        <vg-scrub-bar style="pointer-events: none;"></vg-scrub-bar>
+
+        <vg-time-display vgProperty="left" vgFormat="mm:ss"></vg-time-display>
+        <vg-time-display vgProperty="total" vgFormat="mm:ss"></vg-time-display>
+
+        <vg-track-selector></vg-track-selector>
+        <vg-mute></vg-mute>
+        <vg-volume></vg-volume>
+
+        <vg-fullscreen></vg-fullscreen>
+    </vg-controls> -->
+
+    <!-- <video vgMedia #media id="singleVideo" preload="auto"> -->
+        <!-- <source *ngFor="let video of sources" [src]="video.src" [type]="video.type"> -->
+		<!-- <source [src]="videoRead" type="video/mp4"> -->
+        <!-- <track kind="subtitles" label="English" src="http://static.videogular.com/assets/subs/pale-blue-dot.vtt" srclang="en" default>
+        <track kind="subtitles" label="Español" src="http://static.videogular.com/assets/subs/pale-blue-dot-es.vtt" srclang="es"> -->
+    <!-- </video>
+</vg-player> -->
+<!-- </div> -->
+
+<div class="player-container">
+	<div class="playlist-container default-padding">
+		<div *ngFor="let playList of currentPlaylist | async">
+			<md-list>
+				<p>
+					<h1>{{playList.description}}</h1>
+					<button md-raised-button color="accent" (click)="openEditPlayLists()" mdTooltip="Change the current playlist !">
+		        <md-icon>border_color</md-icon>
+		      </button>
+					<button md-raised-button color="accent" (click)="deleteCurrentPlayList(playList)" mdTooltip="Delete the playlist !">
+		        <md-icon>delete_forever</md-icon>
+		      </button>
+				</p>
+				<md-list-item *ngFor="let videoMeta of listVideosPlayList  | async" [id]="setIdVideoPlaylist(videoMeta)">
+					<button class="read-video" md-icon-button (click)="readVideo(videoMeta)" mdTooltip="Play now">
+						<md-icon class="md-24">play_arrow</md-icon>
+		      </button>
+					<button color="primary" md-icon-button (click)="removeVideoPlaylist(videoMeta, playList)" mdTooltip="Remove from the playlist">
+						<md-icon class="md-24">remove</md-icon>
+		      </button>
+					<div class="text">
+	          <h2 class="video-name">
+	            {{videoMeta.name}}
+	          </h2>
+	          <p>
+	              {{videoMeta.description}}
+	          </p>
+	        </div>
+
+				</md-list-item>
+			</md-list>
+		</div>
+	</div>
+
+	<div text-align="center" class="player default-padding" id="videoContainer">
+		<!-- <video autoplay id="singleVideo" controls *ngIf="displayVideo"> -->
+				<!-- <source [src]="videoRead" type="video/mp4"> -->
+		<!-- </video> -->
+	</div>
+</div>

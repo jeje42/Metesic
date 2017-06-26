@@ -1,0 +1,51 @@
+<md-sidenav-container class="metesic-root" fullscreen>
+  <md-sidenav #start>
+    <md-nav-list>
+      <a *ngFor="let navItem of navItems"
+         md-list-item
+         (click)="start.close()"
+         [routerLink]="[navItem.route]">
+        {{navItem.name}}
+      </a>
+
+      <hr>
+
+      <a md-list-item
+         (click)="start.close()"
+         [routerLink]="['baseline']">
+        Baseline
+      </a>
+    </md-nav-list>
+    <button md-button (click)="start.close()">CLOSE</button>
+  </md-sidenav>
+  <div>
+    <md-toolbar color="primary">
+      <button md-icon-button (click)="start.open()">
+        <md-icon class="md-24" >menu</md-icon>
+      </button>
+      <div class="metesic-toolbar">
+        <a routerLink="/" class="toolbar-title">Metesic</a>
+        <!-- <h1>Metesic</h1> -->
+        <button md-button (click)="toggleFullscreen()" title="Toggle fullscreen">
+          Fullscreen
+        </button>
+        <button md-button (click)="dark = !dark">{{dark ? 'Light' : 'Dark'}} theme</button>
+        <button md-button (click)="root.dir = (root.dir == 'rtl' ? 'ltr' : 'rtl')" title="Toggle between RTL and LTR">
+          {{root.dir.toUpperCase()}}
+        </button>
+        <div [hidden]="user">
+          <a md-button [routerLink]="['/login']" >Login</a>
+          <a md-button [routerLink]="['/signup']">Sign up</a>
+        </div>
+        <div [hidden]="!user">
+          <span>{{ user | displayName }}</span>
+          <button md-button (click)="logout()">Logout</button>
+        </div>
+      </div>
+    </md-toolbar>
+
+    <div #root="$implicit" dir="ltr" class="metesic-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</md-sidenav-container>

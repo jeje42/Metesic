@@ -1,0 +1,59 @@
+<player *ngIf="user"></player>
+
+<div *ngIf="user" class="research-container">
+  <div class="research-content">
+    <div class="research-criterions border-container default-padding">
+      <h1>Filter search</h1>
+      <h2>Name</h2>
+      <form>
+        <md-input-container>
+          <input mdInput dividerColor="primary" type="text" #searchtext placeholder="Enter a video name"></input>
+        </md-input-container>
+        <button color="primary" md-raised-button (click)="search(searchtext.value)" mdTooltip="Search">
+          <md-icon>find_in_page</md-icon>
+        </button>
+      </form>
+      <h2>Categories</h2>
+      <md-button-toggle-group multiple [vertical]="true">
+        <md-button-toggle *ngFor="let category of categories | async" (change)="changeCategory(category)">{{category.name}}</md-button-toggle>
+      </md-button-toggle-group>
+    </div>
+
+    <div class="research-videos border-container">
+      <h1>Research Results</h1>
+      <div *ngFor="let videoMeta of videosMetas | async" class="video-meta">
+        <div class="menu-section">
+          <md-toolbar>
+            <button md-icon-button [mdMenuTriggerFor]="menu" aria-label="Open basic menu">
+              <md-icon>more_vert</md-icon>
+            </button>
+          </md-toolbar>
+
+          <md-menu #menu="mdMenu">
+            <button md-menu-item (click)="addToCurrentPlayList(videoMeta)">
+      	    	Add to current playlist
+      	    </button>
+            <button md-menu-item (click)="openEditPlayLists(videoMeta)">
+      	    	Add to another playlist ...
+      	    </button>
+            <button md-menu-item (click)="deleteVideo(videoMeta)" disabled="isVideoInCurrentPlayList(videoMeta)">
+      	       Delete from playlist
+      	    </button>
+          </md-menu>
+        </div>
+        <div class="text">
+          <h2 class="video-name">
+            {{videoMeta.name}}
+          </h2>
+          <p>
+              {{videoMeta.description}}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!user">
+  <h2>Please login or signup to get all fonctionalities from Metesic !</h2>
+</div>

@@ -1,0 +1,25 @@
+<div class="form-container">
+  <div class="container-background">
+    <div class="form-content">
+      <div class="form-center">
+				<form [formGroup]="addCategory" (ngSubmit)="addCategoryFunction();">
+					<md-input-container>
+             <input mdInput dividerColor="primary" formControlName="name" placeholder="Description"></input>
+          </md-input-container>
+					<button color="primary" md-raised-button type="submit">Add the category!</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="listCategoriesContainer">
+	<md-nav-list>
+		<md-list-item *ngFor="let category of categories | async">
+			<a md-line>{{category.name}}</a>
+			<button md-icon-button (click)="deleteCategory(category)">
+				<md-icon>delete</md-icon>
+			</button>
+		</md-list-item>
+	</md-nav-list>
+</div>

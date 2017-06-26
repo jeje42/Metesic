@@ -1,0 +1,142 @@
+.videos-list-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0 auto;
+  width: 100%;
+  display: table;
+
+  .videos-list {
+    display: table-cell;
+    width: 50%;
+    vertical-align: top;
+
+    .pagination {
+      display: inline;
+      text-align: center;
+    }
+
+    .filter-card {
+      margin: 20px;
+    }
+
+    .video-card {
+      margin: 20px;
+      position: relative;
+
+      video.video-main-image {
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      .video-name > a {
+        color: black;
+        text-decoration: none;
+      }
+
+      .remove-video {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+
+      .rsvp-container {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+
+        .rsvps-sum {
+          display: inline-block;
+          width: 50px;
+          text-align: center;
+
+          .rsvps-amount {
+            font-size: 24px;
+          }
+
+          .rsvps-title {
+            font-size: 13px;
+            color: #aaa;
+          }
+        }
+      }
+    }
+  }
+
+  .videos-map {
+    display: table-cell;
+    width: 50%;
+    vertical-align: top;
+
+    .google-map {
+      width: 100%;
+      min-height: 600px;
+    }
+  }
+}
+
+.research-container {
+  position: relative;
+  // display: inline-block;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-grow: 1;
+  z-index: 1;
+  width: 100%;
+  color: black;
+
+  .research-content {
+    // background: #0277bd;
+    width: 100%;
+    padding: 0 !important;
+    align-items: flex-start;
+    display: flex;
+    flex-flow: row nowrap;
+    margin: 0 auto;
+
+    .research-criterions {
+      width: auto;
+      text-align: center;
+      vertical-align: top;
+      background-color: #FFCCBC;
+    }
+
+    .research-videos {
+      // width: 100%;
+      // position: relative;
+      text-align: center;
+    }
+  }
+}
+
+.video-meta{
+  // margin: auto;
+  display: flex;
+  flex-direction: row;
+  // flex-basis: 100%;
+  width: 100%;
+
+
+  .text {
+    display: flex;
+    flex-direction: column;
+
+    .remove-video {
+      margin: 10px;
+    }
+    .add-video {
+      margin: 10px;
+    }
+    .delete-video {
+      margin: 10px;
+    }
+  }
+}
+// .menu-section {
+//     width: 300px;
+//     margin: 20px;
+//   }
+
+div {
+  margin: 10px;
+}
