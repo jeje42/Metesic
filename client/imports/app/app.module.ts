@@ -99,6 +99,7 @@ export class DemoMaterialModule {}
 		BrowserAnimationsModule,
 		ReactiveFormsModule,
 		RouterModule.forRoot(routes),
+    // RouterModule.forChild(routes),
 		AccountsModule,
 		Ng2PaginationModule,
 		AgmCoreModule.forRoot({

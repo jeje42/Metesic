@@ -44,6 +44,9 @@
       </div>
     </md-toolbar>
 
+    <div [hidden]="true">
+      <router-outlet></router-outlet>
+    </div>
     <div #root="$implicit" dir="ltr" class="metesic-content">
       <router-outlet></router-outlet>
     </div>

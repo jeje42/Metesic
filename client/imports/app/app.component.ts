@@ -3,11 +3,14 @@ import {Component, ViewEncapsulation, ElementRef} from '@angular/core';
 import template from './app.component.html';
 import style from './app.component.scss';
 import {InjectUser} from "angular2-meteor-accounts-ui";
+import { ROUTER_DIRECTIVES } from '@angular/router';
+
 
 @Component({
 	moduleId: module.id,
   selector: 'app',
   template,
+	directives: [ROUTER_DIRECTIVES], //here,
   styles: [ style ],
   encapsulation: ViewEncapsulation.None,
 	host: {
