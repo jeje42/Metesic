@@ -63,7 +63,7 @@ function initLogger() {
 Meteor.startup(() => {
 	Future = Npm.require('fibers/future');
 	checkIndexesVideosMeta();
-	initLogger();
+	// initLogger();
 	// loadParties();
 	searchVideos();
 	updateVideosUrls();
