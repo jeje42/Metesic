@@ -74,7 +74,8 @@ export function updateVideosUrls() {
 
 		var newAdress:string;
 
-		newAdress = "http://" + Meteor.settings.adress + ":" + Meteor.settings.port + getSubstring(video.url, "", "afterAdressPort") ;
+		newAdress = "https://" + "jeje-guidon.servehttp.com" + ":" + "443" + getSubstring(video.url, "", "afterAdressPort") ;
+		//newAdress = "http://" + Meteor.settings.adress + ":" + Meteor.settings.port + getSubstring(video.url, "", "afterAdressPort") ;
 
 		Videos.update(video._id, {
 			$set: { url:  newAdress},
