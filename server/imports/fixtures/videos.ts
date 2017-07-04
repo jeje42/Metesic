@@ -38,7 +38,9 @@ export function updateVideosUrls() {
 	var adress = getSubstringUrl(wholeAdress, "","adress");
 	var port = getSubstringUrl(wholeAdress, "","port");
 
-	if(adress === Meteor.settings.adress && port === Meteor.settings.port){
+	//if(adress === Meteor.settings.adress && port === Meteor.settings.port){
+	if(adress === "jeje-guidon.servehttp.com" && port === "443"){
+
 		return;
 	}
 
