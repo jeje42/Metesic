@@ -11,6 +11,36 @@ import { VideoMeta } from '../models/video-meta.model';
 import { Folder } from '../models/folder.model';
 import { Category } from '../models/category.model';
 
+/**
+ * @param : originalString : the url from which we want to extract some information
+ * @param : parameter :
+ *		- undefined or "" : gets the substring from the beginning to the separator
+ * 		- "port" : returns the port number
+ *		- "adress" : returns the adress
+ *		- "afterAdressPort" : the whole String after adress and port
+ * @param : separator :
+ */
+export function getSubstringUrl(originalString:string, separator:string, parameter:string){
+	if(separator === undefined)
+		return "";
+
+	var toReturn = "";
+	if(parameter === undefined || parameter === ""){
+		toReturn = originalString.substring(0, originalString.search(separator));
+	}else{
+		originalString = originalString.substring("http://".length, originalString.length);
+		if(parameter === "port"){
+			toReturn = originalString.substring(originalString.search(":"), originalString.search("/"));
+		}else if(parameter === "adress"){
+			toReturn = originalString.substring(0, originalString.search(":"));
+		}else if(parameter === "afterAdressPort"){
+			toReturn = originalString.substring(originalString.search("/"), originalString.length);
+		}
+	}
+
+	return toReturn;
+}
+
 export function uploadVideos(data: File): Promise<any> {
   if(Meteor.isClient){
     return;

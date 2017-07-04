@@ -4,6 +4,8 @@ import { VideoMeta } from '../../../both/models/video-meta.model';
 import { Videos } from '../../../both/collections/videos.collection';
 import { Video } from '../../../both/models/video.model';
 
+import { getSubstringUrl } from '../../../both/methods/videos.methods';
+
 
 export function searchVideos() {
 	Meteor.onConnection(function(conn) {
@@ -20,36 +22,6 @@ export function searchVideos() {
 
 }
 
-/**
- * @param : originalString : the url from which we want to extract some information
- * @param : parameter :
- *		- undefined or "" : gets the substring from the beginning to the separator
- * 		- "port" : returns the port number
- *		- "adress" : returns the adress
- *		- "afterAdressPort" : the whole String after adress and port
- * @param : separator :
- */
-function getSubstring(originalString:string, separator:string, parameter:string){
-	if(separator === undefined)
-		return "";
-
-	var toReturn = "";
-	if(parameter === undefined || parameter === ""){
-		toReturn = originalString.substring(0, originalString.search(separator));
-	}else{
-		originalString = originalString.substring("http://".length, originalString.length);
-		if(parameter === "port"){
-			toReturn = originalString.substring(originalString.search(":"), originalString.search("/"));
-		}else if(parameter === "adress"){
-			toReturn = originalString.substring(0, originalString.search(":"));
-		}else if(parameter === "afterAdressPort"){
-			toReturn = originalString.substring(originalString.search("/"), originalString.length);
-		}
-	}
-
-	return toReturn;
-}
-
 export function updateVideosUrls() {
 	var vids = Videos.find();
 	if (vids.cursor.count() === 0) {
@@ -63,8 +35,8 @@ export function updateVideosUrls() {
 		return;
 	}
 
-	var adress = getSubstring(wholeAdress, "","adress");
-	var port = getSubstring(wholeAdress, "","port");
+	var adress = getSubstringUrl(wholeAdress, "","adress");
+	var port = getSubstringUrl(wholeAdress, "","port");
 
 	if(adress === Meteor.settings.adress && port === Meteor.settings.port){
 		return;
@@ -74,8 +46,8 @@ export function updateVideosUrls() {
 
 		var newAdress:string;
 
-		newAdress = "https://" + "jeje-guidon.servehttp.com" + ":" + "443" + getSubstring(video.url, "", "afterAdressPort") ;
-		//newAdress = "http://" + Meteor.settings.adress + ":" + Meteor.settings.port + getSubstring(video.url, "", "afterAdressPort") ;
+		newAdress = "https://" + "jeje-guidon.servehttp.com" + ":" + "443" + getSubstringUrl(video.url, "", "afterAdressPort") ;
+		//newAdress = "http://" + Meteor.settings.adress + ":" + Meteor.settings.port + getSubstringUrl(video.url, "", "afterAdressPort") ;
 
 		Videos.update(video._id, {
 			$set: { url:  newAdress},

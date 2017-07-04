@@ -1,12 +1,13 @@
 import { Folders } from '../collections/folders.collection';
+import { Videos } from '../collections/videos.collection';
 import { VideosMetas } from '../collections/video-meta.collection';
 import { Folder } from '../models/folder.model';
+import { Video } from '../models/video.model';
 import { check } from 'meteor/check';
 import { Meteor } from 'meteor/meteor';
 
 import { removeFileByPath, ScanActions } from './folders.sharedMethods';
-import { uploadVideosPointer } from './videos.methods';
-
+import { uploadVideosPointer, getSubstringUrl } from './videos.methods';
 
 //TODO : index unique : https://docs.mongodb.com/manual/core/index-unique/
 /**
@@ -71,6 +72,14 @@ function addToCollection(folder: Folder){
 			console.log(folder.name + " is not a folder, call to uploadVideosPointer");
 			uploadVideosPointer(folder)
 	      .then((result) => {
+					var video = Videos.findOne({id: result._id});
+
+					var newAdress = "https://" + "jeje-guidon.servehttp.com" + ":" + "443" + getSubstringUrl(video.url, "", "afterAdressPort") ;
+					//newAdress = "http://" + Meteor.settings.adress + ":" + Meteor.settings.port + getSubstringUrl(video.url, "", "afterAdressPort") ;
+
+					Videos.update(result._id, {
+						$set: { url:  newAdress},
+				    });
 
 					console.log("then");
 					VideosMetas.insert({
