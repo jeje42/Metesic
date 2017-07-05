@@ -66,7 +66,7 @@ Meteor.startup(() => {
 	// initLogger();
 	// loadParties();
 	searchVideos();
-	updateVideosUrls();
+	// updateVideosUrls();
 	initPlayerPlayList();
 	insertFile();
 	initAdmin();
