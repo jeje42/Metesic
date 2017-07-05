@@ -67,21 +67,18 @@ function addToCollection(folder: Folder){
 	Fiber(function() {
 		if(folder.isFolder){
 			console.log(folder.name + " is a folder a is not added to filesystem");
-			Folders.update({ path: folder.path }, { $set: { isInCollection: true } });
+			Folders.update({ path: folder.path }, {$set: { isInCollection: true } });
 		}else{
 			console.log(folder.name + " is not a folder, call to uploadVideosPointer");
 			uploadVideosPointer(folder)
 	      .then((result) => {
-					var video = Videos.findOne({id: result._id});
-
+					var video = Videos.findOne({_id: result._id});
 					var newAdress = "https://" + "jeje-guidon.servehttp.com" + ":" + "443" + getSubstringUrl(video.url, "", "afterAdressPort") ;
-					//newAdress = "http://" + Meteor.settings.adress + ":" + Meteor.settings.port + getSubstringUrl(video.url, "", "afterAdressPort") ;
 
 					Videos.update(result._id, {
 						$set: { url:  newAdress},
 				    });
 
-					console.log("then");
 					VideosMetas.insert({
 						name: folder.name,
 						folderId: folder._id,
