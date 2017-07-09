@@ -92,13 +92,14 @@ export function uploadVideosPointer(folder: Folder): Promise<any> {
 
 Meteor.methods({
 checkCategoriesForVideo: function(videoId: string) {
+	console.log("checkCategoriesForVideo : " + videoId);
   //logger.info("checkCategoriesForVideo : " + videoId);
   var foldersPath: string[] = Videos.findOne({_id:videoId}).path.split("/");
   for(var fol in foldersPath){
     //logger.info("checkCategoriesForVideo : " + videoId + " ; searching for " + foldersPath[fol] + " within Categories");
     var category:Category = Categories.findOne({name: foldersPath[fol]});
     if(category != undefined){
-      //logger.info("checkCategoriesForVideo : " + videoId + " ; Adding " + category.name + " to the video");
+      console.log("checkCategoriesForVideo : " + videoId + " ; Adding " + category.name + " to the video");
       VideosMetas.update({video:videoId}, { $addToSet: { categories: category._id } });
     }
   }
