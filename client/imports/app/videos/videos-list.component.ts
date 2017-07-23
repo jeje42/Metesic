@@ -126,8 +126,9 @@ export class VideosListComponent implements OnInit, OnDestroy {
         if(playlistUser === undefined){
           return;
         }
-        console.log("Updating currentPlaylist in videoListComponent");
-        this.currentPlaylist = playlistUser.currentPlaylist;
+        if(this.currentPlaylist != playlistUser.currentPlaylist){
+          this.currentPlaylist = playlistUser.currentPlaylist;
+        }
       });
     });
   }
