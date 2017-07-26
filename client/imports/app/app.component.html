@@ -16,7 +16,7 @@
         Baseline
       </a>
     </md-nav-list>
-    <button md-button (click)="start.close()">CLOSE</button>
+    <button md-button (click)="start.close()">{{ 'CLOSE' | translate }}</button>
   </md-sidenav>
   <div>
     <md-toolbar color="primary">
@@ -27,19 +27,25 @@
         <a routerLink="/" class="toolbar-title">Metesic</a>
         <!-- <h1>Metesic</h1> -->
         <button md-button (click)="toggleFullscreen()" title="Toggle fullscreen">
-          Fullscreen
+          {{ 'Fullscreen' | translate }}
         </button>
-        <button md-button (click)="dark = !dark">{{dark ? 'Light' : 'Dark'}} theme</button>
-        <button md-button (click)="root.dir = (root.dir == 'rtl' ? 'ltr' : 'rtl')" title="Toggle between RTL and LTR">
+        <button md-button *ngIf="dark" (click)="dark = !dark">{{ 'Light theme'  | translate }}</button>
+        <button md-button *ngIf="!dark" (click)="dark = !dark">{{ 'Dark theme'  | translate }}</button>
+        <!-- <button md-button (click)="root.dir = (root.dir == 'rtl' ? 'ltr' : 'rtl')" title="Toggle between RTL and LTR">
           {{root.dir.toUpperCase()}}
-        </button>
+        </button> -->
+        <div class="btn-group">
+            <button md-raised-button *ngFor="let lang of supportedLanguages" (click)="selectLang(lang.value)" [color]="isCurrentLangStyle(lang.value)">
+                {{ lang.display }}
+            </button>
+        </div>
         <div [hidden]="user">
-          <a md-button [routerLink]="['/login']" >Login</a>
-          <a md-button [routerLink]="['/signup']">Sign up</a>
+          <a md-button [routerLink]="['/login']">{{ 'Login' | translate }}</a>
+          <a md-button [routerLink]="['/signup']">{{ 'Sign up' | translate }}</a>
         </div>
         <div [hidden]="!user">
           <span>{{ user | displayName }}</span>
-          <button md-button (click)="logout()">Logout</button>
+          <button md-button (click)="logout()">{{ 'Logout' | translate }}</button>
         </div>
       </div>
     </md-toolbar>

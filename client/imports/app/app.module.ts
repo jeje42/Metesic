@@ -54,6 +54,8 @@ import {
   OverlayContainer
 } from '@angular/material';
 
+import { TRANSLATION_PROVIDERS, TranslatePipe, TranslateService }   from './translate';
+
 /**
  * NgModule that includes all Material modules that are required to serve the demo-app.
  */
@@ -120,10 +122,13 @@ export class DemoMaterialModule {}
 		...VIDEOS_DECLARATIONS,
 		...SETTINGS_DECLARATIONS,
     ...SETTINGS_DECLARATIONS_MODALS,
-    ...VIDEOS_DECLARATIONS_MODALS
+    ...VIDEOS_DECLARATIONS_MODALS,
+    TranslatePipe
 	],
 	providers: [
-		...ROUTES_PROVIDERS
+		...ROUTES_PROVIDERS,
+    TRANSLATION_PROVIDERS,
+    TranslateService
 	],
   entryComponents: [
     ...SETTINGS_DECLARATIONS_MODALS,

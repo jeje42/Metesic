@@ -1,12 +1,12 @@
 <div class="md-content" layout="row" layout-align="center start" layout-fill layout-margin>
   <div layout="column" flex flex-md="50" flex-lg="50" flex-gt-lg="33" class="md-whiteframe-z2" layout-fill>
     <md-toolbar class="md-primary" color="primary">
-      Sign in
+      {{ 'Sign In' | translate }}
     </md-toolbar>
 
     <div layout="column" layout-margin layout-padding>
       <div layout="row" layout-margin>
-        <p class="md-body-2"> Sign in with your email</p>
+        <p class="md-body-2">{{ 'Sign in with your email' | translate }}</p>
       </div>
 
       <form [formGroup]="loginForm" #f="ngForm" (ngSubmit)="login()"
@@ -14,12 +14,12 @@
 
         <md-input-container>
           <input mdInput formControlName="email" type="email" placeholder="Email"></input>
-          <input mdInput formControlName="password" type="password" placeholder="Password"></input>
+          <input mdInput formControlName="password" type="password" placeholder="{{ 'Password' | translate }}"></input>
         </md-input-container>
 
         <div layout="row" layout-align="space-between center">
-          <a md-button [routerLink]="['/recover']">Forgot password?</a>
-          <button md-raised-button class="md-primary" type="submit" aria-label="login">Sign In</button>
+          <a md-button [routerLink]="['/recover']">{{ 'Forgot password?' | translate }}</a>
+          <button md-raised-button class="md-primary" type="submit" aria-label="login">{{ 'Sign In' | translate }}</button>
         </div>
       </form>
 
@@ -32,7 +32,7 @@
       <md-divider></md-divider>
 
       <div layout="row" layout-align="center">
-        <a md-button [routerLink]="['/signup']">Need an account?</a>
+        <a md-button [routerLink]="['/signup']">{{ 'Need an account?' | translate }}</a>
       </div>
     </div>
   </div>

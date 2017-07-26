@@ -1,7 +1,7 @@
 <!-- <div *ngFor="let playList of playlistsUsers | async">
   <h1>{{playList.name}}</h1>
 </div> -->
-<h1>Add the video <i> {{videoToAdd.name}} </i> to the playlist ...</h1>
+<h1>{{ 'Add the video' | translate }} <i> {{videoToAdd.name}} </i> {{ 'to the playlist ...' | translate }}</h1>
 
 
 <form [formGroup]="selectPlayList" (ngSubmit)="selectPlayListFunction();">
@@ -11,10 +11,10 @@
     </md-radio-button>
   </md-radio-group>
   <button color="primary" md-raised-button type="submit">
-    SELECT
+    {{ 'SELECT' | translate }}
   </button>
   <button md-raised-button color="primary" md-dialog-close>
-    Close
+    {{ 'Close' | translate }}
   </button>
   <!-- <md-input-container>
      <input mdInput dividerColor="primary" formControlName="name" placeholder="Name"></input>
