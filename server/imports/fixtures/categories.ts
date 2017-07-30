@@ -9,17 +9,25 @@ export function loadCategories() {
     },{
       name: 'Aventure',
     },{
+      name: 'Épouvante-Horreur',
+    },{
       name: 'Fantastique',
     },{
       name: 'Film Catastrophe',
     },{
       name: 'Guerre',
     },{
+      name: 'Iron Man',
+    },{
       name: 'James Bond',
+    },{
+      name: 'lost',
     },{
       name: 'Mac Gyver',
     },{
       name: 'Marvel',
+    },{
+      name: 'Péplu',
     },{
       name: 'Policier',
     },{
@@ -36,6 +44,8 @@ export function loadCategories() {
       name: 'Star Wars',
     },{
       name: 'Séries',
+    },{
+      name: 'Star Wars',
     },{
       name: 'Western',
     },{
