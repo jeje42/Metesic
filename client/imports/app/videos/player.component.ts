@@ -227,7 +227,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
       videoTag.setAttribute('type',"video/mp4");
       videoTag.setAttribute('src', found.url);
       var playListUser:PlayListUser = PlayListsUsers.findOne({user: this.user._id});
-      if(playListUser){
+      if(playListUser && playListUser.currentTime){
         videoTag.currentTime = playListUser.currentTime;
       }
       videoContainer.appendChild(videoTag);
