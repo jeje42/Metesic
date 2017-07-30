@@ -221,6 +221,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     let videoTag = document.getElementById("singleVideo");
     if(!videoTag){
       videoTag = document.createElement("video");
+      videoTag.setAttribute('width', "800");
+      videoTag.setAttribute('height', "450");
       videoTag.setAttribute('controls', "true");
       videoTag.setAttribute('autoplay', "true");
       videoTag.setAttribute('id',"singleVideo");
