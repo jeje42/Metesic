@@ -95,12 +95,12 @@ Meteor.methods({
 		if(Meteor.isServer){
 			var objectResearch = [];
 			objectResearch.push({name: searchRegEx});
-			if(!disabledCategories){
+			if(this.disabledCategories != undefined && this.disabledCategories.length > 0){
 				objectResearch.push({categories: {$elemMatch: {$in : disabledCategories}}});
 			}
 
 			return VideosMetas.collection.find({$and: objectResearch}).count();
-		}  
+		}
 	},
 checkCategoriesForVideo: function(videoId: string) {
 	console.log("checkCategoriesForVideo : " + videoId);

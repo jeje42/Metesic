@@ -210,7 +210,7 @@ export class VideosListComponent implements OnInit, OnDestroy {
     MeteorObservable.call('countVideosMeta', this.searchRegEx, this.disabledCategories).subscribe((videosMetasCount: number) => {
       var objectResearch = [];
 			objectResearch.push({name: this.searchRegEx});
-			if(!this.disabledCategories){
+			if(this.disabledCategories != undefined && this.disabledCategories.length > 0){
 				objectResearch.push({categories: {$elemMatch: {$in : this.disabledCategories}}});
 			}
       this.nbVideosMeta = videosMetasCount;
