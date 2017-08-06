@@ -31,6 +31,7 @@ import style from './videos-list.component.scss';
 })
 @InjectUser('user')
 export class VideosListComponent implements OnInit, OnDestroy {
+  nbVideosMetas: number;
   videosMetas: Observable<VideoMeta[]>;
   categories: Observable<Category[]>;
   currentPlayListUser: Observable<PlayListUser[]>;
@@ -73,9 +74,13 @@ export class VideosListComponent implements OnInit, OnDestroy {
   };
 
   /**
-   * For the pagination to work..
+   * For the pagination to work.
    */
   p: number = 1;
+  nbVideosMeta: number;
+  /**
+   * End For the pagination to work.
+   */
 
   @ViewChild(TemplateRef) template: TemplateRef<any>;
 
@@ -114,7 +119,7 @@ export class VideosListComponent implements OnInit, OnDestroy {
     this.videosSubs = MeteorObservable.subscribe('videos').subscribe();
 
     this.videosMetasSub = MeteorObservable.subscribe('videosMetas').subscribe(() => {
-      this.videosMetas = VideosMetas.find().zone();
+      this.updateListedVideos();
 	  });
 
 	  this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
@@ -198,28 +203,19 @@ export class VideosListComponent implements OnInit, OnDestroy {
     }else{
       this.disabledCategories.splice(this.disabledCategories.indexOf(category._id),1);
     }
-    console.log("changeCategory : " + this.disabledCategories);
     this.updateListedVideos();
   }
 
   updateListedVideos(): void {
-    if(this.disabledCategories.length === 0){
-      console.log("Size is null !");
-      this.videosMetas = VideosMetas.find({
-        $and: [
-        {name: this.searchRegEx}
-        // {categories: {$elemMatch: {$nin : this.disabledCategories}}}
-        ]
-      }).zone();
-    }else{
-      console.log("Size is not null : " + this.disabledCategories);
-      this.videosMetas = VideosMetas.find({
-        $and: [
-        {name: this.searchRegEx},
-        {categories: {$elemMatch: {$in : this.disabledCategories}}}
-        ]
-      }).zone();
-    }
+    MeteorObservable.call('countVideosMeta', this.searchRegEx, this.disabledCategories).subscribe((videosMetasCount: number) => {
+      var objectResearch = [];
+			objectResearch.push({name: this.searchRegEx});
+			if(!this.disabledCategories){
+				objectResearch.push({categories: {$elemMatch: {$in : this.disabledCategories}}});
+			}
+      this.nbVideosMeta = videosMetasCount;
+      this.videosMetas = VideosMetas.find({$and: objectResearch});
+    });
   }
 
   ngOnDestroy() {

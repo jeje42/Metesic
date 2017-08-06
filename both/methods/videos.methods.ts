@@ -91,6 +91,15 @@ export function uploadVideosPointer(folder: Folder): Promise<any> {
 }
 
 Meteor.methods({
+	  countVideosMeta: function(searchRegEx: string, disabledCategories: string[]) {
+			var objectResearch = [];
+			objectResearch.push({name: searchRegEx});
+			if(!disabledCategories){
+				objectResearch.push({categories: {$elemMatch: {$in : disabledCategories}}});
+			}
+
+	    return VideosMetas.collection.find({$and: objectResearch}).count();
+	  },
 checkCategoriesForVideo: function(videoId: string) {
 	console.log("checkCategoriesForVideo : " + videoId);
   //logger.info("checkCategoriesForVideo : " + videoId);
