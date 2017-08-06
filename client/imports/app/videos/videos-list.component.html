@@ -21,7 +21,7 @@
 
     <div class="research-videos border-container">
       <h1>{{ 'Research Results' | translate }}</h1>
-      <div *ngFor="let videoMeta of videosMetas | async" class="video-meta">
+      <div *ngFor="let videoMeta of videosMetas | async | paginate: { itemsPerPage: 10, currentPage: p }" class="video-meta">
         <div class="menu-section">
           <md-toolbar>
             <button md-icon-button [mdMenuTriggerFor]="menu" aria-label="Open basic menu">
@@ -50,6 +50,7 @@
           </p>
         </div>
       </div>
+      <pagination-controls (pageChange)="p = $event"></pagination-controls>
     </div>
   </div>
 </div>

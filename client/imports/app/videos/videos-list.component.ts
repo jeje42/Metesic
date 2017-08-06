@@ -72,6 +72,11 @@ export class VideosListComponent implements OnInit, OnDestroy {
     }
   };
 
+  /**
+   * For the pagination to work..
+   */
+  p: number = 1;
+
   @ViewChild(TemplateRef) template: TemplateRef<any>;
 
   constructor(public dialog: MdDialog, @Inject(DOCUMENT) doc: any) {

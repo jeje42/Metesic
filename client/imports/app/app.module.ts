@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AccountsModule } from 'angular2-meteor-accounts-ui';
-import { Ng2PaginationModule } from 'ng2-pagination';
+import {NgxPaginationModule} from 'ngx-pagination';
 import { AgmCoreModule } from 'angular2-google-maps/core';
 
 import { VgCoreModule } from 'videogular2/core';
@@ -103,7 +103,7 @@ export class DemoMaterialModule {}
 		RouterModule.forRoot(routes),
     // RouterModule.forChild(routes),
 		AccountsModule,
-		Ng2PaginationModule,
+    NgxPaginationModule,
 		AgmCoreModule.forRoot({
 			apiKey: 'AIzaSyAWoBdZHCNh5R-hB5S5ZZ2oeoYyfdDgniA'
 		}),
