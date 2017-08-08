@@ -8,3 +8,4 @@ npm-debug.log
 .project
 .settings/
 
+server/imports/fixtures/videos.ts
