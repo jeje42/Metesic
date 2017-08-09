@@ -22,6 +22,7 @@ import { PlayList } from '../../../../both/models/playlist.model';
 import { PlayListUser } from '../../../../both/models/playlist-user.model';
 import { VideoMeta } from '../../../../both/models/video-meta.model';
 import { Video } from '../../../../both/models/video.model';
+import { VideoPlayList } from '../../../../both/models/video-playlist.model';
 
 import { User } from '../../../../both/models/user.model';
 
@@ -38,7 +39,7 @@ import templatePopup from './playlists-dialog.component.html'
 })
 @InjectUser('user')
 export class PlayerComponent implements OnInit, OnDestroy {
-  listVideosPlayList: Observable<VideoMeta[]>;
+  listVideosPlayList: VideoPlayList[];
   currentPlaylist: Observable<PlayList[]>;
   currentPlayListUser: Observable<PlayListUser[]>;
 
@@ -173,10 +174,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
     if(playLists[0] === undefined || playLists[0]._id != this.currentPlaylistId){
       return;
     }
-    var videosMetaIds = playLists[0].list;
-    this.listVideosPlayList = VideosMetas.find({_id: {$in : videosMetaIds}}).zone();
+    this.listVideosPlayList = playLists[0].list;
   }
 
+  videoPlayListToVideoMeta(videoPlayList: VideoPlayList){
+    return VideosMetas.findOne({_id: videoPlayList.id_videoMeta});
+  }
 
   /**
    * setIdVideoPlaylist - Called to compute the video element id among the list of videos of the current playlist.
@@ -271,13 +274,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
    *   Listener of the remove video from playlist button. We need to remove the video from the PlayList element
    * and from the PlayListUser element.
    */
-  removeVideoPlaylist(videoMeta: VideoMeta, playList: PlayList):void {
-    PlayLists.update({_id: playList._id}, {$pull: {list: videoMeta._id}});
+  removeVideoPlaylist(videoPlayList: VideoPlayList, playList: PlayList):void {
+    PlayLists.update({_id: playList._id}, {$pull: {list: videoPlayList}});
 
     let videoContainer = document.getElementById("videoContainer");
     let videoTag = document.getElementById("singleVideo");
     if(videoTag){
-      const found = Videos.findOne(videoMeta.video);
+      const found = Videos.findOne(this.videoPlayListToVideoMeta(videoPlayList).video);
       if(!found){
         return;
       }

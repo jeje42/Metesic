@@ -161,20 +161,18 @@ export class VideosListComponent implements OnInit, OnDestroy {
       if(playListUser === undefined || playListUser === null || playListUser.currentPlaylist === undefined || playListUser.currentPlaylist === null){
         console.log("addToCurrentPlayList inserting playlist !");
         Meteor.call('addPlayList',
-        new PlayList(this.user.username + "'s playlist'", "Default playlist for user " + this.user.username, this.user._id, false, [videoMeta._id]),
+          new PlayList(this.user.username + "'s playlist'",
+            "Default playlist for user " + this.user.username,
+            this.user._id,
+            false,
+            [
+              {
+        				id_videoMeta: videoMeta._id,
+        				date : new Date()
+        			}
+            ]
+          ),
         true);
-        // PlayLists.find({owner: this.user._id}).subscribe(list => {
-        //   if(list === undefined){
-        //     return;
-        //   }
-        //   for(let i=0; i<list.length; i++){
-        //     if(("Default playlist for user " + this.user.username) === list[i].description){
-        //       this.currentPlaylist = list[i]._id;
-        //       Meteor.call("setPlayListToPlayListUser", this.currentPlaylist);
-        //       Meteor.call("addVideoToPlaylist", this.currentPlaylist, videoMeta._id);
-        //     }
-        //   }
-        // });
       } else {
         this.currentPlaylist = playListUser.currentPlaylist;
         Meteor.call("addVideoToPlaylist", this.currentPlaylist, videoMeta._id);

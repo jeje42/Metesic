@@ -6,6 +6,7 @@ import { PlayLists } from '../collections/playlists.collection';
 import { PlayListsUsers } from '../collections/playlists-users.collection';
 
 import { PlayList } from '../models/playlist.model';
+import { VideoPlayList } from '../models/video-playlist.model';
 
 import { PlayListUser } from '../models/playlist-user.model';
 
@@ -20,7 +21,11 @@ Meteor.methods({
 	 */
 	addVideoToPlaylist: function(playListId: string, videoMetaId: string){
 		if (Meteor.isServer) {
-			PlayLists.update({_id: playListId}, {$addToSet: {list: videoMetaId}});
+			var videoPlayList: VideoPlayList = {
+				id_videoMeta: videoMetaId,
+				date : new Date()
+			};
+			PlayLists.update({_id: playListId}, {$push: {list: videoPlayList}});
 		}
 	},
 
