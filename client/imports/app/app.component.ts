@@ -14,9 +14,9 @@ import { TranslateService } from './translate';
 	directives: [ROUTER_DIRECTIVES], //here,
   styles: [ style ],
   encapsulation: ViewEncapsulation.None,
-	host: {
-    '[class.unicorn-dark-theme]': 'dark',
-  },
+	// host: {
+  //   '[class.unicorn-dark-theme]': 'dark',
+  // },
 })
 @InjectUser('user')
 export class AppComponent implements OnInit {

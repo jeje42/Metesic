@@ -10,15 +10,15 @@
 
 <form [formGroup]="addPlayList" (ngSubmit)="addPlayListFunction();">
   <md-input-container>
-     <input mdInput dividerColor="primary" formControlName="name" placeholder="{{'Name' | translate }}"></input>
+     <input mdInput dividerColor="accent" formControlName="name" placeholder="{{'Name' | translate }}"></input>
   </md-input-container>
   <md-input-container>
-     <input mdInput dividerColor="primary" formControlName="description" placeholder="{{'Description' | translate }}"></input>
+     <input mdInput dividerColor="accent" formControlName="description" placeholder="{{'Description' | translate }}"></input>
   </md-input-container>
-  <button color="primary" md-raised-button type="submit">
+  <button color="accent" md-raised-button type="submit">
     <md-icon>add</md-icon>
   </button>
-  <button md-raised-button color="primary" md-dialog-close>
+  <button md-raised-button color="accent" md-dialog-close>
     {{ 'Close' | translate }}
   </button>
 </form>

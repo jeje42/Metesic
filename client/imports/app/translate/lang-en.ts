@@ -11,7 +11,7 @@ export const LANG_EN_TRANS = {
     'Add to another playlist ...' : 'Add to another playlist ...',
     'Delete from playlist' : 'Delete from playlist',
     'Please login or signup to get all fonctionalities from Metesic !' : 'Please login or signup to get all fonctionalities from Metesic !',
-    'Filter search' : 'Filter search',
+    'Research' : 'Research',
     'Search' : 'Search',
     /**
      *  End videos-list.component

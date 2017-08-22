@@ -1,3 +1,5 @@
+@import "../../../main";
+
 .videos-list-container {
   align-items: center;
   display: flex;
@@ -88,7 +90,7 @@
   // width: auto;
   // text-align: center;
   // vertical-align: top;
-  background-color: #FFCCBC;
+  background-color: mat-color($dark-primary);
   border-radius: 12px;
 }
 

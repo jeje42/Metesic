@@ -12,7 +12,7 @@ export const LANG_FR_TRANS = {
     'Add to another playlist ...' : 'Ajouter à la playlist ...',
     'Delete from playlist' : 'Supprimer de la playlist',
     'Please login or signup to get all fonctionalities from Metesic !' : 'Pour profiter des fonctionnalités de Metesic, veuillez vous connecter !',
-    'Filter search' : 'Filtrer la recherche',
+    'Research' : 'Recherche',
     'Search' : 'Rechercher',
     /**
      *  End videos-list.component

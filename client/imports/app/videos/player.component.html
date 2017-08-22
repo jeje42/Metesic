@@ -42,10 +42,13 @@
 
 <div class="player-container">
 	<div class="playlist-container default-padding">
-		<div *ngFor="let playList of currentPlaylist | async">
+		<md-card *ngFor="let playList of currentPlaylist | async">
 			<md-list>
 				<p>
-					<h1>{{playList.description}}</h1>
+					<md-card-title>
+		        {{playList.description}}
+		      <!-- </h1> -->
+		      </md-card-title>
 					<button md-raised-button color="accent" (click)="openEditPlayLists()" mdTooltip="{{ 'Change the current playlist !' | translate }}">
 		        <md-icon>border_color</md-icon>
 		      </button>
@@ -71,7 +74,7 @@
 
 				</md-list-item>
 			</md-list>
-		</div>
+		</md-card>
 	</div>
 
 	<div text-align="center" class="player default-padding" id="videoContainer">
