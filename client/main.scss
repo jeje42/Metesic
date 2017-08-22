@@ -53,3 +53,8 @@ $dark-theme:   mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
 .color-accent {
   color: mat-color($candy-app-accent);
 }
+
+button, a {
+  margin: 8px;
+  text-transform: uppercase;
+}

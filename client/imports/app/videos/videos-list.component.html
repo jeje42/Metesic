@@ -31,7 +31,7 @@
       </md-card-title>
       <md-card-content>
       <div *ngFor="let videoMeta of videosMetas | async | paginate: { itemsPerPage: 10, currentPage: p, totalItems: nbVideosMeta }" class="video-meta">
-        <div class="menu-section">
+        <!-- <div class="menu-section">
           <md-toolbar class="action-on-result">
             <button md-icon-button [mdMenuTriggerFor]="menu" aria-label="Open basic menu">
               <md-icon>more_vert</md-icon>
@@ -49,6 +49,16 @@
       	       {{ 'Delete from playlist' | translate }}
       	    </button>
           </md-menu>
+        </div> -->
+        <div class="demo-button">
+          <section>
+            <button md-raised-button color="accent" mdTooltip="{{ 'Add to current playlist' | translate }}" (click)="addToCurrentPlayList(videoMeta)">
+              <md-icon class="md-24">playlist_add</md-icon>
+            </button>
+            <button md-raised-button color="accent" mdTooltip="{{ 'Add to another playlist ...' | translate }}" (click)="openEditPlayLists(videoMeta)">
+              <md-icon class="md-24">queue</md-icon>
+            </button>
+          </section>
         </div>
         <div class="text">
           <h2 class="video-name">
