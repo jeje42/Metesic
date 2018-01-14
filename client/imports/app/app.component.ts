@@ -3,7 +3,7 @@ import {Component, ViewEncapsulation, ElementRef, OnInit} from '@angular/core';
 import template from './app.component.html';
 import style from './app.component.scss';
 import {InjectUser} from "angular2-meteor-accounts-ui";
-import { ROUTER_DIRECTIVES } from '@angular/router';
+// import { ROUTER_DIRECTIVES } from '@angular/router';
 import { TranslateService } from './translate';
 
 
@@ -11,7 +11,7 @@ import { TranslateService } from './translate';
 	moduleId: module.id,
   selector: 'app',
   template,
-	directives: [ROUTER_DIRECTIVES], //here,
+	// directives: [ROUTER_DIRECTIVES], //here,
   styles: [ style ],
   encapsulation: ViewEncapsulation.None,
 	// host: {
