@@ -31,6 +31,7 @@ import style from './videos-list.component.scss';
 })
 @InjectUser('user')
 export class VideosListComponent implements OnInit, OnDestroy {
+  nbVideosMetas: number;
   videosMetas: Observable<VideoMeta[]>;
   categories: Observable<Category[]>;
   currentPlayListUser: Observable<PlayListUser[]>;
@@ -72,6 +73,15 @@ export class VideosListComponent implements OnInit, OnDestroy {
     }
   };
 
+  /**
+   * For the pagination to work.
+   */
+  p: number = 1;
+  nbVideosMeta: number;
+  /**
+   * End For the pagination to work.
+   */
+
   @ViewChild(TemplateRef) template: TemplateRef<any>;
 
   constructor(public dialog: MatDialog, @Inject(DOCUMENT) doc: any) {
@@ -109,7 +119,7 @@ export class VideosListComponent implements OnInit, OnDestroy {
     this.videosSubs = MeteorObservable.subscribe('videos').subscribe();
 
     this.videosMetasSub = MeteorObservable.subscribe('videosMetas').subscribe(() => {
-      this.videosMetas = VideosMetas.find().zone();
+      this.updateListedVideos();
 	  });
 
 	  this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
@@ -126,8 +136,9 @@ export class VideosListComponent implements OnInit, OnDestroy {
         if(playlistUser === undefined){
           return;
         }
-        console.log("Updating currentPlaylist in videoListComponent");
-        this.currentPlaylist = playlistUser.currentPlaylist;
+        if(this.currentPlaylist != playlistUser.currentPlaylist){
+          this.currentPlaylist = playlistUser.currentPlaylist;
+        }
       });
     });
   }
@@ -150,20 +161,18 @@ export class VideosListComponent implements OnInit, OnDestroy {
       if(playListUser === undefined || playListUser === null || playListUser.currentPlaylist === undefined || playListUser.currentPlaylist === null){
         console.log("addToCurrentPlayList inserting playlist !");
         Meteor.call('addPlayList',
-        new PlayList(this.user.username + "'s playlist'", "Default playlist for user " + this.user.username, this.user._id, false, [videoMeta._id]),
+          new PlayList(this.user.username + "'s playlist'",
+            "Default playlist for user " + this.user.username,
+            this.user._id,
+            false,
+            [
+              {
+        				id_videoMeta: videoMeta._id,
+        				date : new Date()
+        			}
+            ]
+          ),
         true);
-        // PlayLists.find({owner: this.user._id}).subscribe(list => {
-        //   if(list === undefined){
-        //     return;
-        //   }
-        //   for(let i=0; i<list.length; i++){
-        //     if(("Default playlist for user " + this.user.username) === list[i].description){
-        //       this.currentPlaylist = list[i]._id;
-        //       Meteor.call("setPlayListToPlayListUser", this.currentPlaylist);
-        //       Meteor.call("addVideoToPlaylist", this.currentPlaylist, videoMeta._id);
-        //     }
-        //   }
-        // });
       } else {
         this.currentPlaylist = playListUser.currentPlaylist;
         Meteor.call("addVideoToPlaylist", this.currentPlaylist, videoMeta._id);
@@ -192,28 +201,19 @@ export class VideosListComponent implements OnInit, OnDestroy {
     }else{
       this.disabledCategories.splice(this.disabledCategories.indexOf(category._id),1);
     }
-    console.log("changeCategory : " + this.disabledCategories);
     this.updateListedVideos();
   }
 
   updateListedVideos(): void {
-    if(this.disabledCategories.length === 0){
-      console.log("Size is null !");
-      this.videosMetas = VideosMetas.find({
-        $and: [
-        {name: this.searchRegEx}
-        // {categories: {$elemMatch: {$nin : this.disabledCategories}}}
-        ]
-      }).zone();
-    }else{
-      console.log("Size is not null : " + this.disabledCategories);
-      this.videosMetas = VideosMetas.find({
-        $and: [
-        {name: this.searchRegEx},
-        {categories: {$elemMatch: {$in : this.disabledCategories}}}
-        ]
-      }).zone();
-    }
+    MeteorObservable.call('countVideosMeta', this.searchRegEx, this.disabledCategories).subscribe((videosMetasCount: number) => {
+      var objectResearch = [];
+			objectResearch.push({name: this.searchRegEx});
+			if(this.disabledCategories != undefined && this.disabledCategories.length > 0){
+				objectResearch.push({categories: {$elemMatch: {$in : this.disabledCategories}}});
+			}
+      this.nbVideosMeta = videosMetasCount;
+      this.videosMetas = VideosMetas.find({$and: objectResearch});
+    });
   }
 
   ngOnDestroy() {

@@ -1,9 +1,10 @@
-import {Component, ViewEncapsulation, ElementRef} from '@angular/core';
+import {Component, ViewEncapsulation, ElementRef, OnInit} from '@angular/core';
 
 import template from './app.component.html';
 import style from './app.component.scss';
 import {InjectUser} from "angular2-meteor-accounts-ui";
 import { ROUTER_DIRECTIVES } from '@angular/router';
+import { TranslateService } from './translate';
 
 
 @Component({
@@ -13,20 +14,57 @@ import { ROUTER_DIRECTIVES } from '@angular/router';
 	directives: [ROUTER_DIRECTIVES], //here,
   styles: [ style ],
   encapsulation: ViewEncapsulation.None,
-	host: {
-    '[class.unicorn-dark-theme]': 'dark',
-  },
+	// host: {
+  //   '[class.unicorn-dark-theme]': 'dark',
+  // },
 })
 @InjectUser('user')
-export class AppComponent {
+export class AppComponent implements OnInit {
 	navItems = [
 			{name: 'Home', route: ''},
       {name: 'Settings', route: 'settings'}
 	];
 
+	public translatedText: string;
+	public supportedLanguages: any[];
 
-	constructor(private _element: ElementRef) {
 
+	constructor(private _element: ElementRef, private _translate: TranslateService) {
+
+    }
+
+		ngOnInit() {
+        // standing data
+        this.supportedLanguages = [
+        { display: 'English', value: 'en' },
+        { display: 'Francais', value: 'fr' },
+        ];
+
+        // set current langage
+        this.selectLang('en');
+    }
+
+		isCurrentLang(lang: string) {
+        // check if the selected lang is current lang
+        return lang === this._translate.currentLang;
+    }
+
+		isCurrentLangStyle(lang: string) {
+			if(this.isCurrentLang(lang)) {
+				return "warn";
+			}
+			return "primary";
+		}
+
+    selectLang(lang: string) {
+        // set current lang;
+        this._translate.use(lang);
+        this.refreshText();
+    }
+
+    refreshText() {
+        // refresh translation when language change
+        this.translatedText = this._translate.instant('Name');
     }
 
   logout() {

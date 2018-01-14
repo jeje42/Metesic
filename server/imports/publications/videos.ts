@@ -4,7 +4,7 @@ import { Videos } from '../../../both/collections/videos.collection';
 import { loggedIsAdmin } from './checkAdmin';
 
 Meteor.publish('videos', function() {
-  if(loggedIsAdmin(this.userId)){
+  if(this.userId != undefined){
     return Videos.collection.find();
   }
 });

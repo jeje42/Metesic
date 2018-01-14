@@ -1,12 +1,13 @@
 import { Folders } from '../collections/folders.collection';
+import { Videos } from '../collections/videos.collection';
 import { VideosMetas } from '../collections/video-meta.collection';
 import { Folder } from '../models/folder.model';
+import { Video } from '../models/video.model';
 import { check } from 'meteor/check';
 import { Meteor } from 'meteor/meteor';
 
 import { removeFileByPath, ScanActions } from './folders.sharedMethods';
-import { uploadVideosPointer } from './videos.methods';
-
+import { uploadVideosPointer, getSubstringUrl } from './videos.methods';
 
 //TODO : index unique : https://docs.mongodb.com/manual/core/index-unique/
 /**
@@ -66,13 +67,18 @@ function addToCollection(folder: Folder){
 	Fiber(function() {
 		if(folder.isFolder){
 			console.log(folder.name + " is a folder a is not added to filesystem");
-			Folders.update({ path: folder.path }, { $set: { isInCollection: true } });
+			Folders.update({ path: folder.path }, {$set: { isInCollection: true } });
 		}else{
 			console.log(folder.name + " is not a folder, call to uploadVideosPointer");
 			uploadVideosPointer(folder)
 	      .then((result) => {
+					var video = Videos.findOne({_id: result._id});
+					var newAdress = "https://" + "jeje-guidon.servehttp.com" + ":" + "443" + getSubstringUrl(video.url, "", "afterAdressPort") ;
 
-					console.log("then");
+					Videos.update(result._id, {
+						$set: { url:  newAdress},
+				    });
+
 					VideosMetas.insert({
 						name: folder.name,
 						folderId: folder._id,

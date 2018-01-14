@@ -1,3 +1,5 @@
+@import "../../../main";
+
 .videos-list-container {
   align-items: center;
   display: flex;
@@ -94,17 +96,69 @@
     flex-flow: row nowrap;
     margin: 0 auto;
 
-    .research-criterions {
-      width: auto;
-      text-align: center;
-      vertical-align: top;
-      background-color: #FFCCBC;
-    }
+    // .research-criterions {
+    //   width: auto;
+    //   text-align: center;
+    //   vertical-align: top;
+      // background-color: $mat-green;
+    // }
 
-    .research-videos {
+    // .research-videos {
       // width: 100%;
       // position: relative;
-      text-align: center;
+      // text-align: center;
+    // }
+  }
+}
+
+.action-on-result {
+  // background-color: mat-color($dark-primary);
+
+  button {
+    background-color: mat-color($dark-accent);
+  }
+}
+
+.slide-toggle-categories {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  md-slide-toggle {
+    margin: 6px 0;
+  }
+}
+
+.research-criterions {
+  display: flex;
+  width: 100%;
+
+  .research-videos {
+    min-width: 200px;
+    margin-bottom: 0;
+    flex-grow: 1;
+  }
+
+  .research-card {
+    background-color: mat-color($dark-primary);
+    // color: black;
+  }
+
+  .mat-card {
+    min-width: 160px;
+    margin-right: 16px;
+
+    .mat-checkbox {
+      display: block;
+      margin-top: 8px;
+    }
+
+    .mat-form-field {
+      width: 100px;
+    }
+
+    button {
+      width: 100%;
     }
   }
 }
@@ -139,4 +193,16 @@
 
 div {
   margin: 10px;
+}
+
+.demo-button {
+  section {
+    display: flex;
+    align-items: center;
+    margin: 8px;
+  }
+
+  p {
+    padding: 5px 15px;
+  }
 }

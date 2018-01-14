@@ -1,7 +1,7 @@
 <!-- <div *ngFor="let playList of playlistsUsers | async">
   <h1>{{playList.name}}</h1>
 </div> -->
-<h1>Add the video <i> {{videoToAdd.name}} </i> to the playlist ...</h1>
+<h1>{{ 'Add the video' | translate }} <i> {{videoToAdd.name}} </i> {{ 'to the playlist ...' | translate }}</h1>
 
 
 <form [formGroup]="selectPlayList" (ngSubmit)="selectPlayListFunction();">
@@ -11,10 +11,10 @@
     </mat-radio-button>
   </mat-radio-group>
   <button color="primary" mat-raised-button type="submit">
-    SELECT
+    {{ 'SELECT' | translate }}
   </button>
   <button mat-raised-button color="primary" mat-dialog-close>
-    Close
+    {{ 'Close' | translate }}
   </button>
   <!-- <mat-input-container>
      <input matInput dividerColor="primary" formControlName="name" placeholder="Name"></input>

@@ -24,7 +24,8 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 	folders: Observable<Folder[]>;
 	files: Observable<Folder[]>;
 
-	FoldersSub: Subscription;
+	foldersSub: Subscription;
+	videosSub: Subscription;
 	user: Meteor.User;
 	currentFolder: string;
 
@@ -44,7 +45,8 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
-		this.FoldersSub.unsubscribe();
+		this.foldersSub.unsubscribe();
+		this.videosSub.unsubscribe();
 	}
 
 	initDirectory(currentFolder: string): void {
@@ -52,7 +54,7 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 
 		this.currentFolder = currentFolder;
 
-		this.FoldersSub = MeteorObservable.subscribe('folders').subscribe(() => {
+		this.foldersSub = MeteorObservable.subscribe('folders').subscribe(() => {
 			this.current = Folders.find({ path: currentFolder }).zone();
 
 			this.folders = Folders.find({ father: currentFolder, isFolder: true },{
@@ -67,6 +69,8 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
         }
 			}).zone();
 		});
+
+		this.videosSub = MeteorObservable.subscribe('videos').subscribe();
 	}
 
 	cdInto(newPath: string): void {

@@ -1,29 +1,38 @@
 <player *ngIf="user"></player>
 
 <div *ngIf="user" class="research-container">
-  <div class="research-content">
-    <div class="research-criterions border-container default-padding">
-      <h1>Filter search</h1>
-      <h2>Name</h2>
-      <form>
-        <mat-input-container>
-          <input matInput dividerColor="primary" type="text" #searchtext placeholder="Enter a video name"></input>
-        </mat-input-container>
-        <button color="primary" mat-raised-button (click)="search(searchtext.value)" matTooltip="Search">
-          <mat-icon>find_in_page</mat-icon>
-        </button>
-      </form>
-      <h2>Categories</h2>
-      <mat-button-toggle-group multiple [vertical]="true">
-        <mat-button-toggle *ngFor="let category of categories | async" (change)="changeCategory(category)">{{category.name}}</mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
+  <div class="research-criterions">
+    <mat-card class="research-card">
+      <mat-card-title>
+        {{ 'Research' | translate }}
+      </mat-card-title>
+      <mat-card-content>
+        <h3>{{ 'Name' | translate }}</h3>
+        <form>
+          <mat-input-container>
+            <input matInput dividerColor="accent" type="text" #searchtext placeholder="Enter a video name"></input>
+          </mat-input-container>
+          <button color="accent" mat-raised-button (click)="search(searchtext.value)" matTooltip="{{ 'Search' | translate }}">
+            <mat-icon>find_in_page</mat-icon>
+          </button>
+        </form>
+        <h3>{{ 'Categories' | translate }}</h3>
+          <div class="slide-toggle-categories">
+            <mat-slide-toggle name="slideToggle" *ngFor="let category of categories | async" (change)="changeCategory(category)">
+              {{category.name}}
+            </mat-slide-toggle>
+          </div>
+      </mat-card-content>
+    </mat-card>
 
-    <div class="research-videos border-container">
-      <h1>Research Results</h1>
-      <div *ngFor="let videoMeta of videosMetas | async" class="video-meta">
-        <div class="menu-section">
-          <mat-toolbar>
+    <mat-card>
+      <mat-card-title>
+        {{ 'Results' | translate }}
+      </mat-card-title>
+      <mat-card-content>
+      <div *ngFor="let videoMeta of videosMetas | async | paginate: { itemsPerPage: 20, currentPage: p, totalItems: nbVideosMeta }" class="video-meta">
+        <!-- <div class="menu-section">
+          <mat-toolbar class="action-on-result">
             <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Open basic menu">
               <mat-icon>more_vert</mat-icon>
             </button>
@@ -31,15 +40,25 @@
 
           <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="addToCurrentPlayList(videoMeta)">
-      	    	Add to current playlist
+      	    	{{ 'Add to current playlist' | translate }}
       	    </button>
             <button mat-menu-item (click)="openEditPlayLists(videoMeta)">
-      	    	Add to another playlist ...
+      	    	{{ 'Add to another playlist ...' | translate }}
       	    </button>
             <button mat-menu-item (click)="deleteVideo(videoMeta)" disabled="isVideoInCurrentPlayList(videoMeta)">
-      	       Delete from playlist
+      	       {{ 'Delete from playlist' | translate }}
       	    </button>
           </mat-menu>
+        </div> -->
+        <div class="demo-button">
+          <section>
+            <button mat-raised-button color="accent" matTooltip="{{ 'Add to current playlist' | translate }}" (click)="addToCurrentPlayList(videoMeta)">
+              <mat-icon class="mat-24">playlist_add</mat-icon>
+            </button>
+            <button mat-raised-button color="accent" matTooltip="{{ 'Add to another playlist ...' | translate }}" (click)="openEditPlayLists(videoMeta)">
+              <mat-icon class="mat-24">queue</mat-icon>
+            </button>
+          </section>
         </div>
         <div class="text">
           <h2 class="video-name">
@@ -50,10 +69,12 @@
           </p>
         </div>
       </div>
-    </div>
+    </mat-card-content>
+      <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </mat-card>
   </div>
 </div>
 
 <div *ngIf="!user">
-  <h2>Please login or signup to get all fonctionalities from Metesic !</h2>
+  <h2>{{ 'Please login or signup to get all fonctionalities from Metesic !' | translate }}</h2>
 </div>

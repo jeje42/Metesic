@@ -22,6 +22,7 @@ import { PlayList } from '../../../../both/models/playlist.model';
 import { PlayListUser } from '../../../../both/models/playlist-user.model';
 import { VideoMeta } from '../../../../both/models/video-meta.model';
 import { Video } from '../../../../both/models/video.model';
+import { VideoPlayList } from '../../../../both/models/video-playlist.model';
 
 import { User } from '../../../../both/models/user.model';
 
@@ -38,7 +39,7 @@ import templatePopup from './playlists-dialog.component.html'
 })
 @InjectUser('user')
 export class PlayerComponent implements OnInit, OnDestroy {
-  listVideosPlayList: Observable<VideoMeta[]>;
+  listVideosPlayList: VideoPlayList[];
   currentPlaylist: Observable<PlayList[]>;
   currentPlayListUser: Observable<PlayListUser[]>;
 
@@ -109,11 +110,27 @@ export class PlayerComponent implements OnInit, OnDestroy {
       }
       this.currentPlayListUser = PlayListsUsers.find({user: this.user._id});
 
-      this.currentPlayListUser.subscribe(listPlayListUser => this.initVideosPlayListId(listPlayListUser));
+      this.currentPlayListUser.subscribe(listPlayListUser => {
+        this.initVideosPlayListId(listPlayListUser);
 
+        var playListUser: PlayListUser = PlayListsUsers.findOne({user: this.user._id});
+          if(playListUser === undefined){
+            return;
+          }
+            this.readVideo(VideosMetas.findOne({_id: playListUser.currentVideo}));
+      });
     });
 
 	  this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
+
+    this.counter().subscribe(
+      data => {
+        var videoTag = document.getElementById("singleVideo");
+        if(videoTag != undefined){
+          Meteor.call('setCurrentTime', videoTag.currentTime);
+        }
+      }
+    );
   }
 
 	ngOnDestroy() {
@@ -122,8 +139,20 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.videosMetaSubs.unsubscribe();
 	}
 
+  counter() {
+    return Observable.interval(10000).flatMap(() => {
+      return "u";
+    });
+  }
+
+
+  /**
+   * initVideosPlayListId - called when the client receives the PlayListsUsers data.
+   *
+   * @param  {type} playListId: PlayListUser[] description
+   * @return {type}                            description
+   */
   initVideosPlayListId(playListId: PlayListUser[]){
-    console.log("initVideosPlayListId : " + playListId[0].currentPlaylist);
     if(playListId === undefined || playListId.length === 0){
       return;
     }
@@ -136,7 +165,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
 
   /**
-   * initVideosPlaylistObject - description
+   * initVideosPlaylistObject - called when the client receives the PlayList data.
    *
    * @param  {type} playLists: PlayList[] description
    * @return {type}                       description
@@ -145,14 +174,38 @@ export class PlayerComponent implements OnInit, OnDestroy {
     if(playLists[0] === undefined || playLists[0]._id != this.currentPlaylistId){
       return;
     }
-    var videosMetaIds = playLists[0].list;
-    this.listVideosPlayList = VideosMetas.find({_id: {$in : videosMetaIds}}).zone();
+    this.listVideosPlayList = playLists[0].list;
   }
 
+  videoPlayListToVideoMeta(videoPlayList: VideoPlayList){
+    return VideosMetas.findOne({_id: videoPlayList.id_videoMeta});
+  }
+
+  /**
+   * setIdVideoPlaylist - Called to compute the video element id among the list of videos of the current playlist.
+   *
+   * @param  {type} video: VideoMeta description
+   * @return {type}                  description
+   */
   setIdVideoPlaylist(video: VideoMeta){
     return this.constVideoMetaId + video._id;
   }
 
+
+  /**
+   * readVideoButton - Listener of the play button (one play button per video list element).
+   *
+   * @param  {type} video: VideoMeta description
+   * @return {type}                  description
+   */
+  readVideoButton(video: VideoMeta){
+    Meteor.call('setVideoPlayListUser', video._id);
+  }
+
+
+	/**
+	 * Called when the PlayListsUsers data changes.
+	 */
 	readVideo(video: VideoMeta): void {
 		if (!video) {
       return;
@@ -169,47 +222,90 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     let videoContainer = document.getElementById("videoContainer");
     let videoTag = document.getElementById("singleVideo");
-    if(videoTag === undefined || videoTag === null){
+    if(!videoTag){
       videoTag = document.createElement("video");
+      videoTag.setAttribute('width', "800");
+      videoTag.setAttribute('height', "450");
       videoTag.setAttribute('controls', "true");
       videoTag.setAttribute('autoplay', "true");
       videoTag.setAttribute('id',"singleVideo");
       videoTag.setAttribute('type',"video/mp4");
-
+      videoTag.setAttribute('src', found.url);
+      var playListUser:PlayListUser = PlayListsUsers.findOne({user: this.user._id});
+      if(playListUser && playListUser.currentTime){
+        videoTag.currentTime = playListUser.currentTime;
+      }
       videoContainer.appendChild(videoTag);
+      videoTag.pause();
+    }else{
+      if(found.url != videoTag.getAttribute('src')){
+        videoTag.setAttribute('src', found.url);
+        var playListUser:PlayListUser = PlayListsUsers.findOne({user: this.user._id});
+        if(playListUser){
+          videoTag.currentTime = 0.000000;
+        }
+        videoTag.pause();
+      }
     }
-
-	  videoTag.setAttribute('src', found.url);
-
-    this.setStyleListVideoPlaying(video, true);
 }
 
-  setStyleListVideoPlaying(video: VideoMeta, styleOn: boolean){
-    const style = "videoPlaying";
-    let videoListContainer = document.getElementById(this.constVideoMetaId + video._id);
+
+  /**
+   * setClassElementVideoReading - called by the html to set the style on the list element
+   * if corresponding video is played or not.
+   *
+   * @param  {type} video: VideoMeta description
+   * @return {type}                  description
+   */
+  setClassElementVideoReading(video: VideoMeta){
+    var styleOn;
+    var playListUser:PlayListUser = PlayListsUsers.findOne({user: this.user._id});
+    if(playListUser){
+      styleOn = (video._id === playListUser.currentVideo);
+    }
     if(styleOn) {
-      videoListContainer.setAttribute("class", videoListContainer.getAttribute("class") + " " + style);
-      if(this.videoReading != undefined){
-        this.setStyleListVideoPlaying(this.videoReading, false);
-      }
-      this.videoReading = video;
+      return "videoPlaying mat-list-item";
     } else {
-      let oldAttribute = videoListContainer.getAttribute("class");
-      let before = oldAttribute.substring(0, oldAttribute.indexOf(style));
-      let after = oldAttribute.substring(oldAttribute.indexOf(style) + style.length, oldAttribute.length);
-      let newClass = before + " " + after;
-      videoListContainer.setAttribute("class", newClass);
+      return "mat-list-item";
     }
   }
 
-  removeVideoPlaylist(videoMeta: VideoMeta, playList: PlayList):void {
-    PlayLists.update({_id: playList._id}, {$pull: {list: videoMeta._id}});
+  /**
+   *   Listener of the remove video from playlist button. We need to remove the video from the PlayList element
+   * and from the PlayListUser element.
+   */
+  removeVideoPlaylist(videoPlayList: VideoPlayList, playList: PlayList):void {
+    PlayLists.update({_id: playList._id}, {$pull: {list: videoPlayList}});
+
+    let videoContainer = document.getElementById("videoContainer");
+    let videoTag = document.getElementById("singleVideo");
+    if(videoTag){
+      const found = Videos.findOne(this.videoPlayListToVideoMeta(videoPlayList).video);
+      if(!found){
+        return;
+      }
+      if(found.url === videoTag.getAttribute('src')){
+        videoContainer.innerHTML = "";
+        Meteor.call('blankCurrentVideo');
+      }
+    }
   }
 
   deleteCurrentPlayList(playlist: PlayList){
+    let videoContainer = document.getElementById("videoContainer");
+    if(videoContainer){
+      videoContainer.innerHTML = "";
+      Meteor.call('blankCurrentVideo');
+    }
     Meteor.call('removePlayList', playlist._id);
   }
 
+
+  /**
+   * openEditPlayLists - Opens the playlist editor popup.
+   *
+   * @return {type}  description
+   */
   openEditPlayLists() {
     let dialogRef = this.dialog.open(PlayListsDialog, this.config);
     dialogRef.componentInstance.actionsAlignment = this.actionsAlignment;

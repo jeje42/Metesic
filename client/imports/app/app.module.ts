@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AccountsModule } from 'angular2-meteor-accounts-ui';
-import { Ng2PaginationModule } from 'ng2-pagination';
+import {NgxPaginationModule} from 'ngx-pagination';
 import { AgmCoreModule } from 'angular2-google-maps/core';
 
 import { VgCoreModule } from 'videogular2/core';
@@ -57,6 +57,8 @@ import {
 } from '@angular/material';
 import {CdkTableModule} from '@angular/cdk/table';
 
+import { TRANSLATION_PROVIDERS, TranslatePipe, TranslateService }   from './translate';
+
 /**
  * NgModule that includes all Material modules that are required to serve the demo-app.
  */
@@ -108,7 +110,7 @@ export class DemoMaterialModule {}
 		RouterModule.forRoot(routes),
     // RouterModule.forChild(routes),
 		AccountsModule,
-		Ng2PaginationModule,
+    NgxPaginationModule,
 		AgmCoreModule.forRoot({
 			apiKey: 'AIzaSyAWoBdZHCNh5R-hB5S5ZZ2oeoYyfdDgniA'
 		}),
@@ -127,10 +129,13 @@ export class DemoMaterialModule {}
 		...VIDEOS_DECLARATIONS,
 		...SETTINGS_DECLARATIONS,
     ...SETTINGS_DECLARATIONS_MODALS,
-    ...VIDEOS_DECLARATIONS_MODALS
+    ...VIDEOS_DECLARATIONS_MODALS,
+    TranslatePipe
 	],
 	providers: [
-		...ROUTES_PROVIDERS
+		...ROUTES_PROVIDERS,
+    TRANSLATION_PROVIDERS,
+    TranslateService
 	],
   entryComponents: [
     ...SETTINGS_DECLARATIONS_MODALS,

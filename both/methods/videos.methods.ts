@@ -11,6 +11,36 @@ import { VideoMeta } from '../models/video-meta.model';
 import { Folder } from '../models/folder.model';
 import { Category } from '../models/category.model';
 
+/**
+ * @param : originalString : the url from which we want to extract some information
+ * @param : parameter :
+ *		- undefined or "" : gets the substring from the beginning to the separator
+ * 		- "port" : returns the port number
+ *		- "adress" : returns the adress
+ *		- "afterAdressPort" : the whole String after adress and port
+ * @param : separator :
+ */
+export function getSubstringUrl(originalString:string, separator:string, parameter:string){
+	if(separator === undefined)
+		return "";
+
+	var toReturn = "";
+	if(parameter === undefined || parameter === ""){
+		toReturn = originalString.substring(0, originalString.search(separator));
+	}else{
+		originalString = originalString.substring("http://".length, originalString.length);
+		if(parameter === "port"){
+			toReturn = originalString.substring(originalString.search(":"), originalString.search("/"));
+		}else if(parameter === "adress"){
+			toReturn = originalString.substring(0, originalString.search(":"));
+		}else if(parameter === "afterAdressPort"){
+			toReturn = originalString.substring(originalString.search("/"), originalString.length);
+		}
+	}
+
+	return toReturn;
+}
+
 export function uploadVideos(data: File): Promise<any> {
   if(Meteor.isClient){
     return;
@@ -61,14 +91,26 @@ export function uploadVideosPointer(folder: Folder): Promise<any> {
 }
 
 Meteor.methods({
+	countVideosMeta: function(searchRegEx: string, disabledCategories: string[]) {
+		if(Meteor.isServer){
+			var objectResearch = [];
+			objectResearch.push({name: searchRegEx});
+			if(this.disabledCategories != undefined && this.disabledCategories.length > 0){
+				objectResearch.push({categories: {$elemMatch: {$in : disabledCategories}}});
+			}
+
+			return VideosMetas.collection.find({$and: objectResearch}).count();
+		}
+	},
 checkCategoriesForVideo: function(videoId: string) {
+	console.log("checkCategoriesForVideo : " + videoId);
   //logger.info("checkCategoriesForVideo : " + videoId);
   var foldersPath: string[] = Videos.findOne({_id:videoId}).path.split("/");
   for(var fol in foldersPath){
     //logger.info("checkCategoriesForVideo : " + videoId + " ; searching for " + foldersPath[fol] + " within Categories");
     var category:Category = Categories.findOne({name: foldersPath[fol]});
     if(category != undefined){
-      //logger.info("checkCategoriesForVideo : " + videoId + " ; Adding " + category.name + " to the video");
+      console.log("checkCategoriesForVideo : " + videoId + " ; Adding " + category.name + " to the video");
       VideosMetas.update({video:videoId}, { $addToSet: { categories: category._id } });
     }
   }

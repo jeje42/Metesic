@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 //import { Loggly} from
 
 import { loadParties } from './imports/fixtures/parties';
+import { loadCategories } from './imports/fixtures/categories';
 import { searchVideos, updateVideosUrls, checkIndexesVideosMeta } from './imports/fixtures/videos';
 import { initPlayerPlayList } from './imports/fixtures/playlists';
 import { insertFile } from './imports/fixtures/videosImport';
@@ -62,11 +63,12 @@ function initLogger() {
 
 Meteor.startup(() => {
 	var Future = Npm.require('fibers/future');
+	loadCategories();
 	checkIndexesVideosMeta();
 	// initLogger();
 	// loadParties();
 	searchVideos();
-	updateVideosUrls();
+	// updateVideosUrls();
 	initPlayerPlayList();
 	insertFile();
 	initAdmin();
