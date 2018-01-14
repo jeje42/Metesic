@@ -3,9 +3,9 @@
 </div> -->
 <h1>Please choose your preferred playlist !</h1>
 <md-radio-group name="my_playlists" [(ngModel)]="currentPlayListId" class="choixPlayLists" (change)="selectPlayListFunction();">
-  <md-radio-button *ngFor="let playList of playlistsUsers | async" [value]="playList._id">
+  <mat-radio-button *ngFor="let playList of playlistsUsers | async" [value]="playList._id">
     <h1>{{playList.name}}</h1>
-  </md-radio-button>
+  </mat-radio-button>
 </md-radio-group>
 
 <form [formGroup]="addPlayList" (ngSubmit)="addPlayListFunction();">

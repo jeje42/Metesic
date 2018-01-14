@@ -6,9 +6,9 @@
 
 <form [formGroup]="selectPlayList" (ngSubmit)="selectPlayListFunction();">
   <md-radio-group name="my_playlists" [(ngModel)]="currentPlayListId" class="choixPlayLists" formControlName="playlist">
-    <md-radio-button *ngFor="let playList of playlistsUsers | async" [value]="playList._id">
+    <mat-radio-button *ngFor="let playList of playlistsUsers | async" [value]="playList._id">
       <h1>{{playList.name}}</h1>
-    </md-radio-button>
+    </mat-radio-button>
   </md-radio-group>
   <button color="primary" md-raised-button type="submit">
     SELECT

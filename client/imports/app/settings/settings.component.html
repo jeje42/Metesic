@@ -1,6 +1,6 @@
-<md-tab-group class="folder-tab-group" dynamicHeight>
-  <md-tab *ngFor="let tab of tabs" [disabled]="tab.disabled">
-    <template md-tab-label>{{tab.label}}</template>
+<mat-tab-group class="folder-tab-group" dynamicHeight>
+  <mat-tab *ngFor="let tab of tabs" [disabled]="tab.disabled">
+    <template mat-tab-label>{{tab.label}}</template>
 		<div class="tab-content">
       <br>
       <div *ngIf="tab.file === '0'">
@@ -13,5 +13,5 @@
         <settings-users></settings-users>
 			</div>
     </div>
-  </md-tab>
-</md-tab-group>
+  </mat-tab>
+</mat-tab-group>

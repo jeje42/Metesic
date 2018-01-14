@@ -1,49 +1,49 @@
 <div class="current-folder-title">
-	<md-list>
-		<h2 md-subheader>Current folder : </h2>
-		<md-list-item *ngFor="let title of current | async">
-			<a  md-line>{{title.path}}</a>
-			<button md-icon-button (click)="cdBack(title.path)">
-				<md-icon>arrow_back</md-icon>
+	<mat-list>
+		<h2 mat-subheader>Current folder : </h2>
+		<mat-list-item *ngFor="let title of current | async">
+			<a  mat-line>{{title.path}}</a>
+			<button mat-icon-button (click)="cdBack(title.path)">
+				<mat-icon>arrow_back</mat-icon>
 			</button>
-			<button md-icon-button (click)="synchroniseCurrent()">
-				<md-icon>sync</md-icon>
+			<button mat-icon-button (click)="synchroniseCurrent()">
+				<mat-icon>sync</mat-icon>
 			</button>
-			<md-checkbox	[(ngModel)]="title.isInCollection"
+			<mat-checkbox	[(ngModel)]="title.isInCollection"
 				(change)="setInCollection(title, $event.checked)">
-			</md-checkbox>
-		</md-list-item>
-	</md-list>
+			</mat-checkbox>
+		</mat-list-item>
+	</mat-list>
 </div>
 
-<md-tab-group class="folder-tab-group" dynamicHeight>
-  <md-tab *ngFor="let tab of tabs" [disabled]="tab.disabled">
-    <template md-tab-label>{{tab.label}}</template>
+<mat-tab-group class="folder-tab-group" dynamicHeight>
+  <mat-tab *ngFor="let tab of tabs" [disabled]="tab.disabled">
+    <template mat-tab-label>{{tab.label}}</template>
 		<div class="tab-content">
       <br>
       <div *ngIf="tab.folder">
-				<md-nav-list>
-					<md-list-item *ngFor="let folder of folders | async">
-						<a md-line>{{folder.name}}</a>
-						<button md-icon-button *ngIf="folder.isFolder" (click)="cdInto(folder.path)">
-							<md-icon>arrow_forward</md-icon>
+				<mat-nav-list>
+					<mat-list-item *ngFor="let folder of folders | async">
+						<a mat-line>{{folder.name}}</a>
+						<button mat-icon-button *ngIf="folder.isFolder" (click)="cdInto(folder.path)">
+							<mat-icon>arrow_forward</mat-icon>
 						</button>
-						<md-checkbox	[(ngModel)]="folder.isInCollection"
+						<mat-checkbox	[(ngModel)]="folder.isInCollection"
 							(change)="setInCollection(folder, $event.checked)">
-			    	</md-checkbox>
-					</md-list-item>
-				</md-nav-list>
+			    	</mat-checkbox>
+					</mat-list-item>
+				</mat-nav-list>
       </div>
 			<div *ngIf="!tab.folder">
-				<md-nav-list>
-					<md-list-item *ngFor="let file of files | async">
-						<a md-line>{{file.name}}</a>
-						<md-checkbox	[(ngModel)]="file.isInCollection"
+				<mat-nav-list>
+					<mat-list-item *ngFor="let file of files | async">
+						<a mat-line>{{file.name}}</a>
+						<mat-checkbox	[(ngModel)]="file.isInCollection"
 							(change)="setInCollection(file, $event.checked)">
-						</md-checkbox>
-					</md-list-item>
-				</md-nav-list>
+						</mat-checkbox>
+					</mat-list-item>
+				</mat-nav-list>
 			</div>
     </div>
-  </md-tab>
-</md-tab-group>
+  </mat-tab>
+</mat-tab-group>

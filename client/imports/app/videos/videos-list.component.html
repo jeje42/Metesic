@@ -6,40 +6,40 @@
       <h1>Filter search</h1>
       <h2>Name</h2>
       <form>
-        <md-input-container>
-          <input mdInput dividerColor="primary" type="text" #searchtext placeholder="Enter a video name"></input>
-        </md-input-container>
-        <button color="primary" md-raised-button (click)="search(searchtext.value)" mdTooltip="Search">
-          <md-icon>find_in_page</md-icon>
+        <mat-input-container>
+          <input matInput dividerColor="primary" type="text" #searchtext placeholder="Enter a video name"></input>
+        </mat-input-container>
+        <button color="primary" mat-raised-button (click)="search(searchtext.value)" matTooltip="Search">
+          <mat-icon>find_in_page</mat-icon>
         </button>
       </form>
       <h2>Categories</h2>
-      <md-button-toggle-group multiple [vertical]="true">
-        <md-button-toggle *ngFor="let category of categories | async" (change)="changeCategory(category)">{{category.name}}</md-button-toggle>
-      </md-button-toggle-group>
+      <mat-button-toggle-group multiple [vertical]="true">
+        <mat-button-toggle *ngFor="let category of categories | async" (change)="changeCategory(category)">{{category.name}}</mat-button-toggle>
+      </mat-button-toggle-group>
     </div>
 
     <div class="research-videos border-container">
       <h1>Research Results</h1>
       <div *ngFor="let videoMeta of videosMetas | async" class="video-meta">
         <div class="menu-section">
-          <md-toolbar>
-            <button md-icon-button [mdMenuTriggerFor]="menu" aria-label="Open basic menu">
-              <md-icon>more_vert</md-icon>
+          <mat-toolbar>
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Open basic menu">
+              <mat-icon>more_vert</mat-icon>
             </button>
-          </md-toolbar>
+          </mat-toolbar>
 
-          <md-menu #menu="mdMenu">
-            <button md-menu-item (click)="addToCurrentPlayList(videoMeta)">
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="addToCurrentPlayList(videoMeta)">
       	    	Add to current playlist
       	    </button>
-            <button md-menu-item (click)="openEditPlayLists(videoMeta)">
+            <button mat-menu-item (click)="openEditPlayLists(videoMeta)">
       	    	Add to another playlist ...
       	    </button>
-            <button md-menu-item (click)="deleteVideo(videoMeta)" disabled="isVideoInCurrentPlayList(videoMeta)">
+            <button mat-menu-item (click)="deleteVideo(videoMeta)" disabled="isVideoInCurrentPlayList(videoMeta)">
       	       Delete from playlist
       	    </button>
-          </md-menu>
+          </mat-menu>
         </div>
         <div class="text">
           <h2 class="video-name">
