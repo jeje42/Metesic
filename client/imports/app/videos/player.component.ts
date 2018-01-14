@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { MeteorObservable } from 'meteor-rxjs';
 import { InjectUser } from "angular2-meteor-accounts-ui";
-import {MdDialog, MdDialogRef, MdDialogConfig, MD_DIALOG_DATA} from '@angular/material';
+import {MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material';
 
 
 import 'rxjs/add/operator/combineLatest';
@@ -60,7 +60,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   /**
    * Config for the playlists's modal.
    */
-  config: MdDialogConfig = {
+  config: MatDialogConfig = {
     disableClose: false,
     hasBackdrop: true,
     backdropClass: '',
@@ -79,11 +79,11 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   @ViewChild(TemplateRef) template: TemplateRef<any>;
 
-  constructor(private zone: NgZone,	private formBuilder: FormBuilder,public dialog: MdDialog, @Inject(DOCUMENT) doc: any) {
+  constructor(private zone: NgZone,	private formBuilder: FormBuilder,public dialog: MatDialog, @Inject(DOCUMENT) doc: any) {
     // Possible useful example for the open and closeAll events.
     // Adding a class to the body if a dialog opens and
     // removing it after all open dialogs are closed
-    dialog.afterOpen.subscribe((ref: MdDialogRef<any>) => {
+    dialog.afterOpen.subscribe((ref: MatDialogRef<any>) => {
       if (!doc.body.classList.contains('no-scroll')) {
         doc.body.classList.add('no-scroll');
       }

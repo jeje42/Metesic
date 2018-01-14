@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { MeteorObservable } from 'meteor-rxjs';
 import { InjectUser } from "angular2-meteor-accounts-ui";
-import {MdDialog, MdDialogRef, MdDialogConfig, MD_DIALOG_DATA} from '@angular/material';
+import {MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material';
 
 
 import 'rxjs/add/operator/combineLatest';
@@ -50,7 +50,7 @@ export class PlayListsAddChooseDialog implements OnInit, OnDestroy{
   selectPlayList: FormGroup;
   videoToAdd: VideoMeta;
 
-  constructor(public dialog: MdDialog, private formBuilder: FormBuilder) {}
+  constructor(public dialog: MatDialog, private formBuilder: FormBuilder) {}
 
   ngOnInit() {
     this.playListSubs = MeteorObservable.subscribe('playLists', {}).subscribe(() => {

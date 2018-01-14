@@ -5,7 +5,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { Subscription, Subject, Observable } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { InjectUser } from "angular2-meteor-accounts-ui";
-import {MdDialog, MdDialogRef, MdDialogConfig, MD_DIALOG_DATA} from '@angular/material';
+import {MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material';
 
 import 'rxjs/add/operator/combineLatest';
 
@@ -61,11 +61,11 @@ export class SettingsUsersComponent implements OnInit, OnDestroy {
 
 	@ViewChild(TemplateRef) template: TemplateRef<any>;
 
-  constructor(private zone: NgZone,	private formBuilder: FormBuilder,public dialog: MdDialog, @Inject(DOCUMENT) doc: any) {
+  constructor(private zone: NgZone,	private formBuilder: FormBuilder,public dialog: MatDialog, @Inject(DOCUMENT) doc: any) {
     // Possible useful example for the open and closeAll events.
     // Adding a class to the body if a dialog opens and
     // removing it after all open dialogs are closed
-    dialog.afterOpen.subscribe((ref: MdDialogRef<any>) => {
+    dialog.afterOpen.subscribe((ref: MatDialogRef<any>) => {
       if (!doc.body.classList.contains('no-scroll')) {
         doc.body.classList.add('no-scroll');
       }
@@ -184,7 +184,7 @@ export class ContentElementDialog {
 
 	changePasswordUser: FormGroup;
 
-  constructor(public dialog: MdDialog, private formBuilder: FormBuilder) {
+  constructor(public dialog: MatDialog, private formBuilder: FormBuilder) {
 		this.changePasswordUser = this.formBuilder.group({
       password: ['', Validators.required]
 		});
