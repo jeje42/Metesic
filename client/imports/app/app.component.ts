@@ -20,7 +20,7 @@ import { ROUTER_DIRECTIVES } from '@angular/router';
 @InjectUser('user')
 export class AppComponent {
 	navItems = [
-    	{name: 'Player', route: 'player'},
+			{name: 'Home', route: ''},
       {name: 'Settings', route: 'settings'}
 	];
 

@@ -43,22 +43,22 @@
 <div class="player-container">
 	<div class="playlist-container default-padding">
 		<div *ngFor="let playList of currentPlaylist | async">
-			<md-list>
+			<mat-list>
 				<p>
 					<h1>{{playList.description}}</h1>
-					<button md-raised-button color="accent" (click)="openEditPlayLists()" mdTooltip="Change the current playlist !">
-		        <md-icon>border_color</md-icon>
+					<button mat-raised-button color="accent" (click)="openEditPlayLists()" matTooltip="Change the current playlist !">
+		        <mat-icon>border_color</mat-icon>
 		      </button>
-					<button md-raised-button color="accent" (click)="deleteCurrentPlayList(playList)" mdTooltip="Delete the playlist !">
-		        <md-icon>delete_forever</md-icon>
+					<button mat-raised-button color="accent" (click)="deleteCurrentPlayList(playList)" matTooltip="Delete the playlist !">
+		        <mat-icon>delete_forever</mat-icon>
 		      </button>
 				</p>
-				<md-list-item *ngFor="let videoMeta of listVideosPlayList  | async" [id]="setIdVideoPlaylist(videoMeta)">
-					<button class="read-video" md-icon-button (click)="readVideo(videoMeta)" mdTooltip="Play now">
-						<md-icon class="md-24">play_arrow</md-icon>
+				<mat-list-item *ngFor="let videoMeta of listVideosPlayList  | async" [id]="setIdVideoPlaylist(videoMeta)">
+					<button class="read-video" mat-icon-button (click)="readVideo(videoMeta)" matTooltip="Play now">
+						<mat-icon class="mat-24">play_arrow</mat-icon>
 		      </button>
-					<button color="primary" md-icon-button (click)="removeVideoPlaylist(videoMeta, playList)" mdTooltip="Remove from the playlist">
-						<md-icon class="md-24">remove</md-icon>
+					<button color="primary" mat-icon-button (click)="removeVideoPlaylist(videoMeta, playList)" matTooltip="Remove from the playlist">
+						<mat-icon class="mat-24">remove</mat-icon>
 		      </button>
 					<div class="text">
 	          <h2 class="video-name">
@@ -69,8 +69,8 @@
 	          </p>
 	        </div>
 
-				</md-list-item>
-			</md-list>
+				</mat-list-item>
+			</mat-list>
 		</div>
 	</div>
 

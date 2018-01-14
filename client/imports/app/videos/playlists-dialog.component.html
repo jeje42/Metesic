@@ -2,23 +2,23 @@
   <h1>{{playList.name}}</h1>
 </div> -->
 <h1>Please choose your preferred playlist !</h1>
-<md-radio-group name="my_playlists" [(ngModel)]="currentPlayListId" class="choixPlayLists" (change)="selectPlayListFunction();">
+<mat-radio-group name="my_playlists" [(ngModel)]="currentPlayListId" class="choixPlayLists" (change)="selectPlayListFunction();">
   <mat-radio-button *ngFor="let playList of playlistsUsers | async" [value]="playList._id">
     <h1>{{playList.name}}</h1>
   </mat-radio-button>
-</md-radio-group>
+</mat-radio-group>
 
 <form [formGroup]="addPlayList" (ngSubmit)="addPlayListFunction();">
-  <md-input-container>
-     <input mdInput dividerColor="primary" formControlName="name" placeholder="Name"></input>
-  </md-input-container>
-  <md-input-container>
-     <input mdInput dividerColor="primary" formControlName="description" placeholder="Description"></input>
-  </md-input-container>
-  <button color="primary" md-raised-button type="submit">
-    <md-icon>add</md-icon>
+  <mat-input-container>
+     <input matInput dividerColor="primary" formControlName="name" placeholder="Name"></input>
+  </mat-input-container>
+  <mat-input-container>
+     <input matInput dividerColor="primary" formControlName="description" placeholder="Description"></input>
+  </mat-input-container>
+  <button color="primary" mat-raised-button type="submit">
+    <mat-icon>add</mat-icon>
   </button>
-  <button md-raised-button color="primary" md-dialog-close>
+  <button mat-raised-button color="primary" mat-dialog-close>
     Close
   </button>
 </form>

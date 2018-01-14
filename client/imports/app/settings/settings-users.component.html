@@ -3,13 +3,13 @@
     <div class="form-content">
       <div class="form-center">
 				<form [formGroup]="addUser" (ngSubmit)="addUserFunction();">
-          <md-input-container>
-            <input mdInput formControlName="email" type="email" placeholder="Email"></input>
-          </md-input-container>
-					<md-input-container>
-            <input mdInput formControlName="username" type="text" placeholder="Username"></input>
-          </md-input-container>
-					<button color="primary" md-raised-button type="submit">Create the new user !</button>
+          <mat-input-container>
+            <input matInput formControlName="email" type="email" placeholder="Email"></input>
+          </mat-input-container>
+					<mat-input-container>
+            <input matInput formControlName="username" type="text" placeholder="Username"></input>
+          </mat-input-container>
+					<button color="primary" mat-raised-button type="submit">Create the new user !</button>
 				</form>
 			</div>
 		</div>
@@ -19,35 +19,35 @@
 
 <div>
   <h1>Admins ! </h1>
-  <md-nav-list>
-		<md-list-item *ngFor="let user of usersAdmin | async">
-			<a md-line>{{user.emails[0].address}}</a>
-      <a md-line *ngIf="user.username != undefined">{{user.username}}</a>
-      <button md-raised-button color="accent" (click)="openEditUser(user)">
-        <md-icon>border_color</md-icon>
+  <mat-nav-list>
+		<mat-list-item *ngFor="let user of usersAdmin | async">
+			<a mat-line>{{user.emails[0].address}}</a>
+      <a mat-line *ngIf="user.username != undefined">{{user.username}}</a>
+      <button mat-raised-button color="accent" (click)="openEditUser(user)">
+        <mat-icon>border_color</mat-icon>
       </button>
-			<button md-icon-button (click)="deleteUser(user)">
-				<md-icon>delete</md-icon>
+			<button mat-icon-button (click)="deleteUser(user)">
+				<mat-icon>delete</mat-icon>
 			</button>
-		</md-list-item>
-	</md-nav-list>
+		</mat-list-item>
+	</mat-nav-list>
 </div>
 
 <h1>Grouillots !</h1>
 <div>
-	<md-nav-list>
-		<md-list-item *ngFor="let user of users | async">
-			<a md-line>{{user.emails[0].address}}</a>
-      <a md-line *ngIf="user.username != undefined">{{user.username}}</a>
-      <button md-raised-button color="accent" (click)="openEditUser(user)">
-        <md-icon>border_color</md-icon>
+	<mat-nav-list>
+		<mat-list-item *ngFor="let user of users | async">
+			<a mat-line>{{user.emails[0].address}}</a>
+      <a mat-line *ngIf="user.username != undefined">{{user.username}}</a>
+      <button mat-raised-button color="accent" (click)="openEditUser(user)">
+        <mat-icon>border_color</mat-icon>
       </button>
-      <button md-raised-button color="accent" (click)="setAdmin(user)">
+      <button mat-raised-button color="accent" (click)="setAdmin(user)">
         Set Administrator
       </button>
-			<button md-icon-button (click)="deleteUser(user)">
-				<md-icon>delete</md-icon>
+			<button mat-icon-button (click)="deleteUser(user)">
+				<mat-icon>delete</mat-icon>
 			</button>
-		</md-list-item>
-	</md-nav-list>
+		</mat-list-item>
+	</mat-nav-list>
 </div>

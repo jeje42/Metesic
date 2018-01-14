@@ -3,10 +3,10 @@
     <div class="form-content">
       <div class="form-center">
 				<form [formGroup]="addCategory" (ngSubmit)="addCategoryFunction();">
-					<md-input-container>
-             <input mdInput dividerColor="primary" formControlName="name" placeholder="Description"></input>
-          </md-input-container>
-					<button color="primary" md-raised-button type="submit">Add the category!</button>
+					<mat-input-container>
+             <input matInput dividerColor="primary" formControlName="name" placeholder="Description"></input>
+          </mat-input-container>
+					<button color="primary" mat-raised-button type="submit">Add the category!</button>
 				</form>
 			</div>
 		</div>
@@ -14,12 +14,12 @@
 </div>
 
 <div id="listCategoriesContainer">
-	<md-nav-list>
-		<md-list-item *ngFor="let category of categories | async">
-			<a md-line>{{category.name}}</a>
-			<button md-icon-button (click)="deleteCategory(category)">
-				<md-icon>delete</md-icon>
+	<mat-nav-list>
+		<mat-list-item *ngFor="let category of categories | async">
+			<a mat-line>{{category.name}}</a>
+			<button mat-icon-button (click)="deleteCategory(category)">
+				<mat-icon>delete</mat-icon>
 			</button>
-		</md-list-item>
-	</md-nav-list>
+		</mat-list-item>
+	</mat-nav-list>
 </div>
