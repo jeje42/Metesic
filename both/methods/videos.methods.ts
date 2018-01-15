@@ -118,7 +118,9 @@ checkCategoriesForVideo: function(videoId: string) {
 
 removeVideo: function(videoMeta: VideoMeta){
   if(videoMeta == undefined){
-    throw new Meteor.Error("Method removeVideo : cannot remove the video because it is undefined !");
+		console.log("method removeVideo : cannot remove the video because it is undefined !");
+    // throw new Meteor.Error("Method removeVideo : cannot remove the video because it is undefined !");
+		return;
   }
   Videos.remove({_id:videoMeta.video});
   VideosMetas.remove({_id:videoMeta._id});
