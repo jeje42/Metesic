@@ -70,6 +70,9 @@ function addToCollection(folder: Folder){
 			Folders.update({ path: folder.path }, {$set: { isInCollection: true } });
 		}else{
 			console.log(folder.name + " is not a folder, call to uploadVideosPointer");
+			if(!checkAddCondition(folder.name)){
+				return;
+			}
 			uploadVideosPointer(folder)
 	      .then((result) => {
 					var video = Videos.findOne({_id: result._id});
@@ -96,6 +99,18 @@ function addToCollection(folder: Folder){
 	      });
 		}
 	}).run();
+}
+
+
+function checkAddCondition(name: string){
+	var length = name.length;
+	 if(length>4){
+		 var res = name.substring(length-4, length);
+		 if(".mp4" == res){
+			 return true;
+		 }
+	 }
+	 return false;
 }
 
 function checkScanConditions(toScan: string) {
