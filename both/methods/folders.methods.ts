@@ -130,6 +130,7 @@ function purgeChildren(path: string, files: string[]) {
 	var Fiber = Npm.require("fibers");
 
 	Fiber(function() {
+		console.log("purgeChildren : " + path);
 		let folder: Folder = Folders.findOne({ path: path });
 		if (folder === undefined) {
 			return;
@@ -147,6 +148,7 @@ function purgeChildren(path: string, files: string[]) {
 }
 
 function scanFolder(path: string, depth: number, action: ScanActions): void {
+	console.log("scanFolder : " + path + " ; " + action);
 	check(path, String);
 
 	var fs = Npm.require("fs");
@@ -157,7 +159,9 @@ function scanFolder(path: string, depth: number, action: ScanActions): void {
 			return;
 		}
 
-		purgeChildren(path, files);
+		if(action == ScanActions.RemoveCollection || action == ScanActions.RemoveDatabase){
+			purgeChildren(path, files);
+		}
 
 		var Fiber = Npm.require("fibers");
 		Fiber(function() {
@@ -206,6 +210,9 @@ function scanFile(path: string, depth: number, action: ScanActions) {
 
 Meteor.methods({
 	scanFolderBeginning: function(path: string, depth: number, action: ScanActions) {
+		if(!action){
+			action = ScanActions.Read;
+		}
 		if (Meteor.isServer) {
 			scanFile(path, depth, action);
 		}
