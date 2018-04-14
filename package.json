@@ -39,6 +39,7 @@
     "reflect-metadata": "0.1.10",
     "rxjs": "5.4.1",
     "spawn-sync": "^1.0.15",
+    "thread-sleep": "^2.0.0",
     "try-thread-sleep": "^1.0.2",
     "videogular2": "^5.4.7",
     "winston": "^2.3.1",
