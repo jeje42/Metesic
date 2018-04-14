@@ -27,6 +27,8 @@ We also welcome pull requests for new chapters and new screencast recordings of 
 
 Lets start!
 
+meteor --release 1.4.4.6
+
 [}]: #
 [{]: <region> (footer)
 [{]: <helper> (nav_step)
@@ -34,3 +36,5 @@ Lets start!
 |----------------------:|
 [}]: #
 [}]: #
+
+
