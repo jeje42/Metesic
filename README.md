@@ -29,6 +29,8 @@ Lets start!
 
 meteor --release 1.4.4.6
 
+MONGO_URL=mongodb://localhost:27017/metesic ROOT_URL=http://localhost  PORT=3000 node main.js
+
 [}]: #
 [{]: <region> (footer)
 [{]: <helper> (nav_step)
