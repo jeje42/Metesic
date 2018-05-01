@@ -211,8 +211,12 @@ export class VideosListComponent implements OnInit, OnDestroy {
 			if(this.disabledCategories != undefined && this.disabledCategories.length > 0){
 				objectResearch.push({categories: {$elemMatch: {$in : this.disabledCategories}}});
 			}
-      this.nbVideosMeta = videosMetasCount;
+
       this.videosMetas = VideosMetas.find({$and: objectResearch});
+
+      this.videosMetas.subscribe(list => {
+        this.nbVideosMeta = list.length;
+      })
     });
   }
 
