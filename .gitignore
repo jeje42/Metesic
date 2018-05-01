@@ -7,5 +7,6 @@ npm-debug.log
 
 .project
 .settings/
+logs/
 
 server/imports/fixtures/videos.ts
