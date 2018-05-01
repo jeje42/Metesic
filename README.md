@@ -27,9 +27,13 @@ We also welcome pull requests for new chapters and new screencast recordings of 
 
 Lets start!
 
-meteor --release 1.4.4.6
+To start in dev mode : meteor --release 1.4.4.6
 
-MONGO_URL=mongodb://localhost:27017/metesic ROOT_URL=http://localhost  PORT=3000 node main.js
+To build : meteor --release 1.4.4.6 build /path/to/build --architecture os.linux.x86_64
+
+to start in production mode :
+cd pathToBundle && MONGO_URL=mongodb://localhost:27017/metesic ROOT_URL=http://localhost  PORT=3000 node main.js
+check it on : https://guide.meteor.com/deployment.html
 
 [}]: #
 [{]: <region> (footer)
@@ -38,5 +42,3 @@ MONGO_URL=mongodb://localhost:27017/metesic ROOT_URL=http://localhost  PORT=3000
 |----------------------:|
 [}]: #
 [}]: #
-
-
