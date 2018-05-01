@@ -19,7 +19,7 @@ function insertOrUpdateFolder(path: string, children: string[], isFolder: boolea
 	Fiber(function() {
 		var folder: Folder = Folders.findOne({ path: path });
 		if (folder === undefined) {
-			Folders.insert({
+			let idFolder = Folders.collection.insert({
 				path: path,
 				name: Folder.createNameFromPath(path),
 				father: Folder.createFatherPath(path),
@@ -28,14 +28,16 @@ function insertOrUpdateFolder(path: string, children: string[], isFolder: boolea
 				isInCollection: (action === ScanActions.Add) ? true : false,
 				size: size
 			});
-			let foldersLocal: Observable<Folder[]> = Folders.find({path: path});
-			foldersLocal.subscribe(list => {
-					let folderReturn: Folder = list[0];
-					if(folderReturn === undefined){
-						return;
-					}
-					updateFolderAction(folderReturn, path, children, isFolder, action);
-			})
+			// let foldersLocal: Observable<Folder[]> = Folders.find({path: path});
+			// foldersLocal.subscribe(list => {
+			// 		let folderReturn: Folder = list[0];
+			// 		if(folderReturn === undefined){
+			// 			return;
+			// 		}
+			// 		updateFolderAction(folderReturn, path, children, isFolder, action);
+			// })
+			folder = Folders.findOne({ _id: idFolder });
+			updateFolderAction(folder, path, children, isFolder, action);
 		}else{
 			updateFolderAction(folder, path, children, isFolder, action);
 		}
@@ -76,7 +78,8 @@ function addToCollection(folder: Folder){
 			uploadVideosPointer(folder)
 	      .then((result) => {
 					var video = Videos.findOne({_id: result._id});
-					var newAdress = "https://" + "jeje-guidon.servehttp.com" + ":" + "443" + getSubstringUrl(video.url, "", "afterAdressPort") ;
+					var newAdress = "https://" + "jerome-guidon.fr" + ":" + "446" + getSubstringUrl(video.url, "", "afterAdressPort") ;
+
 
 					Videos.update(result._id, {
 						$set: { url:  newAdress},
@@ -113,6 +116,10 @@ function checkAddCondition(name: string){
 	 return false;
 }
 
+/**
+ * toScan : path to scan
+ * returns false if toScan is undefined or if toScan is a hidden file
+ **/
 function checkScanConditions(toScan: string) {
 	if (toScan === undefined)
 		return false;
