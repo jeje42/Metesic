@@ -41,6 +41,11 @@
 <!-- </div> -->
 
 <div class="player-container">
+	<div text-align="center" class="player-hidden default-padding" id="videoContainer">
+		<!-- <video autoplay id="singleVideo" controls *ngIf="displayVideo"> -->
+				<!-- <source [src]="videoRead" type="video/mp4"> -->
+		<!-- </video> -->
+	</div>
 	<div class="playlist-container default-padding">
 		<mat-card *ngFor="let playList of currentPlaylist | async">
 			<mat-list>
@@ -77,11 +82,5 @@
 				</mat-card>
 			</mat-list>
 		</mat-card>
-	</div>
-
-	<div text-align="center" class="player-hidden default-padding" id="videoContainer">
-		<!-- <video autoplay id="singleVideo" controls *ngIf="displayVideo"> -->
-				<!-- <source [src]="videoRead" type="video/mp4"> -->
-		<!-- </video> -->
 	</div>
 </div>

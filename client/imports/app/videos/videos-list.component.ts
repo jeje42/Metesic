@@ -32,6 +32,7 @@ import style from './videos-list.component.scss';
 @InjectUser('user')
 export class VideosListComponent implements OnInit, OnDestroy {
   nbVideosMetas: number;
+  isSearch: boolean;
   videosMetas: Observable<VideoMeta[]>;
   categories: Observable<Category[]>;
   currentPlayListUser: Observable<PlayListUser[]>;
@@ -207,12 +208,20 @@ export class VideosListComponent implements OnInit, OnDestroy {
   updateListedVideos(): void {
     MeteorObservable.call('countVideosMeta', this.searchRegEx, this.disabledCategories).subscribe((videosMetasCount: number) => {
       var objectResearch = [];
+      this.isSearch = false;
 			objectResearch.push({name: this.searchRegEx});
 			if(this.disabledCategories != undefined && this.disabledCategories.length > 0){
 				objectResearch.push({categories: {$elemMatch: {$in : this.disabledCategories}}});
-			}
+        this.videosMetas = VideosMetas.find({$and: objectResearch});
 
-      this.videosMetas = VideosMetas.find({$and: objectResearch});
+        if(this.searchRegEx && this.searchRegEx != ""){
+          this.isSearch = true;
+        }
+			}else{
+        this.videosMetas = VideosMetas.find({$and: objectResearch}, {limit: 10});
+      }
+
+
 
       this.videosMetas.subscribe(list => {
         this.nbVideosMeta = list.length;

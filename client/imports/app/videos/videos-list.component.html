@@ -26,7 +26,10 @@
     </mat-card>
 
     <mat-card>
-      <mat-card-title>
+      <mat-card-title *ngIf="!isSearch">
+        {{ 'Some Movies' | translate }}
+      </mat-card-title>
+      <mat-card-title *ngIf="isSearch">
         {{ 'Results' | translate }}
       </mat-card-title>
       <mat-card-content>
