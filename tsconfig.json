@@ -1,25 +1,39 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
     "declaration": false,
-    "inlineSourceMap": true,
-    "inlineSources": true,
+    "emitDecoratorMetadata": true,
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "dom",
+      "es2015"
+    ],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "target": "es5",
+    "skipLibCheck": true,
+    "stripInternal": true,
     "noImplicitAny": false,
-    "noFallthroughCasesInSwitch": false,
-    "noImplicitReturns": false
+    "types": [
+      "@types/meteor",
+      "@types/mocha",
+      "@types/chai",
+      "@types/sinon"
+    ]
   },
-  "exclude": [ ],
-  "filesGlob": [
-    "**/*.ts"
+  "include": [
+    "imports/**/*.ts",
+    "client/**/*.ts",
+    "server/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ],
   "compileOnSave": false,
-  "angularCompilerOptions": {
-    "genDir": "aot",
-    "skipMetadataEmit": true
+  "atom": {
+    "rewriteTsconfig": false
   }
 }
