@@ -3,11 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Meteor } from 'meteor/meteor';
 
-import template from './login.component.html';
 
 @Component({
   selector: 'login',
-  template
+  templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;

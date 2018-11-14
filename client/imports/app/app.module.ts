@@ -55,7 +55,7 @@ import {
 } from '@angular/material';
 import {CdkTableModule} from '@angular/cdk/table';
 
-// import { TRANSLATION_PROVIDERS, TranslatePipe, TranslateService }   from './translate';
+import { TRANSLATION_PROVIDERS, TranslatePipe, TranslateService }   from './translate';
 
 /**
  * NgModule that includes all Material modules that are required to serve the demo-app.
@@ -127,12 +127,13 @@ export class DemoMaterialModule {}
 		...VIDEOS_DECLARATIONS,
 		...SETTINGS_DECLARATIONS,
     ...SETTINGS_DECLARATIONS_MODALS,
-    ...VIDEOS_DECLARATIONS_MODALS
+    ...VIDEOS_DECLARATIONS_MODALS,
+    TranslatePipe
 	],
 	providers: [
-		...ROUTES_PROVIDERS
-    // TRANSLATION_PROVIDERS,
-    // TranslateService
+		...ROUTES_PROVIDERS,
+    TRANSLATION_PROVIDERS,
+    TranslateService
 	],
   entryComponents: [
     ...SETTINGS_DECLARATIONS_MODALS,

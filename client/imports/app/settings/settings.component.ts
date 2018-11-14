@@ -10,9 +10,6 @@ import 'rxjs/add/operator/combineLatest';
 import { Folders } from '../../../../both/collections/folders.collection';
 import { Folder } from '../../../../both/models/folder.model';
 
-import template from './settings.component.html';
-import style from './settings.component.scss';
-
 @Component({
 	selector: 'settings',
 	templateUrl: './settings.component.html',

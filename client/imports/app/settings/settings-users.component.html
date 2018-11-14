@@ -4,10 +4,10 @@
       <div class="form-center">
 				<form [formGroup]="addUser" (ngSubmit)="addUserFunction();">
           <mat-form-field>
-            <input matInput formControlName="email" type="email" placeholder="Email"></input>
+            <input matInput formControlName="email" type="email" placeholder="Email">
           </mat-form-field>
 					<mat-form-field>
-            <input matInput formControlName="username" type="text" placeholder="Username"></input>
+            <input matInput formControlName="username" type="text" placeholder="Username">
           </mat-form-field>
 					<button color="primary" mat-raised-button type="submit">Create the new user !</button>
 				</form>

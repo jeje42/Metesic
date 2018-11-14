@@ -10,10 +10,10 @@
 
 <form [formGroup]="addPlayList" (ngSubmit)="addPlayListFunction();">
   <mat-form-field>
-     <input matInput dividerColor="primary" formControlName="name" placeholder="{{'Name' | translate }}"></input>
+     <input matInput dividerColor="primary" formControlName="name" placeholder="{{'Name' | translate }}">
   </mat-form-field>
   <mat-form-field>
-     <input matInput dividerColor="primary" formControlName="description" placeholder="{{'Description' | translate }}"></input>
+     <input matInput dividerColor="primary" formControlName="description" placeholder="{{'Description' | translate }}">
   </mat-form-field>
   <button color="primary" mat-raised-button type="submit">
     <mat-icon>add</mat-icon>

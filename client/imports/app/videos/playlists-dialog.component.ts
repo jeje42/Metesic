@@ -25,10 +25,6 @@ import { Video } from '../../../../both/models/video.model';
 
 import { User } from '../../../../both/models/user.model';
 
-import style from './playlists-dialog.component.scss';
-import templatePopup from './playlists-dialog.component.html'
-
-
 @Component({
   selector: 'playlists-dialog',
   styleUrls: ['./playlists-dialog.component.scss'],

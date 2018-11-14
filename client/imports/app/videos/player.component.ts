@@ -28,10 +28,6 @@ import { User } from '../../../../both/models/user.model';
 
 import { PlayListsDialog } from './playlists-dialog.component';
 
-import template from './player.component.html';
-import style from './player.component.scss';
-import templatePopup from './playlists-dialog.component.html'
-
 @Component({
   selector: 'player',
   templateUrl: './player.component.html',

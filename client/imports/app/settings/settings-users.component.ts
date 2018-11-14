@@ -16,9 +16,6 @@ import { UserAdmin } from '../../../../both/models/user-admin.model';
 import { User } from '../../../../both/models/user.model';
 import { UserCreation } from '../../../../both/models/user-creation.model';
 
-import template from './settings-users.component.html';
-import style from './settings-users.component.scss';
-
 
 /**
  * Follow https://docs.meteor.com/api/passwords.html#Accounts-createUser and call the method on server side

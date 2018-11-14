@@ -21,9 +21,6 @@ import { PlayList } from '../../../../both/models/playlist.model';
 
 import { PlayListsAddChooseDialog } from './playlists-add-choose-dialog.component';
 
-import template from './videos-list.component.html';
-import style from './videos-list.component.scss';
-
 @Component({
   selector: 'videos-list',
   templateUrl: './videos-list.component.html',

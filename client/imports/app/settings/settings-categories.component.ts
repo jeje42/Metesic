@@ -11,9 +11,6 @@ import 'rxjs/add/operator/combineLatest';
 import { Categories } from '../../../../both/collections/categories.collection';
 import { Category } from '../../../../both/models/category.model';
 
-import template from './settings-categories.component.html';
-import style from './settings-categories.component.scss';
-
 @Component({
 	selector: 'settings-categories',
 	templateUrl : './settings-categories.component.html',
