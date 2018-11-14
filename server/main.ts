@@ -1,7 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 //import { Loggly} from
 
-import { loadParties } from './imports/fixtures/parties';
 import { loadCategories } from './imports/fixtures/categories';
 import { searchVideos, updateVideosUrls, checkIndexesVideosMeta } from './imports/fixtures/videos';
 import { initPlayerPlayList } from './imports/fixtures/playlists';
@@ -72,4 +71,6 @@ Meteor.startup(() => {
 	initPlayerPlayList();
 	insertFile();
 	initAdmin();
+
+	console.log("Settings : " + Meteor.settings.public.port)
 });

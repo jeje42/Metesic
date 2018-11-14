@@ -34,7 +34,7 @@ export class SettingsCategoriesComponent implements OnInit, OnDestroy {
 				sort: {
 					name: 0
 				}
-			}).zone();
+			});
 		});
 
 		this.addCategory = this.formBuilder.group({

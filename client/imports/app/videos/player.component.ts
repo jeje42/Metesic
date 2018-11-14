@@ -119,14 +119,23 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
 	  this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
 
-    this.counter().subscribe(
-      data => {
+    if(Meteor.isClient){
+      setInterval(() => {
         var videoTag = document.getElementById("singleVideo");
         if(videoTag != undefined){
           Meteor.call('setCurrentTime', videoTag.currentTime);
         }
-      }
-    );
+      }, 5000);
+    }
+
+    // this.counter().subscribe(
+    //   data => {
+    //     var videoTag = document.getElementById("singleVideo");
+    //     if(videoTag != undefined){
+    //       Meteor.call('setCurrentTime', videoTag.currentTime);
+    //     }
+    //   }
+    // );
   }
 
 	ngOnDestroy() {
@@ -135,11 +144,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.videosMetaSubs.unsubscribe();
 	}
 
-  counter() {
-    return Observable.interval(10000).flatMap(() => {
-      return "u";
-    });
-  }
+  // counter() {
+  //   // return Observable.
+  //   return Observable.interval(10000).flatMap(() => {
+  //     return "u";
+  //   });
+  // }
 
 
   /**
@@ -153,7 +163,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
       return;
     }
     this.currentPlaylistId = playListId[0].currentPlaylist;
-    this.currentPlaylist = PlayLists.find({_id: this.currentPlaylistId}).zone();
+    this.currentPlaylist = PlayLists.find({_id: this.currentPlaylistId});
 
     this.currentPlaylist.subscribe(listPlayList => this.initVideosPlaylistObject(listPlayList));
   }

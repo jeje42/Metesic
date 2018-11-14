@@ -109,7 +109,7 @@ export class VideosListComponent implements OnInit, OnDestroy {
         sort: {
 					name: 0
 				}
-      }).zone();
+      });
 
 
     });

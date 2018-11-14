@@ -12,7 +12,7 @@ import { Folder } from '../../../../both/models/folder.model';
 
 @Component({
 	selector: 'settings-folders',
-	template : './settings-folders.component.html',
+	templateUrl : './settings-folders.component.html',
 	styleUrls: ['./settings-folders.component.scss']
 })
 @InjectUser('user')
@@ -52,19 +52,19 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 		this.currentFolder = currentFolder;
 
 		this.foldersSub = MeteorObservable.subscribe('folders').subscribe(() => {
-			this.current = Folders.find({ path: currentFolder }).zone();
+			this.current = Folders.find({ path: currentFolder });
 
 			this.folders = Folders.find({ father: currentFolder, isFolder: true },{
         sort: {
           path: 1
         }
-			}).zone();
+			});
 
 			this.files = Folders.find({ father: currentFolder, isFolder: false },{
         sort: {
           path: 1
         }
-			}).zone();
+			});
 		});
 
 		this.videosSub = MeteorObservable.subscribe('videos').subscribe();

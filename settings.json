@@ -1,11 +1,10 @@
 {
 	"public": {
-
-	},
-	"stripe": {
 		"adress":"localhost",
 		"port":3000,
-		"defaultSettingsFolder":"/home/jeje",
+		"defaultSettingsFolder":"/home/jeje"
+	},
+	"private": {
 		"winston": {
 			"transports": "/home/jeje/metesicTransports.json",
 			"exceptionHandlers": "/home/jeje/metesicExceptionHandlers.json"

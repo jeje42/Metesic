@@ -74,20 +74,20 @@ export class SettingsUsersComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.usersSub = MeteorObservable.subscribe('userData').subscribe(() => {
-				// this.users = Users.find().zone();
+				// this.users = Users.find();
 		});
 
 		this.usersAdminSub = MeteorObservable.subscribe('userAdmin').subscribe(() => {
-				this.usersAdmin = UsersAdmin.find().zone();
+				this.usersAdmin = UsersAdmin.find();
 
 				this.usersAdmin.subscribe(usersAdmin => {
 					if(usersAdmin.length === 1){
 						this.usersAdmin = Users.find({_id: usersAdmin[0].userId});
 						this.users = Users.find({_id: {
 							$ne: usersAdmin[0].userId
-						}}).zone();
+						}});
 					}else if(usersAdmin.length === 0){
-						this.users = Users.find().zone();
+						this.users = Users.find();
 					}else{
 						console.log("Error : there must not have several admins.");
 					}

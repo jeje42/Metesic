@@ -78,7 +78,18 @@ function addToCollection(folder: Folder){
 			uploadVideosPointer(folder)
 	      .then((result) => {
 					var video = Videos.findOne({_id: result._id});
-					var newAdress = "https://" + "jerome-guidon.fr" + ":" + "446" + getSubstringUrl(video.url, "", "afterAdressPort") ;
+
+					let adress = Meteor.settings.public.adress
+					let port = Meteor.settings.public.port
+					let protocole = "https"
+					if(!adress || !port){
+						adress = "jerome-guidon.fr"
+						port = "446"
+					}
+					if(adress == "localhost"){
+						protocole = "http"
+					}
+					var newAdress = protocole + "://" + adress + ":" + port + getSubstringUrl(video.url, "", "afterAdressPort") ;
 
 
 					Videos.update(result._id, {
