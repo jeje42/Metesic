@@ -15,8 +15,8 @@ import style from './settings-folders.component.scss';
 
 @Component({
 	selector: 'settings-folders',
-	template,
-	styles: [style]
+	template : './settings-folders.component.html',
+	styleUrls: ['./settings-folders.component.scss']
 })
 @InjectUser('user')
 export class SettingsFoldersComponent implements OnInit, OnDestroy {

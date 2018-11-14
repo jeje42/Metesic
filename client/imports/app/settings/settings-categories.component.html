@@ -3,9 +3,9 @@
     <div class="form-content">
       <div class="form-center">
 				<form [formGroup]="addCategory" (ngSubmit)="addCategoryFunction();">
-					<mat-input-container>
+					<mat-form-field>
              <input matInput dividerColor="primary" formControlName="name" placeholder="Description"></input>
-          </mat-input-container>
+          </mat-form-field>
 					<button color="primary" mat-raised-button type="submit">Add the category!</button>
 				</form>
 			</div>

@@ -16,8 +16,8 @@ import style from './settings-categories.component.scss';
 
 @Component({
 	selector: 'settings-categories',
-	template,
-	styles: [style]
+	templateUrl : './settings-categories.component.html',
+	styleUrls: ['./settings-categories.component.scss']
 })
 @InjectUser('user')
 export class SettingsCategoriesComponent implements OnInit, OnDestroy {

@@ -34,8 +34,8 @@ import templatePopup from './playlists-dialog.component.html'
 
 @Component({
   selector: 'player',
-  template,
-  styles: [ style ]
+  templateUrl: './player.component.html',
+  styles: [ './player.component.scss' ]
 })
 @InjectUser('user')
 export class PlayerComponent implements OnInit, OnDestroy {

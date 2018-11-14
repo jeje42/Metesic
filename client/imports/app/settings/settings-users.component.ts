@@ -5,7 +5,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { Subscription, Subject, Observable } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { InjectUser } from "angular2-meteor-accounts-ui";
-import {MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material';
+import {MatInputModule,MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material';
 
 import 'rxjs/add/operator/combineLatest';
 
@@ -25,8 +25,8 @@ import style from './settings-users.component.scss';
  */
 @Component({
 	selector: 'settings-users',
-	template,
-	styles: [style]
+	templateUrl: './settings-users.component.html',
+	styleUrls: ['./settings-users.component.scss']
 })
 @InjectUser('user')
 export class SettingsUsersComponent implements OnInit, OnDestroy {
@@ -42,7 +42,7 @@ export class SettingsUsersComponent implements OnInit, OnDestroy {
 	user: Meteor.User;
 
 	actionsAlignment: string;
-	config: MdDialogConfig = {
+	config: MatDialogConfig = {
     disableClose: false,
     hasBackdrop: true,
     backdropClass: '',
@@ -167,14 +167,14 @@ export class SettingsUsersComponent implements OnInit, OnDestroy {
   template: `
     <h2 md-dialog-title>Neptune</h2>
 
-    <md-dialog-content>
+    <mat-dialog-content>
 		<form [formGroup]="changePasswordUser" (ngSubmit)="changeUserPasswordFunction();">
-			<md-input-container>
+			<mat-form-field>
 				<input mdInput formControlName="password" type="password" placeholder="Nouveau mot de passe"/>
-			</md-input-container>
+			</mat-form-field>
 			<button color="primary" md-raised-button type="submit">Change it !</button>
 		</form>
-    </md-dialog-content>
+    </mat-dialog-content>
   `
 })
 export class ContentElementDialog {

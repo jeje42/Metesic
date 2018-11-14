@@ -9,9 +9,9 @@
       <mat-card-content>
         <h3>{{ 'Name' | translate }}</h3>
         <form>
-          <mat-input-container>
+          <mat-form-field>
             <input matInput dividerColor="accent" type="text" #searchtext placeholder="Enter a video name"></input>
-          </mat-input-container>
+          </mat-form-field>
           <button color="accent" mat-raised-button (click)="search(searchtext.value)" matTooltip="{{ 'Search' | translate }}">
             <mat-icon>find_in_page</mat-icon>
           </button>

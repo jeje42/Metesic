@@ -31,8 +31,8 @@ import templatePopup from './playlists-add-choose-dialog.component.html'
 
 @Component({
   selector: 'playlists-add-choose-dialog',
-  styles: [style],
-  template: templatePopup
+  styles: ['./playlists-dialog.component.scss'],
+  template: './playlists-add-choose-dialog.component.html'
 })
 export class PlayListsAddChooseDialog implements OnInit, OnDestroy{
   actionsAlignment: string;

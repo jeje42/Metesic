@@ -3,12 +3,12 @@
     <div class="form-content">
       <div class="form-center">
 				<form [formGroup]="addUser" (ngSubmit)="addUserFunction();">
-          <mat-input-container>
+          <mat-form-field>
             <input matInput formControlName="email" type="email" placeholder="Email"></input>
-          </mat-input-container>
-					<mat-input-container>
+          </mat-form-field>
+					<mat-form-field>
             <input matInput formControlName="username" type="text" placeholder="Username"></input>
-          </mat-input-container>
+          </mat-form-field>
 					<button color="primary" mat-raised-button type="submit">Create the new user !</button>
 				</form>
 			</div>

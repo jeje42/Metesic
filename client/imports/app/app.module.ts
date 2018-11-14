@@ -12,7 +12,6 @@ import { VgBufferingModule } from 'videogular2/buffering';
 
 import { AppComponent } from './app.component';
 import { routes, ROUTES_PROVIDERS } from './app.routes';
-import { PARTIES_DECLARATIONS } from './parties';
 import { SHARED_DECLARATIONS } from './shared';
 import { VIDEOS_DECLARATIONS, VIDEOS_DECLARATIONS_MODALS } from './videos';
 import { SETTINGS_DECLARATIONS, SETTINGS_DECLARATIONS_MODALS } from './settings';
@@ -56,7 +55,7 @@ import {
 } from '@angular/material';
 import {CdkTableModule} from '@angular/cdk/table';
 
-import { TRANSLATION_PROVIDERS, TranslatePipe, TranslateService }   from './translate';
+// import { TRANSLATION_PROVIDERS, TranslatePipe, TranslateService }   from './translate';
 
 /**
  * NgModule that includes all Material modules that are required to serve the demo-app.
@@ -110,9 +109,9 @@ export class DemoMaterialModule {}
     // RouterModule.forChild(routes),
 		AccountsModule,
     NgxPaginationModule,
-		AgmCoreModule.forRoot({
-			apiKey: 'AIzaSyAWoBdZHCNh5R-hB5S5ZZ2oeoYyfdDgniA'
-		}),
+		// AgmCoreModule.forRoot({
+		// 	apiKey: 'AIzaSyAWoBdZHCNh5R-hB5S5ZZ2oeoYyfdDgniA'
+		// }),
 		// MaterialModule.forRoot(),
 		FileDropModule,
 
@@ -128,13 +127,12 @@ export class DemoMaterialModule {}
 		...VIDEOS_DECLARATIONS,
 		...SETTINGS_DECLARATIONS,
     ...SETTINGS_DECLARATIONS_MODALS,
-    ...VIDEOS_DECLARATIONS_MODALS,
-    TranslatePipe
+    ...VIDEOS_DECLARATIONS_MODALS
 	],
 	providers: [
-		...ROUTES_PROVIDERS,
-    TRANSLATION_PROVIDERS,
-    TranslateService
+		...ROUTES_PROVIDERS
+    // TRANSLATION_PROVIDERS,
+    // TranslateService
 	],
   entryComponents: [
     ...SETTINGS_DECLARATIONS_MODALS,

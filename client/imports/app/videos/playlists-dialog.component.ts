@@ -31,8 +31,8 @@ import templatePopup from './playlists-dialog.component.html'
 
 @Component({
   selector: 'playlists-dialog',
-  styles: [style],
-  template: templatePopup
+  styleUrls: ['./playlists-dialog.component.scss'],
+  templateUrl: './playlists-dialog.component.html'
 })
 export class PlayListsDialog implements OnInit, OnDestroy{
   actionsAlignment: string;

@@ -15,8 +15,8 @@ import style from './settings.component.scss';
 
 @Component({
 	selector: 'settings',
-	template,
-	styles: [style]
+	templateUrl: './settings.component.html',
+	styles: ['./settings.component.scss']
 })
 @InjectUser('user')
 export class SettingsComponent implements OnInit, OnDestroy {

@@ -26,8 +26,8 @@ import style from './videos-list.component.scss';
 
 @Component({
   selector: 'videos-list',
-  template,
-  styles: [ style ]
+  templateUrl: './videos-list.component.html',
+  styleUrls:  [ './videos-list.component.scss' ]
 })
 @InjectUser('user')
 export class VideosListComponent implements OnInit, OnDestroy {
