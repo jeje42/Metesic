@@ -123,6 +123,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
       setInterval(() => {
         var videoTag = document.getElementById("singleVideo");
         if(videoTag != undefined){
+          console.log('setCurrentTime' +  videoTag.currentTime)
+          // PlayListsUsers.update({_id: this.currentPlayListUser._id}, {$set : {currentTime: videoTag.currentTime}});
           Meteor.call('setCurrentTime', videoTag.currentTime);
         }
       }, 5000);

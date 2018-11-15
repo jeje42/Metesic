@@ -70,12 +70,12 @@ Meteor.methods({
 	 * @return {type}              description
 	 */
 	setCurrentTime: function(time: number){
-		// if(Meteor.isServer){
+		if(Meteor.isServer){
 			let playListsUsers: PlayListUser =  PlayListsUsers.findOne({user: Meteor.user()._id});
 	    if(playListsUsers != undefined){
 	      var number : Observable<number> = PlayListsUsers.update({_id: playListsUsers._id}, {$set : {currentTime: time}});
 	    }
-		// }
+		}
 	},
 
 	/**
