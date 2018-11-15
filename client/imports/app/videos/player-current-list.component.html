@@ -1,0 +1,18 @@
+<mat-list-item [id]=idElement [class]=classe *ngIf=this.video>
+
+  <button color="accent" class="read-video" mat-raised-button (click)="readVideoButton()" matTooltip="{{ 'Play now' | translate }}">
+    <mat-icon class="mat-24">play_arrow</mat-icon>
+  </button>
+  <button color="warn" mat-raised-button (click)="removeVideoPlaylist()" matTooltip="{{ 'Remove from the playlist' | translate }}">
+    <mat-icon class="mat-24">remove</mat-icon>
+  </button>
+  <div class="text">
+    <h2 class="video-name">
+      {{this.video.name}}
+    </h2>
+    <p>
+        {{this.video.description}}
+    </p>
+  </div>
+
+</mat-list-item>

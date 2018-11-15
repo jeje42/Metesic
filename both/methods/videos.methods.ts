@@ -4,7 +4,9 @@ import { VideosStore } from '../collections/videos.collection';
 import { VideosMetas } from '../collections/video-meta.collection';
 import { Videos } from '../collections/videos.collection'
 import { Folders } from '../collections/folders.collection';
-import { Categories } from '../collections/categories.collection'
+import { Categories } from '../collections/categories.collection';
+import { PlayLists } from '../collections/playlists.collection';
+
 
 import { Video } from '../models/video.model';
 import { VideoMeta } from '../models/video-meta.model';
@@ -122,6 +124,7 @@ removeVideo: function(videoMeta: VideoMeta){
     // throw new Meteor.Error("Method removeVideo : cannot remove the video because it is undefined !");
 		return;
   }
+	PlayLists.update({list: {id_videoMeta: videoMeta._id}}, {$pull: {list: {id_videoMeta: videoMeta._id}}});
   Videos.remove({_id:videoMeta.video});
   VideosMetas.remove({_id:videoMeta._id});
 },

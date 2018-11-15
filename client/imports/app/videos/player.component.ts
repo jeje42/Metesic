@@ -51,8 +51,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
   videosMetaSubs: Subscription;
   currentPlayListSubs: Subscription;
 
-  constVideoMetaId: string;
-
   actionsAlignment: string;
   /**
    * Config for the playlists's modal.
@@ -94,7 +92,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.displayPlayer = false;
     this.displayVideo = false;
     this.videoReading = undefined;
-    this.constVideoMetaId = "playlist";
 
 	  this.videosSubs = MeteorObservable.subscribe('videos').subscribe();
 
@@ -186,28 +183,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   videoPlayListToVideoMeta(videoPlayList: VideoPlayList){
-    return VideosMetas.findOne({_id: videoPlayList.id_videoMeta});
-  }
-
-  /**
-   * setIdVideoPlaylist - Called to compute the video element id among the list of videos of the current playlist.
-   *
-   * @param  {type} video: VideoMeta description
-   * @return {type}                  description
-   */
-  setIdVideoPlaylist(video: VideoMeta){
-    return this.constVideoMetaId + video._id;
-  }
-
-
-  /**
-   * readVideoButton - Listener of the play button (one play button per video list element).
-   *
-   * @param  {type} video: VideoMeta description
-   * @return {type}                  description
-   */
-  readVideoButton(video: VideoMeta){
-    Meteor.call('setVideoPlayListUser', video._id);
+    if(videoPlayList && videoPlayList.id_videoMeta){
+      return VideosMetas.findOne({_id: videoPlayList.id_videoMeta});
+    }
   }
 
 
@@ -228,76 +206,34 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.displayPlayer = true;
     this.displayVideo = true;
 
-    let videoContainer = document.getElementById("videoContainer");
+    // let videoContainer = document.getElementById("videoContainer");
     let videoTag = document.getElementById("singleVideo");
-    if(!videoTag){
-      videoTag = document.createElement("video");
-      videoTag.setAttribute('width', "800");
-      videoTag.setAttribute('height', "450");
-      videoTag.setAttribute('controls', "true");
-      videoTag.setAttribute('autoplay', "true");
-      videoTag.setAttribute('id',"singleVideo");
-      videoTag.setAttribute('type',"video/mp4");
+    // if(!videoTag){
+    //   videoTag = document.createElement("video");
+    //   videoTag.setAttribute('width', "800");
+    //   videoTag.setAttribute('height', "450");
+    //   videoTag.setAttribute('controls', "true");
+    //   videoTag.setAttribute('autoplay', "true");
+    //   videoTag.setAttribute('id',"singleVideo");
+    //   videoTag.setAttribute('type',"video/mp4");
+    //   videoTag.setAttribute('src', found.url);
+    //   var playListUser:PlayListUser = PlayListsUsers.findOne({user: this.user._id});
+    //   if(playListUser && playListUser.currentTime){
+    //     videoTag.currentTime = playListUser.currentTime;
+    //   }
+    //   videoContainer.appendChild(videoTag);
+    //   videoTag.pause();
+    // }else{
+    if(found.url != videoTag.getAttribute('src')){
       videoTag.setAttribute('src', found.url);
-      var playListUser:PlayListUser = PlayListsUsers.findOne({user: this.user._id});
-      if(playListUser && playListUser.currentTime){
-        videoTag.currentTime = playListUser.currentTime;
+      var playListUser:PlayListUser = PlayListsUsers.findOne({user: Meteor.user()._id});
+      if(playListUser){
+        videoTag.currentTime = 0.000000;
       }
-      videoContainer.appendChild(videoTag);
       videoTag.pause();
-    }else{
-      if(found.url != videoTag.getAttribute('src')){
-        videoTag.setAttribute('src', found.url);
-        var playListUser:PlayListUser = PlayListsUsers.findOne({user: this.user._id});
-        if(playListUser){
-          videoTag.currentTime = 0.000000;
-        }
-        videoTag.pause();
-      }
     }
+    // }
 }
-
-
-  /**
-   * setClassElementVideoReading - called by the html to set the style on the list element
-   * if corresponding video is played or not.
-   *
-   * @param  {type} video: VideoMeta description
-   * @return {type}                  description
-   */
-  setClassElementVideoReading(video: VideoMeta){
-    var styleOn;
-    var playListUser:PlayListUser = PlayListsUsers.findOne({user: this.user._id});
-    if(playListUser){
-      styleOn = (video._id === playListUser.currentVideo);
-    }
-    if(styleOn) {
-      return "videoPlaying mat-list-item";
-    } else {
-      return "mat-list-item";
-    }
-  }
-
-  /**
-   *   Listener of the remove video from playlist button. We need to remove the video from the PlayList element
-   * and from the PlayListUser element.
-   */
-  removeVideoPlaylist(videoPlayList: VideoPlayList, playList: PlayList):void {
-    PlayLists.update({_id: playList._id}, {$pull: {list: videoPlayList}});
-
-    let videoContainer = document.getElementById("videoContainer");
-    let videoTag = document.getElementById("singleVideo");
-    if(videoTag){
-      const found = Videos.findOne(this.videoPlayListToVideoMeta(videoPlayList).video);
-      if(!found){
-        return;
-      }
-      if(found.url === videoTag.getAttribute('src')){
-        videoContainer.innerHTML = "";
-        Meteor.call('blankCurrentVideo');
-      }
-    }
-  }
 
   deleteCurrentPlayList(playlist: PlayList){
     let videoContainer = document.getElementById("videoContainer");

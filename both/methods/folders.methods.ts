@@ -191,10 +191,13 @@ function scanFolder(path: string, depth: number, action: ScanActions): void {
 		}
 		// }).run();
 
-		for (var file of files) {
+		files.map((file, index) => {
 			var childPath: string = Folder.createChildPath(path, file);
 			scanFile(childPath, depth, action);
-		}
+			if(depth == 0){
+				console.log("Progression : " + ((index+1)/files.length))
+			}
+		})
 }
 
 

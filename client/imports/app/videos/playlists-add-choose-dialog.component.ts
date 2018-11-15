@@ -28,7 +28,7 @@ import { User } from '../../../../both/models/user.model';
 @Component({
   selector: 'playlists-add-choose-dialog',
   styles: ['./playlists-dialog.component.scss'],
-  template: './playlists-add-choose-dialog.component.html'
+  templateUrl: './playlists-add-choose-dialog.component.html'
 })
 export class PlayListsAddChooseDialog implements OnInit, OnDestroy{
   actionsAlignment: string;
