@@ -46,7 +46,6 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
     this.videoPlayListToVideoMeta()
     this.setClassElementVideoReading()
     this.setIdVideoPlaylist()
-    console.log(this.video.name)
   }
 
   /**
