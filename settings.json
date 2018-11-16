@@ -2,7 +2,7 @@
 	"public": {
 		"adress":"localhost",
 		"port":3000,
-		"defaultSettingsFolder":"/home/jeje"
+		"pathSettings":"/"
 	},
 	"private": {
 		"winston": {

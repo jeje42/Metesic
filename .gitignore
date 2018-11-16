@@ -10,3 +10,5 @@ npm-debug.log
 logs/
 
 server/imports/fixtures/videos.ts
+
+build/

@@ -3,7 +3,6 @@ import { Videos } from '../collections/videos.collection';
 import { VideosMetas } from '../collections/video-meta.collection';
 import { FoldersTreatments } from '../collections/folder-treatment.collection';
 import { Folder } from '../models/folder.model';
-import { Video } from '../models/video.model';
 import { check } from 'meteor/check';
 import { Meteor } from 'meteor/meteor';
 
@@ -157,6 +156,27 @@ function purgeChildren(path: string, files: string[]) {
 	}).run();
 }
 
+function updateProgression(index, childPath, files){
+	let status = 100*(index+1)/files.length
+	let textProgression = childPath
+	if(status == 100){
+		status = 0
+		textProgression = ""
+	}
+	let treatment: FolderTreatment = FoldersTreatments.findOne();
+	if(!treatment){
+		FoldersTreatments.insert({
+			status: status,
+			currentFile: textProgression
+		})
+	}else{
+		FoldersTreatments.update({_id: treatment._id},{$set: {
+			 status: status,
+			 currentFile: textProgression
+		 }})
+	}
+}
+
 /**
  * scanFolder - scans the folder path with fs.readdir
  * updates Folder.children with the containing files/folders returned by fs.readdir
@@ -194,22 +214,13 @@ function scanFolder(path: string, depth: number, action: ScanActions): void {
 		// }).run();
 
 		files.map((file, index) => {
-			var childPath: string = Folder.createChildPath(path, file);
-			scanFile(childPath, depth, action);
+			var childPath: string = Folder.createChildPath(path, file)
+
 			if(depth == 0){
-				let status = 100*(index+1)/files.length
-				if(status == 100){
-					status = 0
-				}
-				let treatment: FolderTreatment = FoldersTreatments.findOne();
-				if(!treatment){
-					FoldersTreatments.insert({
-						status: status
-					})
-				}else{
-					FoldersTreatments.update({_id: treatment._id},{$set: { status: status }})
-				}
+				updateProgression(index, childPath, files)
 			}
+
+			scanFile(childPath, depth, action)
 		})
 }
 

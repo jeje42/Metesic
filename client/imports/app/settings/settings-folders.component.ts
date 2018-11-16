@@ -48,10 +48,10 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
    * Config for the playlists's modal.
    */
   config: MatDialogConfig = {
-    disableClose: false,
+    disableClose: true,
     hasBackdrop: true,
     backdropClass: '',
-    width: '',
+    width: '80%',
     height: '',
     position: {
       top: '',
@@ -64,6 +64,7 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
     }
   };
 	statusTreatment: number;
+	textProgression: string;
 	dialogRef: any;
 
 	@ViewChild(TemplateRef) template: TemplateRef<any>;
@@ -83,13 +84,39 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		var initPath = "/home/jeje";
+		let initPath = Meteor.settings.public.pathSettings
+		console.log("initPath : " + initPath)
+		if(!initPath){
+			initPath = "/home/jeje"
+		}
+
+
+		this.initModalListening()
 		this.initDirectory(initPath);
 	}
 
 	ngOnDestroy() {
 		this.foldersSub.unsubscribe();
 		this.videosSub.unsubscribe();
+	}
+
+	initModalListening() {
+		this.folderTreatment = MeteorObservable.subscribe('folderTreatment').subscribe(() => {
+			let folderTreatment = FoldersTreatments.find();
+
+			folderTreatment.subscribe(list => {
+				let treatment: FolderTreatment = list[0]
+				if(treatment){
+					this.statusTreatment = treatment.status
+					this.textProgression = treatment.currentFile
+				}
+				if(this.statusTreatment>0){
+					this.openProgression()
+				}else{
+					this.closeProgression()
+				}
+			})
+		});
 	}
 
 	initDirectory(currentFolder: string): void {
@@ -115,21 +142,7 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 
 		this.videosSub = MeteorObservable.subscribe('videos').subscribe();
 
-		this.folderTreatment = MeteorObservable.subscribe('folderTreatment').subscribe(() => {
-			let folderTreatment = FoldersTreatments.find();
 
-			folderTreatment.subscribe(list => {
-				let treatment: FolderTreatment = list[0]
-				if(treatment){
-					this.statusTreatment = treatment.status
-				}
-				if(this.statusTreatment>0){
-					this.openProgression()
-				}else{
-					this.closeProgression()
-				}
-			})
-		});
 	}
 
 	cdInto(newPath: string): void {
@@ -157,6 +170,7 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 		}
 
 		this.dialogRef.componentInstance.statusTreatment = this.statusTreatment
+		this.dialogRef.componentInstance.textProgression = this.textProgression
 	}
 
 	closeProgression() {

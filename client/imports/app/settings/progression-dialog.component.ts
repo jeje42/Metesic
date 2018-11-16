@@ -24,6 +24,7 @@ export class ProgressionDialog implements OnInit, OnDestroy{
 	user: User;
 	loggedUser: User;
   statusTreatment: number;
+  textProgression: string;
 
   addPlayList: FormGroup;
 
