@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy, Inject, ViewChild, TemplateRef  } from '@angular/core';
 import {DOCUMENT} from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { MeteorObservable } from 'meteor-rxjs';
 import { InjectUser } from "angular2-meteor-accounts-ui";
-import {MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialog, MatDialogRef, MatDialogConfig} from '@angular/material';
 
 import 'rxjs/add/operator/combineLatest';
 
@@ -96,8 +95,9 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
-		this.foldersSub.unsubscribe();
-		this.videosSub.unsubscribe();
+		this.foldersSub.unsubscribe()
+		this.videosSub.unsubscribe()
+		this.folderTreatment.unsubscribe()
 	}
 
 	initModalListening() {

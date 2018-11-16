@@ -1,5 +1,5 @@
 import {Component, ViewEncapsulation, ElementRef, OnInit} from '@angular/core';
-
+import { Router } from '@angular/router'
 // import template from './app.component.html';
 // import style from './app.component.scss';
 import {InjectUser} from "angular2-meteor-accounts-ui";
@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
 	// public supportedLanguages: any[];
 
 
-	constructor(private _element: ElementRef) {
+	constructor(private _element: ElementRef, private _router: Router) {
 
     }
 
@@ -70,6 +70,7 @@ export class AppComponent implements OnInit {
 
   logout() {
     Meteor.logout();
+    this._router.navigate([''])
   }
 
   toggleFullscreen() {

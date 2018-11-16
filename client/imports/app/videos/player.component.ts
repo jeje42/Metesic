@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { MeteorObservable } from 'meteor-rxjs';
 import { InjectUser } from "angular2-meteor-accounts-ui";
-import {MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialog, MatDialogRef, MatDialogConfig} from '@angular/material';
 
 
 import 'rxjs/add/operator/combineLatest';
@@ -88,6 +88,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.displayPlayer = false;
     this.displayVideo = false;
     this.videoReading = undefined;
+    if(!this.user){
+      return;
+    }
 
 	  this.videosSubs = MeteorObservable.subscribe('videos').subscribe();
 
@@ -134,9 +137,11 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
 	ngOnDestroy() {
-		this.playListsSub.unsubscribe();
-		this.videosSubs.unsubscribe();
-    this.videosMetaSubs.unsubscribe();
+    if(this.user){
+      this.playListsSub.unsubscribe();
+  		this.videosSubs.unsubscribe();
+      this.videosMetaSubs.unsubscribe();
+    }
 	}
 
   // counter() {

@@ -102,6 +102,7 @@ export class SettingsUsersComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.usersSub.unsubscribe();
+		this.usersAdminSub.unsubscribe();
 	}
 
 	addUserFunction():void {
