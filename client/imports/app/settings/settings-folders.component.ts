@@ -1,14 +1,20 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, ViewChild, TemplateRef  } from '@angular/core';
+import {DOCUMENT} from '@angular/platform-browser';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { MeteorObservable } from 'meteor-rxjs';
 import { InjectUser } from "angular2-meteor-accounts-ui";
+import {MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material';
 
 import 'rxjs/add/operator/combineLatest';
 
 import { Folders } from '../../../../both/collections/folders.collection';
 import { Folder } from '../../../../both/models/folder.model';
+import { FoldersTreatments } from '../../../../both/collections/folder-treatment.collection';
+import { FolderTreatment } from '../../../../both/models/folder-treatment.model';
+import { ProgressionDialog } from './progression-dialog.component';
+
 
 @Component({
 	selector: 'settings-folders',
@@ -23,6 +29,7 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 
 	foldersSub: Subscription;
 	videosSub: Subscription;
+	folderTreatment: Subscription;
 	user: Meteor.User;
 	currentFolder: string;
 
@@ -35,6 +42,45 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
       folder: false,
     }
   ];
+
+	actionsAlignment: string;
+  /**
+   * Config for the playlists's modal.
+   */
+  config: MatDialogConfig = {
+    disableClose: false,
+    hasBackdrop: true,
+    backdropClass: '',
+    width: '',
+    height: '',
+    position: {
+      top: '',
+      bottom: '',
+      left: '',
+      right: ''
+    },
+    data: {
+      message: 'Akadok'
+    }
+  };
+	statusTreatment: number;
+	dialogRef: any;
+
+	@ViewChild(TemplateRef) template: TemplateRef<any>;
+
+	constructor(public dialog: MatDialog, @Inject(DOCUMENT) doc: any){
+		// Possible useful example for the open and closeAll events.
+    // Adding a class to the body if a dialog opens and
+    // removing it after all open dialogs are closed
+    dialog.afterOpen.subscribe((ref: MatDialogRef<any>) => {
+      if (!doc.body.classList.contains('no-scroll')) {
+        doc.body.classList.add('no-scroll');
+      }
+    });
+    dialog.afterAllClosed.subscribe(() => {
+      doc.body.classList.remove('no-scroll');
+    });
+	}
 
 	ngOnInit() {
 		var initPath = "/home/jeje";
@@ -68,6 +114,22 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 		});
 
 		this.videosSub = MeteorObservable.subscribe('videos').subscribe();
+
+		this.folderTreatment = MeteorObservable.subscribe('folderTreatment').subscribe(() => {
+			let folderTreatment = FoldersTreatments.find();
+
+			folderTreatment.subscribe(list => {
+				let treatment: FolderTreatment = list[0]
+				if(treatment){
+					this.statusTreatment = treatment.status
+				}
+				if(this.statusTreatment>0){
+					this.openProgression()
+				}else{
+					this.closeProgression()
+				}
+			})
+		});
 	}
 
 	cdInto(newPath: string): void {
@@ -84,5 +146,21 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 
 	synchroniseCurrent(): void {
 		this.initDirectory(this.currentFolder);
+	}
+
+	openProgression() {
+		if(!this.dialogRef){
+			this.dialogRef = this.dialog.open(ProgressionDialog, this.config)
+			this.dialogRef.componentInstance.actionsAlignment = this.actionsAlignment
+			this.dialogRef.componentInstance.user = Meteor.user()
+			this.dialogRef.componentInstance.loggedUser = this.user
+		}
+
+		this.dialogRef.componentInstance.statusTreatment = this.statusTreatment
+	}
+
+	closeProgression() {
+		this.dialog.closeAll()
+		this.dialogRef = undefined;
 	}
 }

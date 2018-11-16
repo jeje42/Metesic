@@ -1,6 +1,7 @@
 import { Folders } from '../collections/folders.collection';
 import { Videos } from '../collections/videos.collection';
 import { VideosMetas } from '../collections/video-meta.collection';
+import { FoldersTreatments } from '../collections/folder-treatment.collection';
 import { Folder } from '../models/folder.model';
 import { Video } from '../models/video.model';
 import { check } from 'meteor/check';
@@ -8,6 +9,7 @@ import { Meteor } from 'meteor/meteor';
 
 import { removeFileByPath, ScanActions } from './folders.sharedMethods';
 import { uploadVideosPointer, getSubstringUrl } from './videos.methods';
+import { FolderTreatment } from '../models/folder-treatment.model';
 
 //TODO : index unique : https://docs.mongodb.com/manual/core/index-unique/
 /**
@@ -195,7 +197,18 @@ function scanFolder(path: string, depth: number, action: ScanActions): void {
 			var childPath: string = Folder.createChildPath(path, file);
 			scanFile(childPath, depth, action);
 			if(depth == 0){
-				console.log("Progression : " + ((index+1)/files.length))
+				let status = 100*(index+1)/files.length
+				if(status == 100){
+					status = 0
+				}
+				let treatment: FolderTreatment = FoldersTreatments.findOne();
+				if(!treatment){
+					FoldersTreatments.insert({
+						status: status
+					})
+				}else{
+					FoldersTreatments.update({_id: treatment._id},{$set: { status: status }})
+				}
 			}
 		})
 }

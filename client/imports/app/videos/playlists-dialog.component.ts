@@ -1,12 +1,9 @@
-import { Component, OnInit, OnDestroy, NgZone, Inject, ViewChild, TemplateRef } from '@angular/core';
-import {DOCUMENT} from '@angular/platform-browser';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 import { MeteorObservable } from 'meteor-rxjs';
-import { InjectUser } from "angular2-meteor-accounts-ui";
-import {MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialog} from '@angular/material';
 
 
 import 'rxjs/add/operator/combineLatest';
@@ -14,14 +11,10 @@ import 'rxjs/add/operator/combineLatest';
 // import { VideosMetas } from '../../../../both/collections/video-meta.collection';
 // import { VideoMeta } from '../../../../both/models/video-meta.model';
 import { PlayLists } from '../../../../both/collections/playlists.collection';
-import { Videos } from '../../../../both/collections/videos.collection';
-import { VideosMetas } from '../../../../both/collections/video-meta.collection';
 import { PlayListsUsers } from '../../../../both/collections/playlists-users.collection';
 
 import { PlayList } from '../../../../both/models/playlist.model';
 import { PlayListUser } from '../../../../both/models/playlist-user.model';
-import { VideoMeta } from '../../../../both/models/video-meta.model';
-import { Video } from '../../../../both/models/video.model';
 
 import { User } from '../../../../both/models/user.model';
 

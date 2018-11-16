@@ -20,6 +20,8 @@ import './imports/publications/playlists';
 import './imports/publications/users';
 import './imports/publications/videos';
 import './imports/publications/videosMeta';
+import './imports/publications/treatments';
+
 
 function initLogger() {
 	let winston = Npm.require('winston');
@@ -61,7 +63,6 @@ function initLogger() {
 
 
 Meteor.startup(() => {
-	var Future = Npm.require('fibers/future');
 	loadCategories();
 	checkIndexesVideosMeta();
 	// initLogger();
