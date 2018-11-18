@@ -34,6 +34,7 @@ To build : meteor --release 1.4.4.6 build /path/to/build --architecture os.linux
 to start in production mode :
 cd pathToBundle && MONGO_URL=mongodb://localhost:27017/metesic ROOT_URL=http://localhost  PORT=3000 node main.js
 check it on : https://guide.meteor.com/deployment.html
+Install mongodb : https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/
 
 [}]: #
 [{]: <region> (footer)
