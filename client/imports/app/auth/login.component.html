@@ -12,10 +12,10 @@
       <form [formGroup]="loginForm" #f="ngForm" (ngSubmit)="login()"
             layout="column" layout-fill layout-padding layout-margin>
 
-        <mat-input-container>
-          <input matInput formControlName="email" type="email" placeholder="Email"></input>
-          <input matInput formControlName="password" type="password" placeholder="{{ 'Password' | translate }}"></input>
-        </mat-input-container>
+        <mat-form-field>
+          <input matInput formControlName="email" type="email" placeholder="Email">
+          <input matInput formControlName="password" type="password" placeholder="{{ 'Password' | translate }}">
+        </mat-form-field>
 
         <div layout="row" layout-align="space-between center">
           <a mat-button [routerLink]="['/recover']">{{ 'Forgot password?' | translate }}</a>

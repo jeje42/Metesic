@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AccountsModule } from 'angular2-meteor-accounts-ui';
 import {NgxPaginationModule} from 'ngx-pagination';
-import { AgmCoreModule } from 'angular2-google-maps/core';
 
 import { VgCoreModule } from 'videogular2/core';
 import { VgControlsModule } from 'videogular2/controls';
@@ -13,7 +12,6 @@ import { VgBufferingModule } from 'videogular2/buffering';
 
 import { AppComponent } from './app.component';
 import { routes, ROUTES_PROVIDERS } from './app.routes';
-import { PARTIES_DECLARATIONS } from './parties';
 import { SHARED_DECLARATIONS } from './shared';
 import { VIDEOS_DECLARATIONS, VIDEOS_DECLARATIONS_MODALS } from './videos';
 import { SETTINGS_DECLARATIONS, SETTINGS_DECLARATIONS_MODALS } from './settings';
@@ -111,9 +109,9 @@ export class DemoMaterialModule {}
     // RouterModule.forChild(routes),
 		AccountsModule,
     NgxPaginationModule,
-		AgmCoreModule.forRoot({
-			apiKey: 'AIzaSyAWoBdZHCNh5R-hB5S5ZZ2oeoYyfdDgniA'
-		}),
+		// AgmCoreModule.forRoot({
+		// 	apiKey: 'AIzaSyAWoBdZHCNh5R-hB5S5ZZ2oeoYyfdDgniA'
+		// }),
 		// MaterialModule.forRoot(),
 		FileDropModule,
 

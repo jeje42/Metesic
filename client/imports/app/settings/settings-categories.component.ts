@@ -11,13 +11,10 @@ import 'rxjs/add/operator/combineLatest';
 import { Categories } from '../../../../both/collections/categories.collection';
 import { Category } from '../../../../both/models/category.model';
 
-import template from './settings-categories.component.html';
-import style from './settings-categories.component.scss';
-
 @Component({
 	selector: 'settings-categories',
-	template,
-	styles: [style]
+	templateUrl : './settings-categories.component.html',
+	styleUrls: ['./settings-categories.component.scss']
 })
 @InjectUser('user')
 export class SettingsCategoriesComponent implements OnInit, OnDestroy {
@@ -37,7 +34,7 @@ export class SettingsCategoriesComponent implements OnInit, OnDestroy {
 				sort: {
 					name: 0
 				}
-			}).zone();
+			});
 		});
 
 		this.addCategory = this.formBuilder.group({

@@ -45,6 +45,9 @@
 		<!-- <video autoplay id="singleVideo" controls *ngIf="displayVideo"> -->
 				<!-- <source [src]="videoRead" type="video/mp4"> -->
 		<!-- </video> -->
+		<video autoplay id="singleVideo" controls type="video/mp4">
+
+		</video>
 	</div>
 	<div class="playlist-container default-padding">
 		<mat-card *ngFor="let playList of currentPlaylist | async">
@@ -62,23 +65,7 @@
 		      </button>
 				</p>
 				<mat-card>
-					<mat-list-item *ngFor="let videoPlayList of listVideosPlayList" [id]="setIdVideoPlaylist(videoPlayListToVideoMeta(videoPlayList))" [class]="setClassElementVideoReading(videoPlayListToVideoMeta(videoPlayList))">
-						<button color="accent" class="read-video" mat-raised-button (click)="readVideoButton(videoPlayListToVideoMeta(videoPlayList))" matTooltip="{{ 'Play now' | translate }}">
-							<mat-icon class="mat-24">play_arrow</mat-icon>
-			      </button>
-						<button color="warn" mat-raised-button (click)="removeVideoPlaylist(videoPlayList, playList)" matTooltip="{{ 'Remove from the playlist' | translate }}">
-							<mat-icon class="mat-24">remove</mat-icon>
-			      </button>
-						<div class="text">
-		          <h2 class="video-name">
-		            {{videoPlayListToVideoMeta(videoPlayList).name}}
-		          </h2>
-		          <p>
-		              {{videoPlayListToVideoMeta(videoPlayList).description}}
-		          </p>
-		        </div>
-
-					</mat-list-item>
+					<player-current-list *ngFor="let videoPlayList of listVideosPlayList" [videoPlayList]=videoPlayList [playList]=playList></player-current-list>
 				</mat-card>
 			</mat-list>
 		</mat-card>

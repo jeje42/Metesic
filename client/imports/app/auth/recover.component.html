@@ -8,9 +8,9 @@
       <form [formGroup]="recoverForm" #f="ngForm" (ngSubmit)="recover()"
             layout="column" layout-fill layout-padding layout-margin>
 
-        <mat-input-container>
+        <mat-form-field>
            <input matInput formControlName="email" type="email" placeholder="Email">
-         </mat-inputmat-input-container>
+         </mat-form-field>
 
         <div layout="row" layout-align="space-between center">
           <button mat-raised-button class="mat-primary" type="submit" aria-label="Recover">Recover</button>

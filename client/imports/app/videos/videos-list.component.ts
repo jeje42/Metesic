@@ -21,13 +21,10 @@ import { PlayList } from '../../../../both/models/playlist.model';
 
 import { PlayListsAddChooseDialog } from './playlists-add-choose-dialog.component';
 
-import template from './videos-list.component.html';
-import style from './videos-list.component.scss';
-
 @Component({
   selector: 'videos-list',
-  template,
-  styles: [ style ]
+  templateUrl: './videos-list.component.html',
+  styleUrls:  [ './videos-list.component.scss' ]
 })
 @InjectUser('user')
 export class VideosListComponent implements OnInit, OnDestroy {
@@ -53,6 +50,8 @@ export class VideosListComponent implements OnInit, OnDestroy {
   categoriesSub: Subscription;
   playListsSub: Subscription;
   playListsUsersSub: Subscription;
+
+  subscriptionsDone: boolean
 
   /**
    * Config for the playlists's modal.
@@ -100,6 +99,12 @@ export class VideosListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if(!this.user){
+      this.subscriptionsDone = false
+      return
+    }else{
+      this.subscriptionsDone = true
+    }
     this.disabledCategories = [];
 
     this.searchRegEx = {
@@ -112,7 +117,7 @@ export class VideosListComponent implements OnInit, OnDestroy {
         sort: {
 					name: 0
 				}
-      }).zone();
+      });
 
 
     });
@@ -153,14 +158,12 @@ export class VideosListComponent implements OnInit, OnDestroy {
   }
 
   addToCurrentPlayList(videoMeta: VideoMeta): void {
-    console.log("currentPlaylist before addToCurrentPlayList : " + this.currentPlaylist);
     if(this.currentPlaylist === undefined || this.currentPlaylist === null){
       let playListUser: PlayListUser = PlayListsUsers.findOne({user: this.user._id});
 
 
       // console.log("addToCurrentPlayList before : " + this.currentPlaylist + " ; " + playListUser + " ; " + playListUser.currentPlaylist);
       if(playListUser === undefined || playListUser === null || playListUser.currentPlaylist === undefined || playListUser.currentPlaylist === null){
-        console.log("addToCurrentPlayList inserting playlist !");
         Meteor.call('addPlayList',
           new PlayList(this.user.username + "'s playlist'",
             "Default playlist for user " + this.user.username,
@@ -230,11 +233,13 @@ export class VideosListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.videosMetasSub.unsubscribe();
-  	this.videosSubs.unsubscribe();
-  	this.playListsSub.unsubscribe();
-    this.playListsUsersSub.unsubscribe();
-    this.categoriesSub.unsubscribe();
+    if(this.subscriptionsDone){
+      this.videosMetasSub.unsubscribe();
+    	this.videosSubs.unsubscribe();
+    	this.playListsSub.unsubscribe();
+      this.playListsUsersSub.unsubscribe();
+      this.categoriesSub.unsubscribe();
+    }
   }
 
   openEditPlayLists(video: VideoMeta) {

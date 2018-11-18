@@ -3,11 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Accounts } from 'meteor/accounts-base';
 
-import template from './signup.component.html';
-
 @Component({
   selector: 'signup',
-  template
+  templateUrl: './signup.component.html'
 })
 export class SignupComponent implements OnInit {
   signupForm: FormGroup;

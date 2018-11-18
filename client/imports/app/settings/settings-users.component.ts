@@ -5,7 +5,7 @@ import { Accounts } from 'meteor/accounts-base';
 import { Subscription, Subject, Observable } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { InjectUser } from "angular2-meteor-accounts-ui";
-import {MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material';
+import {MatInputModule,MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material';
 
 import 'rxjs/add/operator/combineLatest';
 
@@ -16,17 +16,14 @@ import { UserAdmin } from '../../../../both/models/user-admin.model';
 import { User } from '../../../../both/models/user.model';
 import { UserCreation } from '../../../../both/models/user-creation.model';
 
-import template from './settings-users.component.html';
-import style from './settings-users.component.scss';
-
 
 /**
  * Follow https://docs.meteor.com/api/passwords.html#Accounts-createUser and call the method on server side
  */
 @Component({
 	selector: 'settings-users',
-	template,
-	styles: [style]
+	templateUrl: './settings-users.component.html',
+	styleUrls: ['./settings-users.component.scss']
 })
 @InjectUser('user')
 export class SettingsUsersComponent implements OnInit, OnDestroy {
@@ -42,7 +39,7 @@ export class SettingsUsersComponent implements OnInit, OnDestroy {
 	user: Meteor.User;
 
 	actionsAlignment: string;
-	config: MdDialogConfig = {
+	config: MatDialogConfig = {
     disableClose: false,
     hasBackdrop: true,
     backdropClass: '',
@@ -77,20 +74,20 @@ export class SettingsUsersComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.usersSub = MeteorObservable.subscribe('userData').subscribe(() => {
-				// this.users = Users.find().zone();
+				// this.users = Users.find();
 		});
 
 		this.usersAdminSub = MeteorObservable.subscribe('userAdmin').subscribe(() => {
-				this.usersAdmin = UsersAdmin.find().zone();
+				this.usersAdmin = UsersAdmin.find();
 
 				this.usersAdmin.subscribe(usersAdmin => {
 					if(usersAdmin.length === 1){
 						this.usersAdmin = Users.find({_id: usersAdmin[0].userId});
 						this.users = Users.find({_id: {
 							$ne: usersAdmin[0].userId
-						}}).zone();
+						}});
 					}else if(usersAdmin.length === 0){
-						this.users = Users.find().zone();
+						this.users = Users.find();
 					}else{
 						console.log("Error : there must not have several admins.");
 					}
@@ -105,6 +102,7 @@ export class SettingsUsersComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.usersSub.unsubscribe();
+		this.usersAdminSub.unsubscribe();
 	}
 
 	addUserFunction():void {
@@ -167,14 +165,14 @@ export class SettingsUsersComponent implements OnInit, OnDestroy {
   template: `
     <h2 md-dialog-title>Neptune</h2>
 
-    <md-dialog-content>
+    <mat-dialog-content>
 		<form [formGroup]="changePasswordUser" (ngSubmit)="changeUserPasswordFunction();">
-			<md-input-container>
+			<mat-form-field>
 				<input mdInput formControlName="password" type="password" placeholder="Nouveau mot de passe"/>
-			</md-input-container>
+			</mat-form-field>
 			<button color="primary" md-raised-button type="submit">Change it !</button>
 		</form>
-    </md-dialog-content>
+    </mat-dialog-content>
   `
 })
 export class ContentElementDialog {

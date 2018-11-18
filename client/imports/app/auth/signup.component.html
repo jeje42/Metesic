@@ -8,12 +8,12 @@
       <form [formGroup]="signupForm" #f="ngForm" (ngSubmit)="signup()"
             layout="column" layout-fill layout-padding layout-margin>
 
-        <mat-input-container>
-          <input matInput formControlName="email" type="email" placeholder="Email"></input>
-        </mat-input-container>
-        <mat-input-container>
-          <input matInput formControlName="password" type="password" placeholder="Password"></input>
-        </mat-input-container>
+        <mat-form-field>
+          <input matInput formControlName="email" type="email" placeholder="Email">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput formControlName="password" type="password" placeholder="Password">
+        </mat-form-field>
 
         <div layout="row" layout-align="space-between center">
           <button mat-raised-button class="mat-primary" type="submit" aria-label="login">Sign Up</button>
