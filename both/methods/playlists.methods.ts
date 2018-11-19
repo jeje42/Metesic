@@ -80,14 +80,15 @@ Meteor.methods({
 
 	/**
 	 * blankCurrentVideo - resets PlayListUser.currentVideo and PlayListUser.currentTime to undefined.
-	 *
+	 * Deprecated !
 	 * @return {type}  description
 	 */
 	blankCurrentVideo: function(){
-		let playListsUsers: PlayListUser =  PlayListsUsers.findOne({user: Meteor.user()._id});
-		if(playListsUsers != undefined){
-			PlayListsUsers.update({_id: playListsUsers._id}, {$set : {currentVideo: undefined}});
-			PlayListsUsers.update({_id: playListsUsers._id}, {$set : {currentTime: undefined}});
+		let playListsUsers: PlayListUser =  PlayListsUsers.findOne({user: Meteor.userId()});
+		console.log("blankCurrentVideo PlayListUsers !")
+		if(playListsUsers){
+			console.log("blankCurrentVideo PlayListUsers ! " + playListsUsers.currentPlaylist)
+			PlayListsUsers.update({_id: playListsUsers._id}, {$set : {currentVideo: null, currentTime: 0}});
 		}
 	},
 
@@ -114,19 +115,23 @@ Meteor.methods({
 		}
 	},
 	/**
-	 * removePlayList - removes the playListId fron PlayLists and if necessary PlayListUser.
+	 * removePlayList - removes the playListId from PlayLists and if necessary PlayListUser.
+	 * Deprecated !
 	 *
 	 * @param  {type} playListId: string description
 	 * @return {type}                    description
 	 */
 	removePlayList: function(playListId: string){
-		if(Meteor.isServer){
-			var playlist: PlayList = PlayLists.findOne({_id: playListId});
-			var playListUser = PlayListsUsers.findOne({user: Meteor.user()._id});
-			if(playListUser != undefined && playlist != undefined && playListUser.currentPlaylist === playListId){
-				PlayListsUsers.update({_id: playListUser._id}, {$set : {currentPlaylist: undefined}});
-			}
-			PlayLists.remove(playListId);
+		var playlist: PlayList = PlayLists.findOne({_id: playListId});
+		var playListUser = PlayListsUsers.findOne({user: Meteor.user()._id});
+		console.log(playlist + " ; " + playListId + " : " + playListUser + " ; " + playListUser.currentPlaylist)
+		if(playListUser && playlist && playListUser.currentPlaylist === playListId){
+			console.log("removePlayList PlayListUsers ! " + Meteor.user() + " ; " + playListUser.user + " ; " + playListUser.currentPlaylist + " ; " + playListId)
+			let modifs = PlayListsUsers.update({user: Meteor.user()}, {$set : {currentPlaylist: "test"}});
+			modifs.subscribe((number) => {
+				console.log("Modifs : " + number)
+			})
 		}
+		PlayLists.remove(playListId);
 	}
 });

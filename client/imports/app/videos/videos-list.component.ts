@@ -1,10 +1,10 @@
 //Following https://angular-meteor.com/tutorials/whatsapp2/ionic/filter-and-pagination
-import { Component, OnInit, OnDestroy, NgZone, Inject, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, ViewChild, TemplateRef } from '@angular/core';
 import {DOCUMENT} from '@angular/platform-browser';
-import { Observable, Subject, Subscription, BehaviorSubject } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { InjectUser } from "angular2-meteor-accounts-ui";
-import {MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material';
+import {MatDialog, MatDialogRef, MatDialogConfig} from '@angular/material';
 
 
 import 'rxjs/add/operator/combineLatest';
@@ -99,7 +99,7 @@ export class VideosListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if(!this.user){
+    if(!Meteor.userId()){
       this.subscriptionsDone = false
       return
     }else{
@@ -121,6 +121,7 @@ export class VideosListComponent implements OnInit, OnDestroy {
 
 
     });
+
 
     this.videosSubs = MeteorObservable.subscribe('videos').subscribe();
 

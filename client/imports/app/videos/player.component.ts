@@ -115,16 +115,16 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
 	  this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
 
-    if(Meteor.isClient){
-      setInterval(() => {
-        var videoTag = document.getElementById("singleVideo");
-        if(videoTag != undefined){
-          console.log('setCurrentTime' +  videoTag.currentTime)
-          // PlayListsUsers.update({_id: this.currentPlayListUser._id}, {$set : {currentTime: videoTag.currentTime}});
-          Meteor.call('setCurrentTime', videoTag.currentTime);
-        }
-      }, 5000);
-    }
+    // if(Meteor.isClient){
+    //   setInterval(() => {
+    //     var videoTag = document.getElementById("singleVideo");
+    //     if(videoTag != undefined){
+    //       console.log('setCurrentTime' +  videoTag.currentTime)
+    //       // PlayListsUsers.update({_id: this.currentPlayListUser._id}, {$set : {currentTime: videoTag.currentTime}});
+    //       Meteor.call('setCurrentTime', videoTag.currentTime);
+    //     }
+    //   }, 5000);
+    // }
 
     // this.counter().subscribe(
     //   data => {
@@ -239,10 +239,20 @@ export class PlayerComponent implements OnInit, OnDestroy {
   deleteCurrentPlayList(playlist: PlayList){
     let videoContainer = document.getElementById("videoContainer");
     if(videoContainer){
-      videoContainer.innerHTML = "";
-      Meteor.call('blankCurrentVideo');
+      // videoContainer.innerHTML = "";
+      let playListsUsers: PlayListUser =  PlayListsUsers.findOne({user: Meteor.userId()});
+      PlayListsUsers.update({_id: playListsUsers._id}, {$set : {currentVideo: null, currentTime: 0}}).subscribe(number => {
+        console.error("PlayListsUsers update : " + number)
+      });
     }
-    Meteor.call('removePlayList', playlist._id);
+    var playlist: PlayList = PlayLists.findOne({_id: playlist._id});
+		var playListUser = PlayListsUsers.findOne({user: Meteor.user()._id});
+		if(playListUser && playlist && playListUser.currentPlaylist === playlist._id){
+			PlayListsUsers.update({_id: playListUser._id}, {$set : {currentPlaylist: null}}).subscribe((number) => {
+				console.error("Modifs : " + number)
+			})
+		}
+		PlayLists.remove(playlist._id);
   }
 
 
