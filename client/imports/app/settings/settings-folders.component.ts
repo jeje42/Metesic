@@ -5,13 +5,13 @@ import { Subscription } from 'rxjs/Subscription';
 import { MeteorObservable } from 'meteor-rxjs';
 import { InjectUser } from "angular2-meteor-accounts-ui";
 import {MatDialog, MatDialogRef, MatDialogConfig} from '@angular/material';
+import { Router } from '@angular/router'
 
 import 'rxjs/add/operator/combineLatest';
 
 import { Folders } from '../../../../both/collections/folders.collection';
 import { Folder } from '../../../../both/models/folder.model';
 import { FoldersTreatments } from '../../../../both/collections/folder-treatment.collection';
-import { FolderTreatment } from '../../../../both/models/folder-treatment.model';
 import { ProgressionDialog } from './progression-dialog.component';
 
 
@@ -68,7 +68,7 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 
 	@ViewChild(TemplateRef) template: TemplateRef<any>;
 
-	constructor(public dialog: MatDialog, @Inject(DOCUMENT) doc: any){
+	constructor(public dialog: MatDialog, @Inject(DOCUMENT) doc: any,  private _router: Router){
 		// Possible useful example for the open and closeAll events.
     // Adding a class to the body if a dialog opens and
     // removing it after all open dialogs are closed
@@ -105,18 +105,26 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 			let folderTreatment = FoldersTreatments.find();
 
 			folderTreatment.subscribe(list => {
-				let treatment: FolderTreatment = list[0]
+				let treatment = list[0]
 				if(treatment){
 					this.statusTreatment = treatment.status
 					this.textProgression = treatment.currentFile
 				}
-				if(this.statusTreatment>0){
+
+				if(this.isRouterToSettings() && this.statusTreatment>0){
 					this.openProgression()
 				}else{
 					this.closeProgression()
 				}
 			})
 		});
+	}
+
+	isRouterToSettings(){
+		if(this._router.url && this._router.url.indexOf("settings") != -1){
+			return true
+		}
+		return false
 	}
 
 	initDirectory(currentFolder: string): void {

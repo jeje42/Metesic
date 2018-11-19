@@ -7,9 +7,6 @@ import { SignupComponent } from "./auth/signup.component";
 import { RecoverComponent } from "./auth/recover.component";
 import { SettingsComponent } from "./settings/settings.component";
 
-import { UsersAdmin } from "../../../both/collections/users-admin.collection";
-import { UserAdmin } from "../../../both/models/user-admin.model"
-
 import { MeteorObservable } from 'meteor-rxjs';
 
 
