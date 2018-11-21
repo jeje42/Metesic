@@ -187,7 +187,7 @@ function updateProgression(index, childPath, files){
  * @param  {type} action: ScanActions description
  * @return {type}                     description
  */
-function scanFolder(path: string, depth: number, action: ScanActions): void {
+function scanFolder(path: string, depth: number, action: ScanActions, recursionDepth: number): void {
 	check(path, String);
 
 	var Future = Npm.require('fibers/future'), wait = Future.wait;
@@ -213,14 +213,15 @@ function scanFolder(path: string, depth: number, action: ScanActions): void {
 		}
 		// }).run();
 
+		recursionDepth++;
 		files.map((file, index) => {
 			var childPath: string = Folder.createChildPath(path, file)
 
-			if(depth == 0){
+			if(recursionDepth == 1){
 				updateProgression(index, childPath, files)
 			}
 
-			scanFile(childPath, depth, action)
+			scanFile(childPath, depth, action, recursionDepth)
 		})
 }
 
@@ -235,7 +236,7 @@ function scanFolder(path: string, depth: number, action: ScanActions): void {
  * @param  {type} action: ScanActions description
  * @return {type}                     description
  */
-var scanFile = function(path: string, depth: number, action: ScanActions) {
+var scanFile = function(path: string, depth: number, action: ScanActions, recursionDepth: number) {
 		if (!checkScanConditions(path))
 			return;
 
@@ -259,7 +260,7 @@ var scanFile = function(path: string, depth: number, action: ScanActions) {
 				depth--;
 
 			if (depth === -2 || depth >= 0) {
-				scanFolder(path, depth, action);
+				scanFolder(path, depth, action, recursionDepth);
 			}
 		} else {
 			insertOrUpdateFolder(path, [], false, action, fsPath.size);
@@ -273,14 +274,16 @@ Meteor.methods({
 			action = ScanActions.Read;
 		}
 		if (Meteor.isServer) {
-			scanFile(path, depth, action);
+			let recursionDepth = 0
+			scanFile(path, depth, action, recursionDepth);
 		}
 	},
 
 	changeCollectionFolder: function(folder: Folder, checked: boolean) {
 		if (Meteor.isServer) {
 			//			changeCollection(folder, checked);
-			scanFile(folder.path, -2, checked ? ScanActions.Add : ScanActions.RemoveCollection);
+			let recursionDepth = 0
+			scanFile(folder.path, -2, checked ? ScanActions.Add : ScanActions.RemoveCollection, recursionDepth);
 		}
 	}
 });
