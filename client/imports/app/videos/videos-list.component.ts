@@ -113,6 +113,8 @@ export class VideosListComponent implements OnInit, OnDestroy {
     };
 
     this.categoriesSub = MeteorObservable.subscribe('categories').subscribe(() => {
+      console.log("Subscribe categories")
+
       this.categories = Categories.find({},{
         sort: {
 					name: 0
@@ -126,12 +128,15 @@ export class VideosListComponent implements OnInit, OnDestroy {
     this.videosSubs = MeteorObservable.subscribe('videos').subscribe();
 
     this.videosMetasSub = MeteorObservable.subscribe('videosMetas').subscribe(() => {
+      console.log("Subscribe videosMetas")
       this.updateListedVideos();
 	  });
 
 	  this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
 
     this.playListsUsersSub = MeteorObservable.subscribe('playlistsUsers').subscribe(() => {
+      console.log("Subscribe playlistsUsers")
+
       // let currentPlayListObject = PlayListsUsers.findOne({user: this.user._id});
       // if(currentPlayListObject != undefined){
       //   this.currentPlaylist = currentPlayListObject.currentPlaylist;
