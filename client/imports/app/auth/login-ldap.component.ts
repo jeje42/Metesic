@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Meteor } from 'meteor/meteor';
 
-
 @Component({
   selector: 'login-ldap',
   templateUrl: './login-ldap.component.html'
@@ -29,7 +28,6 @@ export class LoginLdapComponent implements OnInit {
 
   login():void {
     if (this.loginForm.valid) {
-      console.log(this.loginForm.value.username + " : " + this.loginForm.value.password)
       Meteor.loginWithLDAP(this.loginForm.value.username, this.loginForm.value.password, {
           // The dn value depends on what you want to search/auth against
           // The structure will depend on how your ldap server
@@ -38,12 +36,14 @@ export class LoginLdapComponent implements OnInit {
           // The search value is optional. Set it if your search does not
           // work with the bind dn.
         //search: "(objectclass=*)"
-      }, function(err) {
-        if (err){
-          console.log(err.reason);
-        }else{
-          this.router.navigate(['/']);
-        }
+      }, (err) => {
+        this.zone.run(() => {
+          if (err) {
+            this.error = err;
+          } else {
+            this.router.navigate(['/']);
+          }
+        });
       });
     }
   }

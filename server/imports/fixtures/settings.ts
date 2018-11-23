@@ -8,9 +8,7 @@ export function initSettings() {
   }
 
   var alreadyThere:Setting = Settings.findOne();
-  console.log("initSettings : " + alreadyThere.activerLdap)
   if(!alreadyThere){
-    console.log("Inserting " + settings)
     Settings.insert(settings)
   }
 }
