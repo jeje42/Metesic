@@ -1,4 +1,4 @@
-<player *ngIf="user"></player>
+<player *ngIf="subscriptionsDone"></player>
 
 <div *ngIf="user" class="research-container">
   <div class="research-criterions">
@@ -78,6 +78,6 @@
   </div>
 </div>
 
-<div *ngIf="!user">
+<div *ngIf="!subscriptionsDone">
   <h2>{{ 'Please login or signup to get all fonctionalities from Metesic !' | translate }}</h2>
 </div>

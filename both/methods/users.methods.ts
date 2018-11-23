@@ -1,4 +1,3 @@
-import { UploadFS } from 'meteor/jeje-ufs';
 import { Observable } from 'rxjs/Observable';
 
 import { VideosStore } from '../collections/videos.collection';

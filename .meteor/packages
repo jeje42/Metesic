@@ -22,7 +22,12 @@ jeje-ufs-gridfs
 #angular2-compilers
 email@1.2.3
 tmeasday:publish-counts
+
+#Logins
 accounts-password@1.5.1
+#babrahams:accounts-ldap
+typ:accounts-ldap
+
 check@1.3.1
 shell-server
 dynamic-import

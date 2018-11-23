@@ -6,7 +6,8 @@ import { searchVideos, updateVideosUrls, checkIndexesVideosMeta } from './import
 import { initPlayerPlayList } from './imports/fixtures/playlists';
 import { insertFile } from './imports/fixtures/videosImport';
 import { initAdmin } from './imports/fixtures/user-admin';
-
+import { initLdap } from './imports/fixtures/ldap';
+import { initSettings } from './imports/fixtures/settings';
 
 import '../both/methods/folders.methods';
 import '../both/methods/parties.methods';
@@ -21,6 +22,7 @@ import './imports/publications/users';
 import './imports/publications/videos';
 import './imports/publications/videosMeta';
 import './imports/publications/treatments';
+import './imports/publications/settings';
 
 
 function initLogger() {
@@ -63,15 +65,15 @@ function initLogger() {
 
 
 Meteor.startup(() => {
-	loadCategories();
-	checkIndexesVideosMeta();
-	// initLogger();
-	// loadParties();
-	searchVideos();
-	// updateVideosUrls();
-	initPlayerPlayList();
-	insertFile();
-	initAdmin();
-
-	console.log("Settings : " + Meteor.settings.public.port)
+	loadCategories()
+	checkIndexesVideosMeta()
+	// initLogger()
+	// loadParties()
+	searchVideos()
+	// updateVideosUrls()
+	initPlayerPlayList()
+	insertFile()
+	initAdmin()
+	initLdap()
+	initSettings()
 });

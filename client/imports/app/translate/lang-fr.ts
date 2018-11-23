@@ -69,6 +69,7 @@ export const LANG_FR_TRANS = {
            * login.component
            */
            'Sign in with your email' : 'Se connecter avec votre adresse mail',
+           'Sign in with your Ldap username' : 'Se connecter avec LDAP',
            'Forgot password?' : 'Mot de passe oublié ?',
            'Sign In' : 'Se Connecter',
            'Need an account?' : 'Besoin d\'un compte ?',

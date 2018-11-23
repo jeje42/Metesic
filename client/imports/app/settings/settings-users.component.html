@@ -16,6 +16,12 @@
 	</div>
 </div>
 
+<div *ngIf="isAdmin && settingObject" class="settings-slide-toggle">
+  <h1>Settings</h1>
+  <mat-slide-toggle [(ngModel)]="settingObject.activerAuthentificationClassique" (change)="toggleAuthNormal()">Normal authentification</mat-slide-toggle>
+  <mat-slide-toggle [(ngModel)]="settingObject.activerLdap"  (change)="toggleAuthLdap()">LDAP</mat-slide-toggle>
+</div>
+
 
 <div>
   <h1>Admins ! </h1>
@@ -37,8 +43,8 @@
 <div>
 	<mat-nav-list>
 		<mat-list-item *ngFor="let user of users | async">
-			<a mat-line>{{user.emails[0].address}}</a>
-      <a mat-line *ngIf="user.username != undefined">{{user.username}}</a>
+			<a *ngIf="user.emails" mat-line>{{user.emails[0].address}}</a>
+      <a mat-line *ngIf="user.username">{{user.username}}</a>
       <button mat-raised-button color="accent" (click)="openEditUser(user)">
         <mat-icon>border_color</mat-icon>
       </button>

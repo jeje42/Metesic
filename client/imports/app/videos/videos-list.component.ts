@@ -44,7 +44,7 @@ export class VideosListComponent implements OnInit, OnDestroy {
   currentPlaylist: string;
 
   user: Meteor.User;
-
+  
   videosMetasSub: Subscription;
   videosSubs: Subscription;
   categoriesSub: Subscription;

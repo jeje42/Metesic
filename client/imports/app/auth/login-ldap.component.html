@@ -1,0 +1,42 @@
+<div class="mat-content" layout="row" layout-align="center start" layout-fill layout-margin>
+  <div layout="column" flex flex-mat="50" flex-lg="50" flex-gt-lg="33" class="mat-whiteframe-z2" layout-fill>
+    <mat-toolbar class="mat-primary" color="primary">
+      {{ 'Sign In' | translate }}
+    </mat-toolbar>
+
+    <div layout="column" layout-margin layout-padding>
+      <div layout="row" layout-margin>
+        <p class="mat-body-2">{{ 'Sign in with your Ldap username' | translate }}</p>
+      </div>
+
+      <form [formGroup]="loginForm" #f="ngForm" (ngSubmit)="login()"
+            layout="column" layout-fill layout-padding layout-margin>
+
+        <mat-form-field>
+          <input matInput formControlName="username" type="username" placeholder="Username">
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput formControlName="password" type="password" placeholder="{{ 'Password' | translate }}">
+        </mat-form-field>
+
+        <div layout="row" layout-align="space-between center">
+          <a mat-button [routerLink]="['/recover']">{{ 'Forgot password?' | translate }}</a>
+          <button mat-raised-button class="mat-primary" type="submit" aria-label="login">{{ 'Sign In' | translate }}</button>
+        </div>
+      </form>
+
+      <div [hidden]="error == ''">
+        <mat-toolbar class="mat-warn" layout="row" layout-fill layout-padding layout-margin>
+          <p class="mat-body-1">{{ error }}</p>
+        </mat-toolbar>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div layout="row" layout-align="center">
+        <a mat-button [routerLink]="['/signup']">{{ 'Need an account?' | translate }}</a>
+      </div>
+    </div>
+  </div>
+</div>

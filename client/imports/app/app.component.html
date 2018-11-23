@@ -38,7 +38,8 @@
             </button>
         </div>
         <div [hidden]="user">
-          <a mat-button [routerLink]="['/login']" >{{ 'Login' | translate }}</a>
+          <a *ngIf="loginNormal" mat-button [routerLink]="['/login']" >{{ 'Login' | translate }}</a>
+          <a *ngIf="loginLdap" mat-button [routerLink]="['/login-ldap']" >{{ 'Login' | translate }}</a>
           <a mat-button [routerLink]="['/signup']">{{ 'Sign up' | translate }}</a>
         </div>
         <div [hidden]="!user">

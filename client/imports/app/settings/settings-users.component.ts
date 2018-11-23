@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone, Inject, ViewChild, TemplateRef } 
 import {DOCUMENT} from '@angular/platform-browser';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Accounts } from 'meteor/accounts-base';
-import { Subscription, Subject, Observable } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { MeteorObservable } from 'meteor-rxjs';
 import { InjectUser } from "angular2-meteor-accounts-ui";
 import {MatInputModule,MatDialog, MatDialogRef, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material';
@@ -11,10 +11,13 @@ import 'rxjs/add/operator/combineLatest';
 
 import { Users } from '../../../../both/collections/users.collection';
 import { UsersAdmin } from '../../../../both/collections/users-admin.collection';
+import { Settings } from '../../../../both/collections/settings.collection';
+
 
 import { UserAdmin } from '../../../../both/models/user-admin.model';
 import { User } from '../../../../both/models/user.model';
 import { UserCreation } from '../../../../both/models/user-creation.model';
+import { Setting } from '../../../../both/models/setting.model';
 
 
 /**
@@ -32,11 +35,16 @@ export class SettingsUsersComponent implements OnInit, OnDestroy {
 	users: Observable<User[]>;
 	adminUsers: Observable<User[]>;
 	usersAdmin: Observable<UserAdmin[]>;
+	setting: Observable<Setting[]>;
 	error: string;
 
 	usersSub: Subscription;
 	usersAdminSub: Subscription;
 	user: Meteor.User;
+	settingsSub: Subscription;
+
+	isAdmin: boolean
+	settingObject: Setting
 
 	actionsAlignment: string;
 	config: MatDialogConfig = {
@@ -77,12 +85,26 @@ export class SettingsUsersComponent implements OnInit, OnDestroy {
 				// this.users = Users.find();
 		});
 
+		this.settingsSub = MeteorObservable.subscribe('settings').subscribe(() => {
+			let settings = Settings.find()
+			settings.subscribe(list => {
+				this.settingObject = list[0]
+			})
+		});
+
 		this.usersAdminSub = MeteorObservable.subscribe('userAdmin').subscribe(() => {
 				this.usersAdmin = UsersAdmin.find();
 
 				this.usersAdmin.subscribe(usersAdmin => {
 					if(usersAdmin.length === 1){
 						this.usersAdmin = Users.find({_id: usersAdmin[0].userId});
+
+						if(usersAdmin[0].userId == Meteor.userId()){
+							this.isAdmin = true
+						}else{
+							this.isAdmin = false
+						}
+
 						this.users = Users.find({_id: {
 							$ne: usersAdmin[0].userId
 						}});
@@ -103,6 +125,34 @@ export class SettingsUsersComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 		this.usersSub.unsubscribe();
 		this.usersAdminSub.unsubscribe();
+	}
+
+	toggleAuthNormal():void {
+		this.updateSettingsDatabase(() => {
+			if(this.settingObject.activerAuthentificationClassique === false
+					&& this.settingObject.activerLdap === false){
+				this.settingObject.activerAuthentificationClassique = true
+				this.updateSettingsDatabase(null)
+			}
+		})
+	}
+
+	toggleAuthLdap():void {
+		this.updateSettingsDatabase(()=>{
+			if(this.settingObject.activerAuthentificationClassique === false
+					&& this.settingObject.activerLdap === false){
+				this.settingObject.activerLdap = true
+				this.updateSettingsDatabase(null)
+			}
+		})
+	}
+
+	updateSettingsDatabase(callback : Function):void {
+		Settings.update({_id: this.settingObject._id},{$set : this.settingObject}).subscribe(number =>{
+			if(callback){
+				callback()
+			}
+		})
 	}
 
 	addUserFunction():void {

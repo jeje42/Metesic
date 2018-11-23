@@ -5,6 +5,11 @@ import { Router } from '@angular/router'
 import {InjectUser} from "angular2-meteor-accounts-ui";
 // import { ROUTER_DIRECTIVES } from '@angular/router';
 // import { TranslateService } from './translate';
+import { MeteorObservable } from 'meteor-rxjs';
+import { Subscription} from 'rxjs';
+import { Settings } from '../../../both/collections/settings.collection';
+
+import { Setting } from '../../../both/models/setting.model';
 
 
 @Component({
@@ -26,6 +31,11 @@ export class AppComponent implements OnInit {
       {name: 'Settings', route: 'settings'}
 	];
 
+  settingsSub: Subscription
+
+  loginNormal: boolean
+  loginLdap: boolean
+
 	// public translatedText: string;
 	// public supportedLanguages: any[];
 
@@ -35,6 +45,19 @@ export class AppComponent implements OnInit {
     }
 
 		ngOnInit() {
+      this.loginNormal = true
+      this.loginLdap = false
+
+      this.settingsSub = MeteorObservable.subscribe('settings').subscribe(() => {
+  			let settings = Settings.find()
+  			settings.subscribe(list => {
+  				let settingObject:Setting = list[0]
+
+          this.loginNormal = settingObject.activerAuthentificationClassique
+          this.loginLdap = settingObject.activerLdap
+  			})
+  		});
+
         // standing data
         // this.supportedLanguages = [
         // { display: 'English', value: 'en' },
