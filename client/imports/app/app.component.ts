@@ -4,7 +4,7 @@ import { Router } from '@angular/router'
 // import style from './app.component.scss';
 import {InjectUser} from "angular2-meteor-accounts-ui";
 // import { ROUTER_DIRECTIVES } from '@angular/router';
-// import { TranslateService } from './translate';
+import { TranslateService } from './translate';
 import { MeteorObservable } from 'meteor-rxjs';
 import { Subscription} from 'rxjs';
 import { Settings } from '../../../both/collections/settings.collection';
@@ -36,11 +36,11 @@ export class AppComponent implements OnInit {
   loginNormal: boolean
   loginLdap: boolean
 
-	// public translatedText: string;
-	// public supportedLanguages: any[];
+	public translatedText: string;
+	public supportedLanguages: any[];
 
 
-	constructor(private _element: ElementRef, private _router: Router) {
+	constructor(private _element: ElementRef, private _router: Router, private _translate: TranslateService) {
 
     }
 
@@ -59,41 +59,42 @@ export class AppComponent implements OnInit {
   		});
 
         // standing data
-        // this.supportedLanguages = [
-        // { display: 'English', value: 'en' },
-        // { display: 'Francais', value: 'fr' },
-        // ];
+        this.supportedLanguages = [
+        { display: 'English', value: 'en' },
+        { display: 'Francais', value: 'fr' },
+        ];
 
         // set current langage
-        // this.selectLang('en');
+        this.selectLang('en');
     }
 
-		// isCurrentLang(lang: string) {
-    //     // check if the selected lang is current lang
-    //     return lang === this._translate.currentLang;
-    // }
+		isCurrentLang(lang: string) {
+        // check if the selected lang is current lang
+        return lang === this._translate.currentLang;
+    }
 
-		// isCurrentLangStyle(lang: string) {
-		// 	if(this.isCurrentLang(lang)) {
-		// 		return "warn";
-		// 	}
-		// 	return "primary";
-		// }
+		isCurrentLangStyle(lang: string) {
+			if(this.isCurrentLang(lang)) {
+				return "warn";
+			}
+			return "primary";
+		}
 
-    // selectLang(lang: string) {
-    //     // set current lang;
-    //     this._translate.use(lang);
-    //     this.refreshText();
-    // }
+    selectLang(lang: string) {
+        // set current lang;
+        this._translate.use(lang);
+        this.refreshText();
+    }
 
-    // refreshText() {
-    //     // refresh translation when language change
-    //     this.translatedText = this._translate.instant('Name');
-    // }
+    refreshText() {
+        // refresh translation when language change
+        this.translatedText = this._translate.instant('Name');
+    }
 
   logout() {
-    Meteor.logout();
-    this._router.navigate([''])
+    Meteor.logout(() => {
+      this._router.navigate([''])
+    });
   }
 
   toggleFullscreen() {

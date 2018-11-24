@@ -24,14 +24,13 @@
         <mat-icon class="mat-24" >menu</mat-icon>
       </button>
       <div class="metesic-toolbar">
-        <!-- <h1>Metesic</h1> -->
         <button mat-button (click)="toggleFullscreen()" title="Toggle fullscreen">
           {{ 'Fullscreen' | translate }}
         </button>
-        <button mat-button (click)="dark = !dark">{{dark ? 'Light' : 'Dark'}} theme</button>
+        <!-- <button mat-button (click)="dark = !dark">{{dark ? 'Light' : 'Dark'}} theme</button> -->
         <button mat-button (click)="root.dir = (root.dir == 'rtl' ? 'ltr' : 'rtl')" title="Toggle between RTL and LTR">
           {{root.dir.toUpperCase()}}
-        </button> -->
+        </button>
         <div class="btn-group">
             <button mat-raised-button *ngFor="let lang of supportedLanguages" (click)="selectLang(lang.value)" [color]="isCurrentLangStyle(lang.value)">
                 {{ lang.display }}
