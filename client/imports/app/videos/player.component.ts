@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone, Inject, ViewChild, TemplateRef } 
 import {DOCUMENT} from '@angular/platform-browser';
 import { FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
+import { interval } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 import { MeteorObservable } from 'meteor-rxjs';
 import { InjectUser } from "angular2-meteor-accounts-ui";
@@ -126,14 +127,15 @@ export class PlayerComponent implements OnInit, OnDestroy {
     //   }, 5000);
     // }
 
-    // this.counter().subscribe(
-    //   data => {
-    //     var videoTag = document.getElementById("singleVideo");
-    //     if(videoTag != undefined){
-    //       Meteor.call('setCurrentTime', videoTag.currentTime);
-    //     }
-    //   }
-    // );
+    var counter = interval(1000)
+    counter.subscribe(
+      data => {
+        var videoTag = document.getElementById("singleVideo");
+        if(videoTag != undefined){
+          Meteor.call('setCurrentTime', videoTag.currentTime);
+        }
+      }
+    );
   }
 
 	ngOnDestroy() {
@@ -150,7 +152,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
   //     return "u";
   //   });
   // }
-
 
   /**
    * initVideosPlayListId - called when the client receives the PlayListsUsers data.
