@@ -65,7 +65,7 @@
 		      </button>
 				</p>
 				<mat-card>
-					<player-current-list *ngFor="let videoPlayList of listVideosPlayList" [videoPlayList]=videoPlayList [playList]=playList></player-current-list>
+					<player-current-list *ngFor="let videoPlayList of playList.list" [videoPlayList]=videoPlayList [playList]=playList></player-current-list>
 				</mat-card>
 			</mat-list>
 		</mat-card>

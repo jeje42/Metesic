@@ -11,8 +11,6 @@ import {MatDialog, MatDialogRef, MatDialogConfig} from '@angular/material';
 
 import 'rxjs/add/operator/combineLatest';
 
-// import { VideosMetas } from '../../../../both/collections/video-meta.collection';
-// import { VideoMeta } from '../../../../both/models/video-meta.model';
 import { PlayLists } from '../../../../both/collections/playlists.collection';
 import { Videos } from '../../../../both/collections/videos.collection';
 import { VideosMetas } from '../../../../both/collections/video-meta.collection';
@@ -37,6 +35,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   currentPlayListUser: Observable<PlayListUser[]>;
 
   currentPlaylistId: string;
+  currentPlaylistUserId: string;
 
   user: Meteor.User;
   videoReading: VideoMeta;
@@ -116,23 +115,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
 	  this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
 
-    // if(Meteor.isClient){
-    //   setInterval(() => {
-    //     var videoTag = document.getElementById("singleVideo");
-    //     if(videoTag != undefined){
-    //       console.log('setCurrentTime' +  videoTag.currentTime)
-    //       // PlayListsUsers.update({_id: this.currentPlayListUser._id}, {$set : {currentTime: videoTag.currentTime}});
-    //       Meteor.call('setCurrentTime', videoTag.currentTime);
-    //     }
-    //   }, 5000);
-    // }
-
     var counter = interval(1000)
     counter.subscribe(
       data => {
         var videoTag = document.getElementById("singleVideo");
         if(videoTag != undefined){
-          Meteor.call('setCurrentTime', videoTag.currentTime);
+          PlayListsUsers.update({_id: this.currentPlaylistUserId}, {$set : {currentTime: videoTag.currentTime}});
         }
       }
     );
@@ -146,13 +134,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
 	}
 
-  // counter() {
-  //   // return Observable.
-  //   return Observable.interval(10000).flatMap(() => {
-  //     return "u";
-  //   });
-  // }
-
   /**
    * initVideosPlayListId - called when the client receives the PlayListsUsers data.
    *
@@ -163,10 +144,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
     if(playListId === undefined || playListId.length === 0){
       return;
     }
+    this.currentPlaylistUserId = playListId[0]._id
     this.currentPlaylistId = playListId[0].currentPlaylist;
     this.currentPlaylist = PlayLists.find({_id: this.currentPlaylistId});
-
-    this.currentPlaylist.subscribe(listPlayList => this.initVideosPlaylistObject(listPlayList));
   }
 
 
@@ -230,7 +210,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
       videoTag.setAttribute('src', found.url);
       var playListUser:PlayListUser = PlayListsUsers.findOne({user: Meteor.user()._id});
       if(playListUser){
-        videoTag.currentTime = 0.000000;
+        videoTag.currentTime = playListUser.currentTime
+      }else{
+        videoTag.currentTime = 0.000000
       }
       videoTag.pause();
     }
