@@ -26,11 +26,3 @@ to start in production mode :
 cd pathToBundle && MONGO_URL=mongodb://localhost:27017/metesic ROOT_URL=http://localhost  PORT=3000 node main.js
 check it on : https://guide.meteor.com/deployment.html
 Install mongodb : https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/
-
-[}]: #
-[{]: <region> (footer)
-[{]: <helper> (nav_step)
-| [Begin Tutorial >](manuals/views/step1.md) |
-|----------------------:|
-[}]: #
-[}]: #
