@@ -27,7 +27,7 @@
   <h1>Admins ! </h1>
   <mat-nav-list>
 		<mat-list-item *ngFor="let user of usersAdmin | async">
-			<a mat-line>{{user.emails[0].address}}</a>
+			<a mat-line *ngIf="user.emails">{{user.emails[0].address}}</a>
       <a mat-line *ngIf="user.username != undefined">{{user.username}}</a>
       <button mat-raised-button color="accent" (click)="openEditUser(user)">
         <mat-icon>border_color</mat-icon>

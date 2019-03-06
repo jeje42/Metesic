@@ -31,7 +31,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.usersAdminSub = MeteorObservable.subscribe('userAdmin').subscribe(() => {
-				console.log("Meteor userId : " + Meteor.userId())
 				let admin:UserAdmin = UsersAdmin.findOne({userId:  Meteor.userId()})
 				if(admin){
 					this.isAdmin = true
