@@ -1,6 +1,6 @@
 
 export function initLdap(){
-  LDAP_DEFAULTS.url = 'ldap://192.168.0.20'
+  LDAP_DEFAULTS.url = 'ldap://192.168.0.13'
   LDAP_DEFAULTS.port = 389
   LDAP_DEFAULTS.dn = 'ou=appart,dc=jeje,dc=com'
 }

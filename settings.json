@@ -1,7 +1,7 @@
 {
 	"ldap": {
     "serverDn": "ou=appart,dc=jeje,dc=com",
-    "serverUrl": "ldap://192.168.0.20:389"
+    "serverUrl": "ldap://192.168.0.13:389"
 		},
 	"public": {
 		"adress":"localhost",
