@@ -36,11 +36,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   currentPlaylistId: string;
   currentPlaylistUserId: string;
+  playList: PlayList;
 
   user: Meteor.User;
   videoReading: VideoMeta;
   displayPlayer: boolean;
   displayVideo: boolean;
+  playlistSelected: boolean;
 
   playListsSub: Subscription;
   videosSubs: Subscription;
@@ -87,6 +89,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.displayPlayer = false;
     this.displayVideo = false;
+    this.playlistSelected = false;
     this.videoReading = undefined;
     if(!this.user){
       return;
@@ -146,7 +149,15 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     this.currentPlaylistUserId = playListId[0]._id
     this.currentPlaylistId = playListId[0].currentPlaylist;
-    this.currentPlaylist = PlayLists.find({_id: this.currentPlaylistId});
+    this.currentPlaylist = PlayLists.find({_id: this.currentPlaylistId})
+    this.currentPlaylist.subscribe(list => {
+      if(list.length >0){
+        this.playlistSelected = true;
+      }else{
+        this.playlistSelected = false;
+      }
+    });
+    this.playList = PlayLists.findOne({_id: this.currentPlaylistId});
   }
 
 

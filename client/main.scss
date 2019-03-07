@@ -54,7 +54,12 @@ $dark-theme:   mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
   color: mat-color($candy-app-accent);
 }
 
-button, a {
+// button,a
+button {
   margin: 8px;
   text-transform: uppercase;
+}
+
+.playlist-title {
+  width: 100%;
 }

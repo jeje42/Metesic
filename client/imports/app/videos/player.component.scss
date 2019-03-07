@@ -79,7 +79,7 @@
 
 .player-container {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column nowrap;
 
   .playlist-container {
     text-align: center;
@@ -104,4 +104,21 @@
   flex-direction: column;
   // flex-basis: 100%;
   // width: 100%;
+}
+
+
+div {
+  margin: 10px;
+}
+
+.metesic-button {
+  section {
+    display: flex;
+    align-items: center;
+    margin: 8px;
+  }
+
+  p {
+    padding: 5px 15px;
+  }
 }
