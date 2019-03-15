@@ -1,0 +1,21 @@
+[Unit]
+Description=Metesic App
+#Requires=After=mysql.service       # Requires the mysql service to run first
+
+[Service]
+ExecStart=/usr/bin/node /var/www/metesic/bundle/main.js
+# Required on some systems
+#WorkingDirectory=/opt/nodeserver
+Restart=always
+ # Restart service after 10 seconds if node service crashes
+ RestartSec=10
+ # Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=metesic
+#User=<alternate user>
+#Group=<alternate group>
+Environment=NODE_ENV=production MONGO_URL=mongodb://localhost:27017/metesic ROOT_URL=http://localhost  PORT=3000
+
+[Install]
+WantedBy=multi-user.target

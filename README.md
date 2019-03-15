@@ -7,8 +7,8 @@ This is a video streaming app build with meteor.
 
 It was fun for me to create this app with this technology which was entirely new for me.
 
-I have just used it for my personal need, but much work needs to be done. First fonctionalities are here :
-  
+I have just used it for my personal need, but much work needs to be done. First functionalities are here :
+
   - Scan server's folders to import videos in the app
   - During import, associate videos to categories
   - Videos search on name and categories selection
@@ -18,11 +18,34 @@ I have just used it for my personal need, but much work needs to be done. First 
 
 Lets start!
 
-To start in dev mode : meteor --release 1.4.4.6
+For Dev Mode :
+To start in dev mode : meteor
 
-To build : meteor --release 1.4.4.6 build /path/to/build --architecture os.linux.x86_64
+For Production:
+To build : meteor build build/ --architecture os.linux.x86_64
+Then extract the file metesic.tar.gz to the deploiement folder : tar -xvf metesic.tar.gz
+Install dependencies : cd bundle/programs/server && sudo meteor npm install
+Install mongodb service and check it is started and enabled
+Copy the file metesic.service to /etc/systemd/system/metesic.service (for ubuntu/debian based distribution). Adapt ExecStart to where you extracted the app
+Reload services : systemctl daemon-reload
 
-to start in production mode :
-cd pathToBundle && MONGO_URL=mongodb://localhost:27017/metesic ROOT_URL=http://localhost  PORT=3000 node main.js
+The app should listen on port 3000 (see Environment variable in the script).
+On option is to use an apache server (or nginx, no matter) as a proxy for https.
+
+
+
 check it on : https://guide.meteor.com/deployment.html
 Install mongodb : https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/
+
+Some Screenshots :
+The main page :
+![Alt text](screenshots/mainPage.png?raw=true "Settings for folders")
+The player is filled by the playlist.
+The research can be done by checking categories and/or entering a video name
+
+The settings : folder scan
+![Alt text](screenshots/folders.png?raw=true "Settings for folders")
+The scan is done recursively. The checkbox is used to add videos available in the main page. If it is already checked, the file or folder is already in the library
+
+The settings : categories
+![Alt text](screenshots/categories.png?raw=true "Settings for folders")
