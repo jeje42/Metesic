@@ -7,6 +7,10 @@ This is a video streaming app build with meteor.
 
 It was fun for me to create this app with this technology which was entirely new for me.
 
+Technologies used :
+ - front end : Angular Material
+ - back and front end : Meteor with its premium functionalities : observable(rxjs) for a realtime app, easy user management
+
 I have just used it for my personal need, but much work needs to be done. First functionalities are here :
 
   - Scan server's folders to import videos in the app
