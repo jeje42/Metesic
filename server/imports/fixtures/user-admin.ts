@@ -1,11 +1,7 @@
 import { UsersAdmin } from '../../../both/collections/users-admin.collection';
-import { UserAdmin } from '../../../both/models/user-admin.model';
 
 export function initAdmin(){
-  var vari = UsersAdmin.find().cursor.count() ;
-  console.log("vari : " + vari);
   if(UsersAdmin.find().cursor.count() === 0) {
-    console.log("Before");
     var returnValue:string = Accounts.createUser({
         email: "admin@admin.fr",
         username: "admin",
@@ -14,11 +10,11 @@ export function initAdmin(){
 
       UsersAdmin.insert({userId: returnValue});
 
-      console.log("Admin created !" + returnValue);
+      logger.info("Admin created !" + returnValue);
 
   }
   else{
-    console.log("Admin already created");
+    logger.info("Admin already created");
   }
 }
 

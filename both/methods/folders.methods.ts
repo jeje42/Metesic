@@ -39,6 +39,7 @@ function insertOrUpdateFolder(path: string, children: string[], isFolder: boolea
 
 function updateFolderAction(folder: Folder, path: string, children: string[], isFolder: boolean, action: ScanActions){
 	if (action === ScanActions.RemoveCollection) {
+		logger.info("updateFolderAction RemoveCollection " + folder.name)
 		if(!folder.isFolder){
 			let videoMeta = VideosMetas.findOne({folderId : folder._id});
 			Meteor.call('removeVideo',videoMeta);
@@ -55,18 +56,17 @@ function updateFolderAction(folder: Folder, path: string, children: string[], is
 }
 
 function addToCollection(folder: Folder){
-	console.log("addToCollection" + folder.path);
 	var Fiber = Npm.require("fibers");
 
 	Fiber(function() {
 		if(folder.isFolder){
-			console.log(folder.name + " is a folder a is not added to filesystem");
+			logger.info("addToCollection" + folder.path + " ; isInCollection: true")
 			Folders.update({ path: folder.path }, {$set: { isInCollection: true } });
 		}else{
-			console.log(folder.name + " is not a folder, call to uploadVideosPointer");
 			if(!checkAddCondition(folder.name)){
 				return;
 			}
+			logger.info("call to uploadVideosPointer" + folder.path)
 			uploadVideosPointer(folder)
 	      .then((result) => {
 					var video = Videos.findOne({_id: result._id});
@@ -83,7 +83,7 @@ function addToCollection(folder: Folder){
 					}
 					var newAdress = protocole + "://" + adress + ":" + port + getSubstringUrl(video.url, "", "afterAdressPort") ;
 
-
+					logger.info("addToCollection Video and VideoMeta " + folder.path)
 					Videos.update(result._id, {
 						$set: { url:  newAdress},
 				    });
@@ -101,6 +101,7 @@ function addToCollection(folder: Folder){
 					Meteor.call('checkCategoriesForVideo', result._id);
 	      })
 	      .catch((error) => {
+					logger.error("addToCollection " + error)
 	        this.uploading = false;
 	      });
 		}
@@ -190,28 +191,26 @@ function updateProgression(index, childPath, files){
 function scanFolder(path: string, depth: number, action: ScanActions, recursionDepth: number): void {
 	check(path, String);
 
-	var Future = Npm.require('fibers/future'), wait = Future.wait;
-	var fs = Future.wrap(Npm.require('fs'));
+	// var Future = Npm.require('fibers/future'), wait = Future.wait;
+	// var fs = Future.wrap(Npm.require('fs'));
 
-	var files = fs.readdirFuture(path).wait()
-	// , function(err, files) {
-		// if (err) {
-		// 	console.log(err);
-		// 	return;
-		// }
+	// var files = fs.readdirFuture(path).wait()
+	let fs = Npm.require('fs')
+
+	fs.readdir(path, Meteor.bindEnvironment((err, files) => {
+		if(err){
+			logger.error("scanFolder " + err)
+		}
 
 		if(action == ScanActions.RemoveCollection || action == ScanActions.RemoveDatabase){
 			purgeChildren(path, files);
 		}
 
-		// var Fiber = Npm.require("fibers");
-		// Fiber(function() {
 		for (var file of files) {
 			if(checkScanConditions(file)){
 				Folders.update({ path: path }, { $addToSet: { children: file } });
 			}
 		}
-		// }).run();
 
 		recursionDepth++;
 		files.map((file, index) => {
@@ -223,6 +222,7 @@ function scanFolder(path: string, depth: number, action: ScanActions, recursionD
 
 			scanFile(childPath, depth, action, recursionDepth)
 		})
+	}))
 }
 
 
@@ -236,36 +236,35 @@ function scanFolder(path: string, depth: number, action: ScanActions, recursionD
  * @param  {type} action: ScanActions description
  * @return {type}                     description
  */
-var scanFile = function(path: string, depth: number, action: ScanActions, recursionDepth: number) {
+var scanFile = function(path: string, depth: number, action: ScanActions, recursionDepth: number): void {
 		if (!checkScanConditions(path))
 			return;
 
-		var Future = Npm.require('fibers/future'), wait = Future.wait;
-		var fs = Future.wrap(Npm.require('fs'));
+		// var Future = Npm.require('fibers/future'), wait = Future.wait;
+		// var fs = Future.wrap(Npm.require('fs'));
+		let fs = Npm.require('fs')
 
 		// var fs = Npm.require("fs");
 
-		let fsPath = fs.statFuture(path).wait()
+		// let fsPath = fs.statFuture(path).wait()
+		fs.stat(path, Meteor.bindEnvironment((err, stats) => {
+			if(err){
+				logger.error("scanFile " + err)
+			}else{
+				if (stats.isDirectory()) {
+					insertOrUpdateFolder(path, [], true, action, stats.size);
 
-		// , function(err, stats) {
-		// if (err) {
-		// 	console.log(err);
-		// 	return;
-		// }
+					if (depth != -2)
+						depth--;
 
-		if (fsPath.isDirectory()) {
-			insertOrUpdateFolder(path, [], true, action, fsPath.size);
-
-			if (depth != -2)
-				depth--;
-
-			if (depth === -2 || depth >= 0) {
-				scanFolder(path, depth, action, recursionDepth);
+					if (depth === -2 || depth >= 0) {
+						scanFolder(path, depth, action, recursionDepth);
+					}
+				} else {
+					insertOrUpdateFolder(path, [], false, action, stats.size);
+				}
 			}
-		} else {
-			insertOrUpdateFolder(path, [], false, action, fsPath.size);
-		}
-	// })
+		}))
 }
 
 Meteor.methods({
@@ -281,7 +280,6 @@ Meteor.methods({
 
 	changeCollectionFolder: function(folder: Folder, checked: boolean) {
 		if (Meteor.isServer) {
-			//			changeCollection(folder, checked);
 			let recursionDepth = 0
 			scanFile(folder.path, -2, checked ? ScanActions.Add : ScanActions.RemoveCollection, recursionDepth);
 		}

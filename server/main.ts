@@ -1,10 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-//import { Loggly} from
 
 import { loadCategories } from './imports/fixtures/categories';
 import { searchVideos, updateVideosUrls, checkIndexesVideosMeta } from './imports/fixtures/videos';
 import { initPlayerPlayList } from './imports/fixtures/playlists';
-import { insertFile } from './imports/fixtures/videosImport';
 import { initAdmin } from './imports/fixtures/user-admin';
 import { initLdap } from './imports/fixtures/ldap';
 import { initSettings } from './imports/fixtures/settings';
@@ -26,53 +24,44 @@ import './imports/publications/settings';
 
 
 function initLogger() {
-	let winston = Npm.require('winston');
-	// logger = new (winston.Logger)({
-  //   transports: [
-  //     new (winston.transports.Console)({'timestamp':true})
-  //   ]
-	// });
-	logger = new (winston.Logger)({
+	const { createLogger, format, transports } = Npm.require('winston')
+	const path = Npm.require('path');
+
+	logger = createLogger({
+	  level: 'debug',
+	  format: format.combine(
+	    format.label({ label: path.basename(process.mainModule.filename) }),
+	    format.colorize(),
+	    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+	    format.printf(
+	      info => `${info.timestamp} ${info.level} [${info.label}]: ${info.message}`
+	    )
+	  ),
 	  transports: [
-	    new (winston.transports.Console)({ json: true, timestamp: true }),
-	    new winston.transports.File({ filename: Meteor.settings.winston.transports, json: true, timestamp: true })
-	  ],
-	  exceptionHandlers: [
-	    new (winston.transports.Console)({ json: true, timestamp: true }),
-	    new winston.transports.File({ filename: Meteor.settings.winston.exceptionHandlers, json: true, timestamp: true })
-	  ],
-	  exitOnError: false
+	    new transports.Console(),
+	    new transports.File({
+	      // filename: __dirname + '/../logs/errors.log',
+				filename: '/tmp/metesic.info',
+	      level: 'info'
+	    }),
+			new transports.File({
+	      // filename: __dirname + '/../logs/errors.log',
+				filename: '/tmp/metesic.error',
+	      level: 'error'
+	    })
+	  ]
 	});
-
-	const log4js = Npm.require('log4js');
-	// log4js.configure({
-	//   "appenders": { "doudou": { "type": "file", "filename": "doudou.log" } }
-	//   // categories: { default: { appenders: ['cheese'], level: 'error' } }
-	// });
-
-	// log4js.configure({
-  //   appenders: [
-  //       { type: 'console' },
-  //       { type: 'file', filename: 'doudou.log', category: 'cheese' }
-  //   ]
-	// });
-
-	// var log4js = log4js.getLogger();
-	// logger = log4js.getLogger();
-	// //logger.level = 'debug';
-
 }
 
 
 Meteor.startup(() => {
 	loadCategories()
 	checkIndexesVideosMeta()
-	// initLogger()
+	initLogger()
 	// loadParties()
 	searchVideos()
 	// updateVideosUrls()
 	initPlayerPlayList()
-	insertFile()
 	initAdmin()
 	initLdap()
 	initSettings()

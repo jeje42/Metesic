@@ -9,14 +9,14 @@ import { getSubstringUrl } from '../../../both/methods/videos.methods';
 
 export function searchVideos() {
 	Meteor.onConnection(function(conn) {
-	    console.log("Nouvelle Connexion : " + conn.clientAddress);
+	    logger.info("Nouvelle Connexion : " + conn.clientAddress);
 	});
 
 	var videos = VideosMetas.find();
 	if (videos.cursor.count() === 0) {
-		console.log("No video yet !")
+		logger.info("No video yet !")
 	}else{
-		videos.fetch().forEach(videoMeta => {console.log(videoMeta)});
+		videos.fetch().forEach(videoMeta => {logger.info(JSON.stringify(videoMeta))});
 	}
 
 
@@ -59,8 +59,5 @@ export function updateVideosUrls() {
 }
 
 export function checkIndexesVideosMeta() {
-	console.log("checkIndexesVideosMeta debut");
 	var list = VideosMetas.collection._ensureIndex({name:1}, {unique: true});
-	// VideosMetas.collection._
-	console.log("checkIndexesVideosMeta fin");
 }

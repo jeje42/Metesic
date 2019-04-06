@@ -8,7 +8,6 @@ import { Categories } from '../collections/categories.collection';
 import { PlayLists } from '../collections/playlists.collection';
 
 
-import { Video } from '../models/video.model';
 import { VideoMeta } from '../models/video-meta.model';
 import { Folder } from '../models/folder.model';
 import { Category } from '../models/category.model';
@@ -105,14 +104,10 @@ Meteor.methods({
 		}
 	},
 checkCategoriesForVideo: function(videoId: string) {
-	console.log("checkCategoriesForVideo : " + videoId);
-  //logger.info("checkCategoriesForVideo : " + videoId);
   var foldersPath: string[] = Videos.findOne({_id:videoId}).path.split("/");
   for(var fol in foldersPath){
-    //logger.info("checkCategoriesForVideo : " + videoId + " ; searching for " + foldersPath[fol] + " within Categories");
     var category:Category = Categories.findOne({name: foldersPath[fol]});
     if(category != undefined){
-      console.log("checkCategoriesForVideo : " + videoId + " ; Adding " + category.name + " to the video");
       VideosMetas.update({video:videoId}, { $addToSet: { categories: category._id } });
     }
   }
@@ -120,8 +115,6 @@ checkCategoriesForVideo: function(videoId: string) {
 
 removeVideo: function(videoMeta: VideoMeta){
   if(videoMeta == undefined){
-		console.log("method removeVideo : cannot remove the video because it is undefined !");
-    // throw new Meteor.Error("Method removeVideo : cannot remove the video because it is undefined !");
 		return;
   }
 	PlayLists.update({list: {id_videoMeta: videoMeta._id}}, {$pull: {list: {id_videoMeta: videoMeta._id}}});
@@ -129,17 +122,17 @@ removeVideo: function(videoMeta: VideoMeta){
   VideosMetas.remove({_id:videoMeta._id});
 },
 
-// Meteor.methods({
 	deleteVideo: function(videoMeta: VideoMeta) {
 		if (Meteor.isServer) {
       Videos.collection.remove({_id: videoMeta.video}, function(err, result){
         if(err){
-          console.log("Cannot remove " + videoMeta.name + " from Videos because " + err);
+          console.log();
+					logger.error("deleteVideo, cannot remove " + videoMeta.name + " from Videos because " + err)
           return;
         }
         VideosMetas.collection.remove({_id:videoMeta._id},function(err, result){
           if(err){
-            console.log("Cannot remove " + videoMeta.name + " from VideosMetas because " + err);
+            logger.error("deleteVideo, cannot remove " + videoMeta.name + " from VideosMetas because " + err)
             return;
           }
           Folders.update({_id : videoMeta.folderId}, {$set: {isInCollection: false}});

@@ -5,18 +5,18 @@ import {PlayList} from '../../../both/models/playlist.model';
 import {VideoPlayList} from '../../../both/models/video-playlist.model';
 
 export function initPlayerPlayList() {
-	console.log("Listing PlayListsUsers");
+	logger.info("Listing PlayListsUsers");
 	var playlists = PlayListsUsers.find();
 	if (playlists.cursor.count() === 0) {
-		console.log("No playLists yet !")
+		logger.info("No playLists yet !")
 	}else{
-		playlists.fetch().forEach(videoMeta => {console.log(videoMeta)});
+		playlists.fetch().forEach(videoMeta => {logger.info(JSON.stringify(videoMeta))});
 	}
 
-	console.log("Listing PlayLists");
+	logger.info("Listing PlayLists");
 	var playlists2 = PlayLists.find();
 	if (playlists2.cursor.count() === 0) {
-		console.log("No playLists yet !")
+		logger.info("No playLists yet !")
 	}else{
 		playlists2.fetch().forEach(playList => {
 			updateVideosInPlayList(playList);
@@ -26,7 +26,7 @@ export function initPlayerPlayList() {
 }
 
 function updateVideosInPlayList(playList: PlayList){
-	console.log("updateVideosInPlayList !");
+	logger.info("updateVideosInPlayList !");
 	var newList: VideoPlayList[] = [];
 	var updateList: boolean = false;
 	for(var i=0 ; i<playList.list.length ; i++){
@@ -48,7 +48,7 @@ function updateVideosInPlayList(playList: PlayList){
 		}
 	}
 	if(updateList){
-		console.log("Updating !" + playList.list.length + " ; " + newList.length);
+		logger.info("Updating !" + playList.list.length + " ; " + newList.length);
 		PlayLists.update({_id: playList._id}, {$set: {list: newList}});
 	}
 }
