@@ -43,6 +43,8 @@ export const LANG_FR_TRANS = {
         /**
          *  player.component
          */
+         'Enlarge the player !' : 'Agrandir le player !',
+         'Reduce the player !' : 'diminuer le player !',
         'Change the current playlist !' : 'Changer la playlist courante !',
         'Delete the playlist !' : 'Supprimer la playlist !',
         'Play now' : 'Jouer maintenant',

@@ -79,7 +79,7 @@
 
 .player-container {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
 
   .playlist-container {
     text-align: center;

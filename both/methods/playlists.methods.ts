@@ -4,11 +4,13 @@ import { Observable } from 'rxjs/Observable';
 
 import { PlayLists } from '../collections/playlists.collection';
 import { PlayListsUsers } from '../collections/playlists-users.collection';
+import { VideosUsers } from '../collections/videos-users.collection';
 
 import { PlayList } from '../models/playlist.model';
 import { VideoPlayList } from '../models/video-playlist.model';
 
 import { PlayListUser } from '../models/playlist-user.model';
+import { VideoUser } from '../models/video-user.model';
 
 Meteor.methods({
 
@@ -56,10 +58,18 @@ Meteor.methods({
 	 * @param  {type} _idVideo: string description
 	 * @return {type}                  description
 	 */
-	setVideoPlayListUser: function(_idVideo: string){
-			let playListsUsers: PlayListUser =  PlayListsUsers.findOne({user: Meteor.user()._id});
-	    if(playListsUsers != undefined && playListsUsers.currentVideo != _idVideo){
-	      var number : Observable<number> = PlayListsUsers.update({_id: playListsUsers._id}, {$set : {currentVideo: _idVideo}});
+	setVideoPlayListUser: function(_idVideo: string, playList: string){
+			let videoUser: VideoUser =  VideosUsers.findOne({user: Meteor.user()._id, playList: playList});
+			if(videoUser == undefined){
+				VideosUsers.insert({
+					user : Meteor.user()._id,
+					currentVideo : _idVideo,
+					currentTime : 0,
+					playList: playList
+				})
+			}
+	    if(videoUser != undefined && videoUser.currentVideo != _idVideo){
+	      var number : Observable<number> = VideosUsers.update({_id: videoUser._id}, {$set : {currentVideo: _idVideo, playList: playList}});
 	    }
 	},
 
@@ -84,11 +94,9 @@ Meteor.methods({
 	 * @return {type}  description
 	 */
 	blankCurrentVideo: function(){
-		let playListsUsers: PlayListUser =  PlayListsUsers.findOne({user: Meteor.userId()});
-		console.log("blankCurrentVideo PlayListUsers !")
-		if(playListsUsers){
-			console.log("blankCurrentVideo PlayListUsers ! " + playListsUsers.currentPlaylist)
-			PlayListsUsers.update({_id: playListsUsers._id}, {$set : {currentVideo: null, currentTime: 0}});
+		let videoUser: VideoUser =  VideosUsers.findOne({user: Meteor.userId()});
+		if(videoUser){
+			VideosUsers.update({_id: videoUser._id}, {$set : {currentVideo: null, currentTime: 0}});
 		}
 	},
 

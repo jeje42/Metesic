@@ -10,7 +10,6 @@ import {MatDialog, MatDialogRef, MatDialogConfig} from '@angular/material';
 import 'rxjs/add/operator/combineLatest';
 
 import { VideosMetas } from '../../../../both/collections/video-meta.collection';
-import { PlayLists } from '../../../../both/collections/playlists.collection';
 import { Categories } from '../../../../both/collections/categories.collection';
 import { PlayListsUsers } from '../../../../both/collections/playlists-users.collection';
 
@@ -44,7 +43,7 @@ export class VideosListComponent implements OnInit, OnDestroy {
   currentPlaylist: string;
 
   user: Meteor.User;
-  
+
   videosMetasSub: Subscription;
   videosSubs: Subscription;
   categoriesSub: Subscription;
@@ -113,8 +112,6 @@ export class VideosListComponent implements OnInit, OnDestroy {
     };
 
     this.categoriesSub = MeteorObservable.subscribe('categories').subscribe(() => {
-      console.log("Subscribe categories")
-
       this.categories = Categories.find({},{
         sort: {
 					name: 0
@@ -128,20 +125,13 @@ export class VideosListComponent implements OnInit, OnDestroy {
     this.videosSubs = MeteorObservable.subscribe('videos').subscribe();
 
     this.videosMetasSub = MeteorObservable.subscribe('videosMetas').subscribe(() => {
-      console.log("Subscribe videosMetas")
       this.updateListedVideos();
 	  });
 
 	  this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
 
     this.playListsUsersSub = MeteorObservable.subscribe('playlistsUsers').subscribe(() => {
-      console.log("Subscribe playlistsUsers")
-
-      // let currentPlayListObject = PlayListsUsers.findOne({user: this.user._id});
-      // if(currentPlayListObject != undefined){
-      //   this.currentPlaylist = currentPlayListObject.currentPlaylist;
-      // }
-      this.currentPlayListUser = PlayListsUsers.find({user: this.user._id});
+      this.currentPlayListUser = PlayListsUsers.find({user: Meteor.user()._id});
 
       this.currentPlayListUser.subscribe(listPlayListUser => {
         let playlistUser: PlayListUser = listPlayListUser[0];

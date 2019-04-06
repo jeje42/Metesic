@@ -8,8 +8,6 @@ import {MatDialog} from '@angular/material';
 
 import 'rxjs/add/operator/combineLatest';
 
-// import { VideosMetas } from '../../../../both/collections/video-meta.collection';
-// import { VideoMeta } from '../../../../both/models/video-meta.model';
 import { PlayLists } from '../../../../both/collections/playlists.collection';
 import { PlayListsUsers } from '../../../../both/collections/playlists-users.collection';
 

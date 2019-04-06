@@ -1,6 +1,6 @@
 <mat-nav-list *ngFor="let video of videos | async">
   <mat-list-item>
-    <div *ngIf=" playListUser && video._id === playListUser.currentVideo">
+    <div *ngIf=" currentVideoUser && video._id === currentVideoUser">
       <mat-icon class="mat-24">play_arrow</mat-icon>
     </div>
     <button mat-raised-button  color="accent" style="margin : 8px;" (click)="readVideoButton(video)" matTooltip="{{ 'Play now' | translate }}">

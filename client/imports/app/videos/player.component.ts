@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy, NgZone, Inject, ViewChild, TemplateRef } 
 import {DOCUMENT} from '@angular/platform-browser';
 import { FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { interval } from 'rxjs';
 import { Subscription } from 'rxjs/Subscription';
 import { MeteorObservable } from 'meteor-rxjs';
 import { InjectUser } from "angular2-meteor-accounts-ui";
@@ -12,14 +11,11 @@ import {MatDialog, MatDialogRef, MatDialogConfig} from '@angular/material';
 import 'rxjs/add/operator/combineLatest';
 
 import { PlayLists } from '../../../../both/collections/playlists.collection';
-import { Videos } from '../../../../both/collections/videos.collection';
-import { VideosMetas } from '../../../../both/collections/video-meta.collection';
 import { PlayListsUsers } from '../../../../both/collections/playlists-users.collection';
 
 import { PlayList } from '../../../../both/models/playlist.model';
 import { PlayListUser } from '../../../../both/models/playlist-user.model';
 import { VideoMeta } from '../../../../both/models/video-meta.model';
-import { VideoPlayList } from '../../../../both/models/video-playlist.model';
 
 import { PlayListsDialog } from './playlists-dialog.component';
 
@@ -30,24 +26,21 @@ import { PlayListsDialog } from './playlists-dialog.component';
 })
 @InjectUser('user')
 export class PlayerComponent implements OnInit, OnDestroy {
-  listVideosPlayList: VideoPlayList[];
   currentPlaylist: Observable<PlayList[]>;
   currentPlayListUser: Observable<PlayListUser[]>;
 
   currentPlaylistId: string;
   currentPlaylistUserId: string;
-  playList: PlayList;
 
   user: Meteor.User;
   videoReading: VideoMeta;
-  displayPlayer: boolean;
-  displayVideo: boolean;
   playlistSelected: boolean;
 
   playListsSub: Subscription;
   videosSubs: Subscription;
   videosMetaSubs: Subscription;
   currentPlayListSubs: Subscription;
+  videosUsersSub: Subscription
 
   actionsAlignment: string;
   /**
@@ -70,6 +63,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
   };
 
+  biasWidth: number = 50
+
   @ViewChild(TemplateRef) template: TemplateRef<any>;
 
   constructor(private zone: NgZone,	private formBuilder: FormBuilder,public dialog: MatDialog, @Inject(DOCUMENT) doc: any) {
@@ -87,11 +82,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.displayPlayer = false;
-    this.displayVideo = false;
     this.playlistSelected = false;
     this.videoReading = undefined;
-    if(!this.user){
+    if(!Meteor.user()){
       return;
     }
 
@@ -99,41 +92,34 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     this.videosMetaSubs = MeteorObservable.subscribe('videoMeta').subscribe();
 
+    this.videosUsersSub = MeteorObservable.subscribe('videosUsers', {}).subscribe();
+
+    this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
+
     this.currentPlayListSubs = MeteorObservable.subscribe('playlistsUsers').subscribe(() => {
-      if(this.user === undefined){
+      if(Meteor.user() === undefined){
         return;
       }
-      this.currentPlayListUser = PlayListsUsers.find({user: this.user._id});
+      this.currentPlayListUser = PlayListsUsers.find({user: Meteor.user()._id});
 
       this.currentPlayListUser.subscribe(listPlayListUser => {
-        this.initVideosPlayListId(listPlayListUser);
+        this.initVideosPlayListId(listPlayListUser)
 
-        var playListUser: PlayListUser = PlayListsUsers.findOne({user: this.user._id});
+          var playListUser: PlayListUser = PlayListsUsers.findOne({user: Meteor.user()._id});
           if(playListUser === undefined){
             return;
           }
-            this.readVideo(VideosMetas.findOne({_id: playListUser.currentVideo}));
       });
     });
-
-	  this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
-
-    var counter = interval(1000)
-    counter.subscribe(
-      data => {
-        var videoTag = document.getElementById("singleVideo");
-        if(videoTag != undefined){
-          PlayListsUsers.update({_id: this.currentPlaylistUserId}, {$set : {currentTime: videoTag.currentTime}});
-        }
-      }
-    );
   }
 
 	ngOnDestroy() {
-    if(this.user){
-      this.playListsSub.unsubscribe();
-  		this.videosSubs.unsubscribe();
-      this.videosMetaSubs.unsubscribe();
+    if(Meteor.user()){
+      this.playListsSub.unsubscribe()
+  		this.videosSubs.unsubscribe()
+      this.videosMetaSubs.unsubscribe()
+      this.currentPlayListSubs.unsubscribe();
+      this.videosUsersSub.unsubscribe();
     }
 	}
 
@@ -145,10 +131,13 @@ export class PlayerComponent implements OnInit, OnDestroy {
    */
   initVideosPlayListId(playListId: PlayListUser[]){
     if(playListId === undefined || playListId.length === 0){
-      return;
+      return false;
     }
+    let playlistChanged:boolean = (this.currentPlaylistId != playListId[0].currentPlaylist)
+
     this.currentPlaylistUserId = playListId[0]._id
     this.currentPlaylistId = playListId[0].currentPlaylist;
+
     this.currentPlaylist = PlayLists.find({_id: this.currentPlaylistId})
     this.currentPlaylist.subscribe(list => {
       if(list.length >0){
@@ -157,83 +146,14 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.playlistSelected = false;
       }
     });
-    this.playList = PlayLists.findOne({_id: this.currentPlaylistId});
+
+
+    return playlistChanged
   }
-
-
-
-  /**
-   * initVideosPlaylistObject - called when the client receives the PlayList data.
-   *
-   * @param  {type} playLists: PlayList[] description
-   * @return {type}                       description
-   */
-  initVideosPlaylistObject(playLists: PlayList[]){
-    if(playLists[0] === undefined || playLists[0]._id != this.currentPlaylistId){
-      return;
-    }
-    this.listVideosPlayList = playLists[0].list;
-  }
-
-  videoPlayListToVideoMeta(videoPlayList: VideoPlayList){
-    if(videoPlayList && videoPlayList.id_videoMeta){
-      return VideosMetas.findOne({_id: videoPlayList.id_videoMeta});
-    }
-  }
-
-
-	/**
-	 * Called when the PlayListsUsers data changes.
-	 */
-	readVideo(video: VideoMeta): void {
-		if (!video) {
-      return;
-    }
-
-    const found = Videos.findOne(video.video);
-
-    if (found === undefined) {
-      return; //TODO : log error message
-    }
-
-    this.displayPlayer = true;
-    this.displayVideo = true;
-
-    // let videoContainer = document.getElementById("videoContainer");
-    let videoTag = document.getElementById("singleVideo");
-    // if(!videoTag){
-    //   videoTag = document.createElement("video");
-    //   videoTag.setAttribute('width', "800");
-    //   videoTag.setAttribute('height', "450");
-    //   videoTag.setAttribute('controls', "true");
-    //   videoTag.setAttribute('autoplay', "true");
-    //   videoTag.setAttribute('id',"singleVideo");
-    //   videoTag.setAttribute('type',"video/mp4");
-    //   videoTag.setAttribute('src', found.url);
-    //   var playListUser:PlayListUser = PlayListsUsers.findOne({user: this.user._id});
-    //   if(playListUser && playListUser.currentTime){
-    //     videoTag.currentTime = playListUser.currentTime;
-    //   }
-    //   videoContainer.appendChild(videoTag);
-    //   videoTag.pause();
-    // }else{
-    if(found.url != videoTag.getAttribute('src')){
-      videoTag.setAttribute('src', found.url);
-      var playListUser:PlayListUser = PlayListsUsers.findOne({user: Meteor.user()._id});
-      if(playListUser){
-        videoTag.currentTime = playListUser.currentTime
-      }else{
-        videoTag.currentTime = 0.000000
-      }
-      videoTag.pause();
-    }
-    // }
-}
 
   deleteCurrentPlayList(playlist: PlayList){
     let videoContainer = document.getElementById("videoContainer");
     if(videoContainer){
-      // videoContainer.innerHTML = "";
       let playListsUsers: PlayListUser =  PlayListsUsers.findOne({user: Meteor.userId()});
       PlayListsUsers.update({_id: playListsUsers._id}, {$set : {currentVideo: null, currentTime: 0}}).subscribe(number => {
         console.error("PlayListsUsers update : " + number)
@@ -259,6 +179,27 @@ export class PlayerComponent implements OnInit, OnDestroy {
     let dialogRef = this.dialog.open(PlayListsDialog, this.config);
     dialogRef.componentInstance.actionsAlignment = this.actionsAlignment;
 		dialogRef.componentInstance.user = Meteor.user();
-		dialogRef.componentInstance.loggedUser = this.user;
+		dialogRef.componentInstance.loggedUser = Meteor.user();
 	}
+
+  enlargerPlayer(){
+    this.commonReduceEnlarge(false)
+  }
+
+  reducePlayer(){
+    this.commonReduceEnlarge(true)
+  }
+
+  commonReduceEnlarge(reduce:boolean){
+    let videoTag = document.getElementById("singleVideo")
+    let width:number = Number(videoTag.width) + (reduce?-1:1) * this.biasWidth
+    let height:number = this.getHeightFromWidth(width)
+
+    videoTag.width = width
+    videoTag.height = height
+  }
+
+  getHeightFromWidth(width:number){
+    return width*9/16
+  }
 }
