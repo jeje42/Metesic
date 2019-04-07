@@ -107,7 +107,7 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
         }
         this.currentVideoUserId = listVideoUser[0]._id
         this.currentVideoUser = listVideoUser[0].currentVideo
-        this.readVideo(listVideoUser[0]);
+        this.readVideo(listVideoUser[0])
     });
   }
 
@@ -176,14 +176,19 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
     }
 
     let videoTag = document.getElementById("singleVideo")
-    if(found.url != videoTag.getAttribute('src')){
-      videoTag.setAttribute('src', found.url);
+    let newUrl = found.url + this.getUserParameterVideoSrc()
+    if(newUrl != videoTag.getAttribute('src')){
+      videoTag.setAttribute('src', newUrl)
       if(videoUser){
         videoTag.currentTime = videoUser.currentTime
       }else{
         videoTag.currentTime = 0.000000
       }
-      videoTag.pause();
+      videoTag.pause()
     }
+  }
+
+  getUserParameterVideoSrc(){
+    return "?" + "userId=" + Meteor.userId() + "&" + "loginToken=" + Accounts._storedLoginToken()
   }
 }

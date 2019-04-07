@@ -71,6 +71,36 @@ if (Meteor.isServer) {
         console.error('ufs: ' + err.message);
     });
 
+    var checkTokens = function(req){
+      if(req.url.indexOf('?') != -1){
+        var params = req.url.substring(req.url.indexOf('?')+1)
+        req.url = req.url.substring(0, req.url.indexOf('?'))
+
+        var paramsArray = params.split('&')
+        if(paramsArray){
+          var userId = undefined
+          var loginToken = undefined
+          paramsArray.forEach(param => {
+            var keyValue = param.split("=")
+            if("userId" == keyValue[0]){
+              userId = keyValue[1]
+            }else if("loginToken" == keyValue[0]){
+              loginToken = keyValue[1]
+            }
+          })
+
+          if(userId && loginToken){
+            var user = Meteor.users.findOne({'_id': userId, 'services.resume.loginTokens.hashedToken': Accounts._hashLoginToken(loginToken)})
+            if(user != undefined){
+              return true
+            }
+          }
+        }
+
+        return false
+      }
+    }
+
     // Listen HTTP requests to serve files
     WebApp.connectHandlers.use((req, res, next) => {
         // Quick check to see if request should be catch
@@ -186,6 +216,11 @@ if (Meteor.isServer) {
             });
         }
         else if (req.method == 'GET') {
+            if(!checkTokens(req)){
+              res.writeHead(400);
+              res.end();
+              return;
+            }
             // Get store, file Id and file name
             let regExp = new RegExp('^\/([^\/\?]+)\/([^\/\?]+)(?:\/([^\/\?]+))?$');
             let match = regExp.exec(path);
