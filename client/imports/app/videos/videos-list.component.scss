@@ -78,6 +78,9 @@
 }
 
 .research-container {
+  display: flex;
+  flex-direction: row;
+
   position: relative;
   // display: inline-block;
   overflow-y: auto;
@@ -130,8 +133,8 @@
 }
 
 .research-criterions {
-  display: flex;
-  width: 100%;
+  // display: flex;
+  // width: 100%;
 
   .research-videos {
     min-width: 200px;
@@ -205,4 +208,17 @@ div {
   p {
     padding: 5px 15px;
   }
+}
+
+.my-title {
+  display: flex;
+  flex-direction: row;
+}
+
+.my-result-title-style {
+  width: 100%
+}
+
+.my-button-addAll-style {
+  width: auto;
 }

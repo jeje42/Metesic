@@ -81,7 +81,7 @@ export class PlayListsAddChooseDialog implements OnInit, OnDestroy{
 
   selectPlayListFunction(): void {
 		if(this.selectPlayList.valid){
-      Meteor.call("addVideoToPlaylist", this.currentPlayListId, this.videoToAdd._id);
+      Meteor.call("addVideosToPlaylist", this.currentPlayListId, this.videoToAdd._id);
 		}
 	}
 }

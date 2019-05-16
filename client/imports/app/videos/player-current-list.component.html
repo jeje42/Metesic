@@ -1,20 +1,21 @@
-<mat-nav-list *ngFor="let video of videos | async">
+<mat-nav-list *ngFor="let videoPlaylist of videosPlayList">
   <mat-list-item>
-    <div *ngIf=" currentVideoUser && video._id === currentVideoUser">
+    <div *ngIf=" currentVideoUser && videoPlaylist.id_videoMeta === currentVideoUser">
       <mat-icon class="mat-24">play_arrow</mat-icon>
     </div>
-    <button mat-raised-button  color="accent" style="margin : 8px;" (click)="readVideoButton(video)" matTooltip="{{ 'Play now' | translate }}">
+    <button mat-raised-button  color="accent" style="margin : 8px;" (click)="readVideoButton(videoPlaylist.id_videoMeta)" matTooltip="{{ 'Play now' | translate }}">
       <mat-icon class="mat-24">play_arrow</mat-icon>
     </button>
-    <button color="warn" mat-raised-button style="margin : 8px;" (click)="removeVideoPlaylist(video)" matTooltip="{{ 'Remove from the playlist' | translate }}">
+    <button color="warn" mat-raised-button style="margin : 8px;" (click)="removeVideoPlaylist(videoPlaylist)" matTooltip="{{ 'Remove from the playlist' | translate }}">
       <mat-icon class="mat-24">remove</mat-icon>
     </button>
     <div matLine class="text">
       <h3 class="video-name">
-        {{this.video.name}}
+        {{videoPlaylist | displayVideoPlayList:"name"}}
+
       </h3>
       <p>
-          {{this.video.description}}
+          {{videoPlaylist | displayVideoPlayList:"description"}}
       </p>
     </div>
 

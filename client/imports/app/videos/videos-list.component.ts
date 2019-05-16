@@ -17,6 +17,8 @@ import { PlayListUser } from '../../../../both/models/playlist-user.model';
 import { VideoMeta } from '../../../../both/models/video-meta.model';
 import { Category } from '../../../../both/models/category.model';
 import { PlayList } from '../../../../both/models/playlist.model';
+import { VideoPlayList } from '../../../../both/models/video-playlist.model';
+
 
 import { PlayListsAddChooseDialog } from './playlists-add-choose-dialog.component';
 
@@ -153,32 +155,48 @@ export class VideosListComponent implements OnInit, OnDestroy {
     return this.user && this.user._id === video.owner;
   }
 
-  addToCurrentPlayList(videoMeta: VideoMeta): void {
+  addToCurrentPlayList(videoMetaId: string): void {
+    let lVideoMetaId: string[] = [videoMetaId]
+    this.addListToCurrentPlayList(lVideoMetaId)
+  }
+
+  addVideosOnPage(){
+    let lVideoMetaId: string[] = []
+
+    Array.from(document.getElementsByClassName("idVideoOnPage")).forEach(function(item) {
+       lVideoMetaId.push(item.value)
+    });
+
+    this.addListToCurrentPlayList(lVideoMetaId)
+  }
+
+  addListToCurrentPlayList(lVideoMetaId: string[]): void {
     if(this.currentPlaylist === undefined || this.currentPlaylist === null){
       let playListUser: PlayListUser = PlayListsUsers.findOne({user: this.user._id});
 
-
-      // console.log("addToCurrentPlayList before : " + this.currentPlaylist + " ; " + playListUser + " ; " + playListUser.currentPlaylist);
       if(playListUser === undefined || playListUser === null || playListUser.currentPlaylist === undefined || playListUser.currentPlaylist === null){
+        let lVideoPlayList: VideoPlayList[] = []
+        lVideoMetaId.forEach(videoMetaId => {
+          lVideoPlayList.push({
+            id_videoMeta: videoMetaId,
+            date : new Date()
+          })
+        })
+
         Meteor.call('addPlayList',
           new PlayList(this.user.username + "'s playlist'",
             "Default playlist for user " + this.user.username,
             this.user._id,
             false,
-            [
-              {
-        				id_videoMeta: videoMeta._id,
-        				date : new Date()
-        			}
-            ]
+            lVideoPlayList
           ),
         true);
       } else {
         this.currentPlaylist = playListUser.currentPlaylist;
-        Meteor.call("addVideoToPlaylist", this.currentPlaylist, videoMeta._id);
+        Meteor.call("addVideosToPlaylist", this.currentPlaylist, lVideoMetaId);
       }
     }else{
-      Meteor.call("addVideoToPlaylist", this.currentPlaylist, videoMeta._id);
+      Meteor.call("addVideosToPlaylist", this.currentPlaylist, lVideoMetaId);
     }
   }
 
@@ -206,24 +224,30 @@ export class VideosListComponent implements OnInit, OnDestroy {
 
   updateListedVideos(): void {
     MeteorObservable.call('countVideosMeta', this.searchRegEx, this.disabledCategories).subscribe((videosMetasCount: number) => {
-      var objectResearch = [];
-      this.isSearch = false;
-			objectResearch.push({name: this.searchRegEx});
-			if(this.disabledCategories != undefined && this.disabledCategories.length > 0){
-				objectResearch.push({categories: {$elemMatch: {$in : this.disabledCategories}}});
-        this.videosMetas = VideosMetas.find({$and: objectResearch});
+      var objectResearch = []
+      objectResearch.push({name: this.searchRegEx})
 
-        if(this.searchRegEx && this.searchRegEx != ""){
-          this.isSearch = true;
-        }
-			}else{
-        this.videosMetas = VideosMetas.find({$and: objectResearch}, {limit: 10});
+      this.isSearch = false
+
+      if(this.searchRegEx.$regex && this.searchRegEx.$regex != ""){
+        this.isSearch = true
       }
 
+			if(this.disabledCategories != undefined && this.disabledCategories.length > 0){
+				objectResearch.push({categories: {$elemMatch: {$in : this.disabledCategories}}})
+        this.isSearch = true
 
+
+			}
+
+      if(this.isSearch){
+        this.videosMetas = VideosMetas.find({$and: objectResearch})
+      }else{
+        this.videosMetas = VideosMetas.find({$and: objectResearch}, {limit: 10})
+      }
 
       this.videosMetas.subscribe(list => {
-        this.nbVideosMeta = list.length;
+        this.nbVideosMeta = list.length
       })
     });
   }

@@ -77,6 +77,9 @@
 						<button style="margin : 8px;" mat-raised-button color="accent" (click)="openEditPlayLists()" matTooltip="{{ 'Change the current playlist !' | translate }}">
 			        <mat-icon>border_color</mat-icon>
 			      </button>
+						<button style="margin : 8px;" mat-raised-button color="accent" (click)="clearCurrentPlayList(playList)" matTooltip="{{ 'Clear the playlist !' | translate }}'">
+			        <mat-icon>clear_all</mat-icon>
+			      </button>
 						<button style="margin : 8px;" mat-raised-button color="accent" (click)="deleteCurrentPlayList(playList)" matTooltip="{{ 'Delete the playlist !' | translate }}'">
 			        <mat-icon>delete_forever</mat-icon>
 			      </button>

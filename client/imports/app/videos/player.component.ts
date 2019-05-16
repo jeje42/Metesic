@@ -19,6 +19,8 @@ import { VideoMeta } from '../../../../both/models/video-meta.model';
 
 import { PlayListsDialog } from './playlists-dialog.component';
 
+import { DisplayVideoPlayListPipe } from '../shared/display-video-playlist.pipe';
+
 @Component({
   selector: 'player',
   templateUrl: './player.component.html',
@@ -159,7 +161,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
         console.error("PlayListsUsers update : " + number)
       });
     }
-    var playlist: PlayList = PlayLists.findOne({_id: playlist._id});
 		var playListUser = PlayListsUsers.findOne({user: Meteor.user()._id});
 		if(playListUser && playlist && playListUser.currentPlaylist === playlist._id){
 			PlayListsUsers.update({_id: playListUser._id}, {$set : {currentPlaylist: null}}).subscribe((number) => {
@@ -167,6 +168,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
 			})
 		}
 		PlayLists.remove(playlist._id);
+  }
+
+  clearCurrentPlayList(playlist: PlayList){
+    PlayLists.update(playlist._id, {$set: {list: []}});
   }
 
 

@@ -24,38 +24,28 @@
           </div>
       </mat-card-content>
     </mat-card>
+  </div>
 
+  <div>
     <mat-card>
       <mat-card-title *ngIf="!isSearch">
-        {{ 'Some Movies' | translate }}
+          {{ 'Some Movies' | translate }}
       </mat-card-title>
-      <mat-card-title *ngIf="isSearch">
-        {{ 'Results' | translate }}
+      <mat-card-title *ngIf="isSearch" class="my-title">
+        <div matLine class="text my-result-title-style">
+            {{ 'Results' | translate }}
+        </div>
+
+        <button mat-raised-button color="accent" matTooltip="{{ 'Add to current playlist' | translate }}" (click)="addVideosOnPage()" class="my-button-addAll-style">
+          <mat-icon class="mat-24">playlist_add</mat-icon>
+        </button>
       </mat-card-title>
+
       <mat-card-content>
       <div *ngFor="let videoMeta of videosMetas | async | paginate: { itemsPerPage: 10, currentPage: p, totalItems: nbVideosMeta }" class="video-meta">
-        <!-- <div class="menu-section">
-          <mat-toolbar class="action-on-result">
-            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Open basic menu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-          </mat-toolbar>
-
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="addToCurrentPlayList(videoMeta)">
-      	    	{{ 'Add to current playlist' | translate }}
-      	    </button>
-            <button mat-menu-item (click)="openEditPlayLists(videoMeta)">
-      	    	{{ 'Add to another playlist ...' | translate }}
-      	    </button>
-            <button mat-menu-item (click)="deleteVideo(videoMeta)" disabled="isVideoInCurrentPlayList(videoMeta)">
-      	       {{ 'Delete from playlist' | translate }}
-      	    </button>
-          </mat-menu>
-        </div> -->
         <div class="metesic-button">
           <section>
-            <button mat-raised-button color="accent" matTooltip="{{ 'Add to current playlist' | translate }}" (click)="addToCurrentPlayList(videoMeta)">
+            <button mat-raised-button color="accent" matTooltip="{{ 'Add to current playlist' | translate }}" (click)="addToCurrentPlayList(videoMeta._id)">
               <mat-icon class="mat-24">playlist_add</mat-icon>
             </button>
             <button mat-raised-button color="accent" matTooltip="{{ 'Add to another playlist ...' | translate }}" (click)="openEditPlayLists(videoMeta)">
@@ -63,6 +53,7 @@
             </button>
           </section>
         </div>
+        <input class="idVideoOnPage" name="idVideoHidden" value="{{videoMeta._id}}" style="display:none">
         <div class="text">
           <h2 class="video-name">
             {{videoMeta.name}}

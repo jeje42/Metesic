@@ -28,16 +28,19 @@ import { VideoUser } from '../../../../both/models/video-user.model';
 import { VideoMeta } from '../../../../both/models/video-meta.model';
 import { VideoPlayList } from '../../../../both/models/video-playlist.model';
 
+import { DisplayVideoPlayListPipe } from '../shared/display-video-playlist.pipe';
+
 @Component({
   selector: 'player-current-list',
   templateUrl: './player-current-list.component.html',
-  styles: [ './player.component.scss' ]
+  styles: [ './player.component.scss' ],
+  providers: [DisplayVideoPlayListPipe]
 })
 @InjectUser('user')
 export class PlayerCurrentListComponent implements OnInit, OnDestroy {
   playList: PlayList
   classe: string
-  videos: Observable<VideoMeta[]>
+  videosPlayList: VideoPlayList[]
   idElement: string
   currentVideoUser: string
   currentVideoUserId: string
@@ -46,6 +49,8 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
   videosUsersSub: Subscription
   playListsSub: Subscription
   currentPlayListSubs: Subscription
+
+  constructor (private displayVideoPlayListPipe:DisplayVideoPlayListPipe){}
 
   ngOnInit() {
     this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
@@ -115,12 +120,11 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
     if(!this.playList){
       return
     }
-    let list = [];
-    for(let i =0 ; i<this.playList.list.length ; i++){
-      let videoPlaylist:VideoPlayList = this.playList.list[i]
-      list.push(videoPlaylist.id_videoMeta)
-    }
-    this.videos = VideosMetas.find({_id:  { $in: list}})
+
+    this.videosPlayList = this.playList.list
+    this.videosPlayList.sort((a:VideoPlayList, b:VideoPlayList)=>{
+      return a.date < b.date ? -1 : 1
+    })
   }
 
   /**
@@ -129,8 +133,8 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
    * @param  {type} video: VideoMeta description
    * @return {type}                  description
    */
-  readVideoButton(videoMetas){
-      Meteor.call('setVideoPlayListUser', videoMetas._id, this.playList._id);
+  readVideoButton(videoMetasId: string){
+      Meteor.call('setVideoPlayListUser', videoMetasId, this.playList._id);
 
       let videoTag = document.getElementById("singleVideo");
       if(videoTag){
@@ -143,13 +147,14 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
    *   Listener of the remove video from playlist button. We need to remove the video from the PlayList element
    * and from the PlayListUser element.
    */
-  removeVideoPlaylist(videoMetas):void {
-    PlayLists.update({_id: this.playList._id}, {$pull: {list: {id_videoMeta: videoMetas._id}}})
+  removeVideoPlaylist(videoPlaylist:VideoPlayList):void {
+    PlayLists.update({_id: this.playList._id}, {$pull: {list: {id_videoMeta: videoPlaylist.id_videoMeta}}})
 
-    let videoContainer = document.getElementById("videoContainer");
+    let video:string = this.displayVideoPlayListPipe.transform(videoPlaylist, "video")
+
     let videoTag = document.getElementById("singleVideo");
     if(videoTag){
-      const found = Videos.findOne(videoMetas.video);
+      const found = Videos.findOne(video);
       if(!found){
         return;
       }

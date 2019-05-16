@@ -15,19 +15,23 @@ import { VideoUser } from '../models/video-user.model';
 Meteor.methods({
 
 	/**
-	 * addVideoToPlaylist - adds the VideoMeta to the PlayList
+	 * addVideosToPlaylist - adds the VideoMeta to the PlayList
 	 *
 	 * @param  {type} playListId: string  description
 	 * @param  {type} videoMetaId: string description
 	 * @return {type}                     description
 	 */
-	addVideoToPlaylist: function(playListId: string, videoMetaId: string){
+	addVideosToPlaylist: function(playListId: string, lVideoMetaId: string[]): void{
 		if (Meteor.isServer) {
-			var videoPlayList: VideoPlayList = {
-				id_videoMeta: videoMetaId,
-				date : new Date()
-			};
-			PlayLists.update({_id: playListId}, {$push: {list: videoPlayList}});
+			let lVideoPlayList: VideoPlayList[] = []
+			lVideoMetaId.forEach(videoMetaId => {
+				lVideoPlayList.push({
+					id_videoMeta: videoMetaId,
+					date : new Date()
+				})
+			})
+
+			PlayLists.update({_id: playListId}, {$push: {list: { $each: lVideoPlayList}}});
 		}
 	},
 
