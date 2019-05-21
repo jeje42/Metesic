@@ -1,9 +1,9 @@
 <mat-nav-list *ngFor="let videoPlaylist of videosPlayList">
   <mat-list-item>
-    <div *ngIf=" currentVideoUser && videoPlaylist.id_videoMeta === currentVideoUser">
+    <div *ngIf=" currentPlayListUser && videoPlaylist.currentPosition === currentPlayListUser.currentPosition">
       <mat-icon class="mat-24">play_arrow</mat-icon>
     </div>
-    <button mat-raised-button  color="accent" style="margin : 8px;" (click)="readVideoButton(videoPlaylist.id_videoMeta)" matTooltip="{{ 'Play now' | translate }}">
+    <button mat-raised-button  color="accent" style="margin : 8px;" (click)="readVideoButton(videoPlaylist.currentPosition)" matTooltip="{{ 'Play now' | translate }}">
       <mat-icon class="mat-24">play_arrow</mat-icon>
     </button>
     <button color="warn" mat-raised-button style="margin : 8px;" (click)="removeVideoPlaylist(videoPlaylist)" matTooltip="{{ 'Remove from the playlist' | translate }}">

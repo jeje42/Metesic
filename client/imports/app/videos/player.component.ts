@@ -20,6 +20,8 @@ import { VideoMeta } from '../../../../both/models/video-meta.model';
 import { PlayListsDialog } from './playlists-dialog.component';
 
 import { DisplayVideoPlayListPipe } from '../shared/display-video-playlist.pipe';
+import { VideosUsers } from 'both/collections/videos-users.collection';
+import { VideoUser } from 'both/models/video-user.model';
 
 @Component({
   selector: 'player',
@@ -29,10 +31,6 @@ import { DisplayVideoPlayListPipe } from '../shared/display-video-playlist.pipe'
 @InjectUser('user')
 export class PlayerComponent implements OnInit, OnDestroy {
   currentPlaylist: Observable<PlayList[]>;
-  currentPlayListUser: Observable<PlayListUser[]>;
-
-  currentPlaylistId: string;
-  currentPlaylistUserId: string;
 
   user: Meteor.User;
   videoReading: VideoMeta;
@@ -44,7 +42,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
   currentPlayListSubs: Subscription;
   videosUsersSub: Subscription
 
+  playListUser: PlayListUser
+
   actionsAlignment: string;
+
+  displaySkipPrevious: boolean;
+  displaySkipNext: boolean;
   /**
    * Config for the playlists's modal.
    */
@@ -102,15 +105,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
       if(Meteor.user() === undefined){
         return;
       }
-      this.currentPlayListUser = PlayListsUsers.find({user: Meteor.user()._id});
 
-      this.currentPlayListUser.subscribe(listPlayListUser => {
+      PlayListsUsers.find({user: Meteor.user()._id, active: true}).subscribe(listPlayListUser => {
         this.initVideosPlayListId(listPlayListUser)
-
-          var playListUser: PlayListUser = PlayListsUsers.findOne({user: Meteor.user()._id});
-          if(playListUser === undefined){
-            return;
-          }
       });
     });
   }
@@ -131,41 +128,47 @@ export class PlayerComponent implements OnInit, OnDestroy {
    * @param  {type} playListId: PlayListUser[] description
    * @return {type}                            description
    */
-  initVideosPlayListId(playListId: PlayListUser[]){
-    if(playListId === undefined || playListId.length === 0){
-      return false;
+  initVideosPlayListId(playListUserIds: PlayListUser[]): void{
+    this.playListUser = playListUserIds[0]
+
+    if(this.playListUser){
+      this.currentPlaylist = PlayLists.find({_id: this.playListUser.playlist})
+
+      this.initNavButtons()
     }
-    let playlistChanged:boolean = (this.currentPlaylistId != playListId[0].currentPlaylist)
 
-    this.currentPlaylistUserId = playListId[0]._id
-    this.currentPlaylistId = playListId[0].currentPlaylist;
 
-    this.currentPlaylist = PlayLists.find({_id: this.currentPlaylistId})
-    this.currentPlaylist.subscribe(list => {
-      if(list.length >0){
-        this.playlistSelected = true;
-      }else{
-        this.playlistSelected = false;
+  }
+
+  initNavButtons(): void{
+    if(this.playListUser == undefined){
+      return
+    }
+
+    PlayLists.find({_id: this.playListUser.playlist}).subscribe(list => {
+      if(!list || list.length ==0){
+        return
       }
-    });
+      let playlist: PlayList = list[0]
 
+      if(!playlist || this.playListUser.currentPosition == 0){
+        this.displaySkipPrevious = false
+      }else{
+        this.displaySkipPrevious = true
+      }
 
-    return playlistChanged
+      if(playlist && this.playListUser.currentPosition < playlist.list.length-1){
+        this.displaySkipNext = true
+      }else{
+        this.displaySkipNext = false
+      }
+    })
   }
 
   deleteCurrentPlayList(playlist: PlayList){
-    let videoContainer = document.getElementById("videoContainer");
-    if(videoContainer){
-      let playListsUsers: PlayListUser =  PlayListsUsers.findOne({user: Meteor.userId()});
-      PlayListsUsers.update({_id: playListsUsers._id}, {$set : {currentVideo: null, currentTime: 0}}).subscribe(number => {
-        console.error("PlayListsUsers update : " + number)
-      });
-    }
-		var playListUser = PlayListsUsers.findOne({user: Meteor.user()._id});
-		if(playListUser && playlist && playListUser.currentPlaylist === playlist._id){
-			PlayListsUsers.update({_id: playListUser._id}, {$set : {currentPlaylist: null}}).subscribe((number) => {
-				console.error("Modifs : " + number)
-			})
+		var playListUser = PlayListsUsers.findOne({user: Meteor.user()._id, active: true});
+		if(playListUser && playlist && playListUser.playlist === playlist._id){
+			PlayListsUsers.remove({_id: playListUser._id})
 		}
 		PlayLists.remove(playlist._id);
   }
@@ -206,5 +209,29 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   getHeightFromWidth(width:number){
     return width*9/16
+  }
+
+  nextVideo(): void{
+    const playListUser: PlayListUser = PlayListsUsers.findOne({user: Meteor.user()._id, active: true})
+
+    const playlist = PlayLists.findOne({_id: playListUser.playlist})
+    if(playListUser.currentPosition < playlist.list.length-1){
+      const videoUser: VideoUser = VideosUsers.findOne({playListUserId: playListUser._id})
+      VideosUsers.update({_id: videoUser._id},{$set : {currentTime: 0.000000}}).subscribe(() => {
+        PlayListsUsers.update({_id: playListUser._id}, {$set: {currentPosition: playListUser.currentPosition+1}})
+      })
+    }
+  }
+
+  previousVideo(): void {
+    const playListUser: PlayListUser = PlayListsUsers.findOne({user: Meteor.user()._id, active: true})
+
+    const playlist = PlayLists.findOne({_id: playListUser.playlist})
+    if(playListUser.currentPosition > 0){
+      const videoUser: VideoUser = VideosUsers.findOne({playListUserId: playListUser._id})
+      VideosUsers.update({_id: videoUser._id},{$set : {currentTime: 0.000000}}).subscribe(() => {
+        PlayListsUsers.update({_id: playListUser._id}, {$set: {currentPosition: playListUser.currentPosition-1}})
+      })
+    }
   }
 }

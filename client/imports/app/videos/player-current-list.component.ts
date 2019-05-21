@@ -42,17 +42,20 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
   classe: string
   videosPlayList: VideoPlayList[]
   idElement: string
-  currentVideoUser: string
-  currentVideoUserId: string
-  playListUser: PlayListUser
+  currentVideoUser: VideoUser
+  currentPlayListUser: PlayListUser
 
   videosUsersSub: Subscription
   playListsSub: Subscription
   currentPlayListSubs: Subscription
 
+  onSwitchTrack: boolean
+
   constructor (private displayVideoPlayListPipe:DisplayVideoPlayListPipe){}
 
   ngOnInit() {
+    this.onSwitchTrack = false
+
     this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
 
     this.videosUsersSub = MeteorObservable.subscribe('videosUsers', {}).subscribe();
@@ -61,59 +64,65 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
       if(Meteor.user() === undefined){
         return;
       }
-      let currentPlayListUser = PlayListsUsers.find({user: Meteor.user()._id});
-
-      currentPlayListUser.subscribe(listPlayListUser => {
+      PlayListsUsers.find({user: Meteor.user()._id, active: true}).subscribe(listPlayListUser => {
         if(listPlayListUser === undefined || listPlayListUser.length === 0){
           return false;
         }
 
-
-        let currentPlaylist = PlayLists.find({_id: listPlayListUser[0].currentPlaylist})
-        currentPlaylist.subscribe(list => {
-          if(list.length >0){
-            this.playList = list[0]
+        PlayLists.find({_id: listPlayListUser[0].playlist}).subscribe(playlistsSearch => {
+          let currentPlaylist: PlayList = playlistsSearch[0]
+          if(currentPlaylist){
+            this.playList = currentPlaylist
+            this.currentPlayListUser = listPlayListUser[0]
             this.videoPlayListToVideoMeta()
             this.initVideoUser()
           }
-        });
+        })
+
       });
     });
 
 
 
-
-    var counter = interval(1000)
-    counter.subscribe(() => {
-        var videoTag = document.getElementById("singleVideo")
-        if(videoTag != undefined){
-          VideosUsers.update({_id: this.currentVideoUserId}, {$set : {currentTime: videoTag.currentTime}});
+    Meteor.setInterval(() => {
+      var videoTag = document.getElementById("singleVideo")
+      if(videoTag != undefined && this.currentVideoUser != undefined){
+        if(videoTag.ended){
+          this.switchToNextVideo()
+        }else{
+          VideosUsers.update({_id: this.currentVideoUser._id}, {$set : {currentTime: videoTag.currentTime}})
         }
       }
-    )
+    }, 1000)
   }
 
   ngOnDestroy() {
       this.videosUsersSub.unsubscribe()
       this.playListsSub.unsubscribe()
       this.currentPlayListSubs.unsubscribe()
-  };
+  }
 
-  initVideoUser(){
-    if(!this.playList){
+  private switchToNextVideo(): void {
+    if(this.onSwitchTrack){
       return
     }
-    let currentVideoUser:Observable<VideoUser[]> = VideosUsers.find({user: Meteor.user()._id, playList: this.playList._id});
 
-    currentVideoUser.subscribe(listVideoUser => {
-        // var videoUser: VideoUser = VideosUsers.findOne({user: Meteor.user()._id, playList: this.playList._id});
-        if(listVideoUser[0] === undefined){
-          return;
-        }
-        this.currentVideoUserId = listVideoUser[0]._id
-        this.currentVideoUser = listVideoUser[0].currentVideo
-        this.readVideo(listVideoUser[0])
-    });
+    const playlist = PlayLists.findOne({_id: this.currentPlayListUser.playlist})
+    if(this.currentPlayListUser.currentPosition < playlist.list.length-1){
+      VideosUsers.update({_id: this.currentVideoUser._id},{$set : {currentTime: 0.000000}}).subscribe(() => {
+        this.onSwitchTrack = true
+        PlayListsUsers.update({_id: this.currentPlayListUser._id}, {$set: {currentPosition: this.currentPlayListUser.currentPosition+1}})
+      })
+    }
+  }
+
+  initVideoUser(){
+    if(!this.currentPlayListUser){
+      return
+    }
+
+    this.currentVideoUser = VideosUsers.findOne({playListUserId: this.currentPlayListUser._id})
+    this.readVideo()
   }
 
   videoPlayListToVideoMeta(){
@@ -123,7 +132,7 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
 
     this.videosPlayList = this.playList.list
     this.videosPlayList.sort((a:VideoPlayList, b:VideoPlayList)=>{
-      return a.date < b.date ? -1 : 1
+      return a.currentPosition < b.currentPosition ? -1 : 1
     })
   }
 
@@ -133,14 +142,16 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
    * @param  {type} video: VideoMeta description
    * @return {type}                  description
    */
-  readVideoButton(videoMetasId: string){
-      Meteor.call('setVideoPlayListUser', videoMetasId, this.playList._id);
+  readVideoButton(newPosition: number): void{
+      Meteor.call('setVideoPlayListUser', this.currentPlayListUser._id);
 
-      let videoTag = document.getElementById("singleVideo");
-      if(videoTag){
-        videoTag.currentTime = 0.000000
-        videoTag.play()
-      }
+      PlayListsUsers.update({_id: this.currentPlayListUser._id}, {$set: {currentPosition: newPosition}}).subscribe((number) => {
+        let videoTag: HTMLVideoElement = document.getElementById("singleVideo");
+        if(videoTag){
+          videoTag.currentTime = 0.000000
+          videoTag.play()
+        }
+      })
   }
 
   /**
@@ -148,48 +159,65 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
    * and from the PlayListUser element.
    */
   removeVideoPlaylist(videoPlaylist:VideoPlayList):void {
-    PlayLists.update({_id: this.playList._id}, {$pull: {list: {id_videoMeta: videoPlaylist.id_videoMeta}}})
+    PlayLists.update({_id: this.playList._id}, {$pull: {list: {date: videoPlaylist.date}}}).subscribe(() => {
+      Meteor.call('afterDeleteVideoFromPlaylist', this.playList._id, videoPlaylist.currentPosition)
 
-    let video:string = this.displayVideoPlayListPipe.transform(videoPlaylist, "video")
+      let video:string = this.displayVideoPlayListPipe.transform(videoPlaylist, "video")
 
-    let videoTag = document.getElementById("singleVideo");
-    if(videoTag){
-      const found = Videos.findOne(video);
-      if(!found){
-        return;
+      let videoTag: HTMLVideoElement = document.getElementById("singleVideo");
+      if(videoTag){
+        const found = Videos.findOne(video);
+        if(!found){
+          return;
+        }
+        if(found.url === videoTag.getAttribute('src')){
+          videoTag.setAttribute('src','')
+          Meteor.call('blankCurrentVideo')
+        }
       }
-      if(found.url === videoTag.getAttribute('src')){
-        videoTag.setAttribute('src','')
-        Meteor.call('blankCurrentVideo');
-      }
-    }
+    })
   }
 
   /**
 	 * Called when the PlayListsUsers data changes.
 	 */
-	readVideo(videoUser: VideoUser): void {
-    let video: VideoMeta = VideosMetas.findOne({_id: videoUser.currentVideo})
-		if (!video) {
-      return;
+	readVideo(): void {
+    let found = undefined
+
+    if(this.currentPlayListUser && this.videosPlayList && this.videosPlayList[this.currentPlayListUser.currentPosition]){
+      let video: VideoMeta = VideosMetas.findOne({_id: this.videosPlayList[this.currentPlayListUser.currentPosition].id_videoMeta})
+  		if (!video) {
+        return;
+      }
+
+      found = Videos.findOne(video.video);
     }
 
-    const found = Videos.findOne(video.video);
+
 
     if (found === undefined) {
       return; //TODO : log error message
     }
 
-    let videoTag = document.getElementById("singleVideo")
+    let videoTag: HTMLVideoElement = document.getElementById("singleVideo")
     let newUrl = found.url + this.getUserParameterVideoSrc()
     if(newUrl != videoTag.getAttribute('src')){
       videoTag.setAttribute('src', newUrl)
-      if(videoUser){
-        videoTag.currentTime = videoUser.currentTime
+
+      let timeToSet:number = 0.000000
+
+
+      if(this.onSwitchTrack){
+        this.onSwitchTrack = false
+        videoTag.currentTime = timeToSet
+        videoTag.play()
       }else{
-        videoTag.currentTime = 0.000000
+        if(this.currentVideoUser){
+          timeToSet = this.currentVideoUser.currentTime
+        }
+        videoTag.currentTime = timeToSet
+        videoTag.pause()
       }
-      videoTag.pause()
     }
   }
 

@@ -2,5 +2,7 @@ import { CollectionObject } from './collection-object.model';
 
 export interface PlayListUser extends CollectionObject {
   user: string;
-  currentPlaylist: string;
+  playlist: string;
+  currentPosition: number;
+  active: boolean;
 }

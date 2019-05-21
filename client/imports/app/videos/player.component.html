@@ -56,6 +56,12 @@
 
 		<mat-card style="float: right;">
 			<mat-card-content>
+				<button *ngIf="displaySkipPrevious" id="test" style="margin : 8px;" mat-raised-button color="accent" (click)="previousVideo()" matTooltip="{{ 'Previous !' | translate }}">
+					<mat-icon>skip_previous</mat-icon>
+				</button>
+				<button *ngIf="displaySkipNext" id="test" style="margin : 8px;" mat-raised-button color="accent" (click)="nextVideo()" matTooltip="{{ 'Next !' | translate }}">
+					<mat-icon>skip_next</mat-icon>
+				</button>
 				<button id="test" style="margin : 8px;" mat-raised-button color="accent" (click)="enlargerPlayer()" matTooltip="{{ 'Enlarge the player !' | translate }}">
 					<mat-icon>zoom_in</mat-icon>
 				</button>
@@ -69,18 +75,18 @@
 	<div class="playlist-container default-padding">
 		<mat-card>
 			<mat-card-content>
-				<div *ngFor="let playList of currentPlaylist | async">
+				<div *ngIf="currentPlaylist">
 					<div style="display: flex; flex-direction: row;">
 						<h2 class="playlist-title">
-			        {{playList.description}}
+			        {{currentPlaylist.description}}
 			      </h2>
 						<button style="margin : 8px;" mat-raised-button color="accent" (click)="openEditPlayLists()" matTooltip="{{ 'Change the current playlist !' | translate }}">
 			        <mat-icon>border_color</mat-icon>
 			      </button>
-						<button style="margin : 8px;" mat-raised-button color="accent" (click)="clearCurrentPlayList(playList)" matTooltip="{{ 'Clear the playlist !' | translate }}'">
+						<button style="margin : 8px;" mat-raised-button color="accent" (click)="clearCurrentPlayList(currentPlaylist)" matTooltip="{{ 'Clear the playlist !' | translate }}'">
 			        <mat-icon>clear_all</mat-icon>
 			      </button>
-						<button style="margin : 8px;" mat-raised-button color="accent" (click)="deleteCurrentPlayList(playList)" matTooltip="{{ 'Delete the playlist !' | translate }}'">
+						<button style="margin : 8px;" mat-raised-button color="accent" (click)="deleteCurrentPlayList(currentPlaylist)" matTooltip="{{ 'Delete the playlist !' | translate }}'">
 			        <mat-icon>delete_forever</mat-icon>
 			      </button>
 					</div>
@@ -91,7 +97,7 @@
 				</div>
 			</mat-card-content>
 		</mat-card>
-		<mat-card *ngIf="!playlistSelected">
+		<mat-card *ngIf="!currentPlaylist">
 			<div style="display: flex; flex-direction: row;">
 				<h2 class="playlist-title">
 					No playlist currently selected !

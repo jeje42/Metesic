@@ -84,7 +84,6 @@ export class SettingsFoldersComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		let initPath = Meteor.settings.public.pathSettings
-		console.log("initPath : " + initPath)
 		if(!initPath){
 			initPath = "/home/jeje"
 		}

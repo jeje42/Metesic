@@ -22,37 +22,49 @@ Meteor.methods({
 	 * @return {type}                     description
 	 */
 	addVideosToPlaylist: function(playListId: string, lVideoMetaId: string[]): void{
-		if (Meteor.isServer) {
+		// if (Meteor.isServer) {
+			let playList: PlayList = PlayLists.findOne({_id: playListId})
+			let position = 0
+			if(playList){
+				position = playList.list.length
+			}
+
 			let lVideoPlayList: VideoPlayList[] = []
 			lVideoMetaId.forEach(videoMetaId => {
 				lVideoPlayList.push({
 					id_videoMeta: videoMetaId,
-					date : new Date()
+					date : new Date(),
+					currentPosition: position
 				})
 			})
 
 			PlayLists.update({_id: playListId}, {$push: {list: { $each: lVideoPlayList}}});
-		}
+		// }
 	},
 
 	/**
-	 * setPlayListToPlayListUser - sets the PlayList as current PlayList the the current user (PlayListUser.currentPlaylist).
+	 * setPlayListToPlayListUser - sets the PlayList as current PlayList for the current user (PlayListUser.active boolean).
 	 *
 	 * @param  {type} _idPlaylist: string description
 	 * @return {type}                     description
 	 */
-	setPlayListToPlayListUser: function(_idPlaylist: string){
+	setPlayListToPlayListUser: function(_idPlaylist: string): void{
 		if(Meteor.isServer){
-			// //logger.info("setPlayListToPlayListUser : " + _idPlaylist + " ; " + Meteor.user());
-			let playListsUsers: PlayListUser =  PlayListsUsers.findOne({user: Meteor.user()._id});
-	    if(playListsUsers === undefined){
-	      PlayListsUsers.insert({
-	        user: Meteor.user()._id,
-	        currentPlaylist: _idPlaylist
-	      })
-	    }else{
-				var number : Observable<number> = PlayListsUsers.update({_id: playListsUsers._id}, {$set : {currentPlaylist: _idPlaylist}});
-			}
+			const userId = Meteor.userId()
+
+			PlayListsUsers.update({user: userId, active: true}, {$set : {active: false}}).subscribe(() => {
+				let playListsUser: PlayListUser =  PlayListsUsers.findOne({user: userId, playlist: _idPlaylist});
+		    if(playListsUser === undefined){
+		      PlayListsUsers.insert({
+		        user: userId,
+		        playlist: _idPlaylist,
+						currentPosition:0,
+						active: true
+		      })
+		    }else{
+					PlayListsUsers.update({_id: playListsUser._id}, {$set : {active: true}});
+				}
+			})
 		}
 	},
 
@@ -62,19 +74,16 @@ Meteor.methods({
 	 * @param  {type} _idVideo: string description
 	 * @return {type}                  description
 	 */
-	setVideoPlayListUser: function(_idVideo: string, playList: string){
-			let videoUser: VideoUser =  VideosUsers.findOne({user: Meteor.user()._id, playList: playList});
+	setVideoPlayListUser: function(playListUserId: string): void{
+			let videoUser: VideoUser =  VideosUsers.findOne({playListUserId: playListUserId});
 			if(videoUser == undefined){
+				console.log("inserting VideosUsers !")
 				VideosUsers.insert({
-					user : Meteor.user()._id,
-					currentVideo : _idVideo,
-					currentTime : 0,
-					playList: playList
+					user: Meteor.userId(),
+					playListUserId: playListUserId,
+					currentTime : 0
 				})
 			}
-	    if(videoUser != undefined && videoUser.currentVideo != _idVideo){
-	      var number : Observable<number> = VideosUsers.update({_id: videoUser._id}, {$set : {currentVideo: _idVideo, playList: playList}});
-	    }
 	},
 
 	/**
@@ -83,11 +92,11 @@ Meteor.methods({
 	 * @param  {type} time: number description
 	 * @return {type}              description
 	 */
-	setCurrentTime: function(time: number){
+	setCurrentTime: function(time: number): void{
 		if(Meteor.isServer){
 			let playListsUsers: PlayListUser =  PlayListsUsers.findOne({user: Meteor.user()._id});
 	    if(playListsUsers != undefined){
-	      var number : Observable<number> = PlayListsUsers.update({_id: playListsUsers._id}, {$set : {currentTime: time}});
+	      PlayListsUsers.update({_id: playListsUsers._id}, {$set : {currentTime: time}});
 	    }
 		}
 	},
@@ -97,10 +106,28 @@ Meteor.methods({
 	 * Deprecated !
 	 * @return {type}  description
 	 */
-	blankCurrentVideo: function(){
+	blankCurrentVideo: function(): void{
 		let videoUser: VideoUser =  VideosUsers.findOne({user: Meteor.userId()});
 		if(videoUser){
 			VideosUsers.update({_id: videoUser._id}, {$set : {currentVideo: null, currentTime: 0}});
+		}
+	},
+
+	afterDeleteVideoFromPlaylist: function(idPlayList: string, position: number): void{
+		let list: PlayListUser[] = PlayListsUsers.find({playlist: idPlayList}).fetch()
+		list.forEach(playListUser => {
+			if(playListUser.currentPosition>position){
+				PlayListsUsers.update({_id: playListUser._id}, {$set: {currentPosition: playListUser.currentPosition-1}})
+			}
+		})
+
+		let playList:PlayList = PlayLists.findOne({_id: idPlayList})
+		for(let i=0; i< playList.list.length ; i++){
+			if(playList.list[i].currentPosition>position){
+				let placeholder = {};
+				placeholder['list.' + i + '.currentPosition'] = playList.list[i].currentPosition-1
+				PlayLists.update({_id: idPlayList}, {$set: placeholder})
+			}
 		}
 	},
 
@@ -111,11 +138,10 @@ Meteor.methods({
 	 * @param  {type} setToCurrentUser: boolean description
 	 * @return {type}                           description
 	 */
-	addPlayList: function(newPlaylist: PlayList, setToCurrentUser: boolean){
+	addPlayList: function(newPlaylist: PlayList, setToCurrentUser: boolean): void{
 		var dejaPresent: PlayList = PlayLists.findOne({name: newPlaylist.name});
 		if(dejaPresent === undefined){
-			let idInserted : Observable<string> = PlayLists.insert(newPlaylist);
-			idInserted.subscribe(idInserted => {
+			PlayLists.insert(newPlaylist).subscribe(idInserted => {
 				if(idInserted && setToCurrentUser){
 					Meteor.call('setPlayListToPlayListUser', idInserted);
 				}
@@ -125,25 +151,5 @@ Meteor.methods({
 				Meteor.call('setPlayListToPlayListUser', dejaPresent._id);
 			}
 		}
-	},
-	/**
-	 * removePlayList - removes the playListId from PlayLists and if necessary PlayListUser.
-	 * Deprecated !
-	 *
-	 * @param  {type} playListId: string description
-	 * @return {type}                    description
-	 */
-	removePlayList: function(playListId: string){
-		var playlist: PlayList = PlayLists.findOne({_id: playListId});
-		var playListUser = PlayListsUsers.findOne({user: Meteor.user()._id});
-		console.log(playlist + " ; " + playListId + " : " + playListUser + " ; " + playListUser.currentPlaylist)
-		if(playListUser && playlist && playListUser.currentPlaylist === playListId){
-			console.log("removePlayList PlayListUsers ! " + Meteor.user() + " ; " + playListUser.user + " ; " + playListUser.currentPlaylist + " ; " + playListId)
-			let modifs = PlayListsUsers.update({user: Meteor.user()}, {$set : {currentPlaylist: "test"}});
-			modifs.subscribe((number) => {
-				console.log("Modifs : " + number)
-			})
-		}
-		PlayLists.remove(playListId);
 	}
 });

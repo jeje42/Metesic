@@ -28,7 +28,6 @@ export class PlayListsAddChooseDialog implements OnInit, OnDestroy{
 	loggedUser: User;
 
   playlistsUsers: Observable<PlayList[]>;
-  currentPlayListUser: Observable<PlayListUser[]>;
 
   currentPlayListId: string;
 
@@ -46,9 +45,7 @@ export class PlayListsAddChooseDialog implements OnInit, OnDestroy{
     });
 
     this.playListUsersSub = MeteorObservable.subscribe('playlistsUsers', {}).subscribe(() => {
-      this.currentPlayListUser = PlayListsUsers.find({user: this.user._id});
-
-      this.currentPlayListUser.subscribe(list => {
+      PlayListsUsers.find({user: this.user._id, active: true}).subscribe(list => {
         if(list === undefined){
           return;
         }
@@ -58,7 +55,7 @@ export class PlayListsAddChooseDialog implements OnInit, OnDestroy{
         if(playUser === undefined){
           return;
         }
-        this.currentPlayListId = playUser.currentPlaylist;
+        this.currentPlayListId = playUser.playlist;
       });
     });
 

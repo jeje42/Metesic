@@ -33,7 +33,6 @@ export class VideosListComponent implements OnInit, OnDestroy {
   isSearch: boolean;
   videosMetas: Observable<VideoMeta[]>;
   categories: Observable<Category[]>;
-  currentPlayListUser: Observable<PlayListUser[]>;
 
   disabledCategories: string[];
 
@@ -133,15 +132,16 @@ export class VideosListComponent implements OnInit, OnDestroy {
 	  this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
 
     this.playListsUsersSub = MeteorObservable.subscribe('playlistsUsers').subscribe(() => {
-      this.currentPlayListUser = PlayListsUsers.find({user: Meteor.user()._id});
-
-      this.currentPlayListUser.subscribe(listPlayListUser => {
+      PlayListsUsers.find({user: Meteor.user()._id, active: true}).subscribe(listPlayListUser => {
+        if(listPlayListUser == undefined){
+          return
+        }
         let playlistUser: PlayListUser = listPlayListUser[0];
         if(playlistUser === undefined){
           return;
         }
-        if(this.currentPlaylist != playlistUser.currentPlaylist){
-          this.currentPlaylist = playlistUser.currentPlaylist;
+        if(this.currentPlaylist != playlistUser.playlist){
+          this.currentPlaylist = playlistUser.playlist;
         }
       });
     });
@@ -172,14 +172,15 @@ export class VideosListComponent implements OnInit, OnDestroy {
 
   addListToCurrentPlayList(lVideoMetaId: string[]): void {
     if(this.currentPlaylist === undefined || this.currentPlaylist === null){
-      let playListUser: PlayListUser = PlayListsUsers.findOne({user: this.user._id});
+      let playListUser: PlayListUser = PlayListsUsers.findOne({user: this.user._id, active: true});
 
-      if(playListUser === undefined || playListUser === null || playListUser.currentPlaylist === undefined || playListUser.currentPlaylist === null){
+      if(playListUser === undefined || playListUser === null || playListUser.playlist === undefined || playListUser.playlist === null){
         let lVideoPlayList: VideoPlayList[] = []
         lVideoMetaId.forEach(videoMetaId => {
           lVideoPlayList.push({
             id_videoMeta: videoMetaId,
-            date : new Date()
+            date : new Date(),
+            currentPosition: lVideoPlayList.length
           })
         })
 
@@ -192,7 +193,7 @@ export class VideosListComponent implements OnInit, OnDestroy {
           ),
         true);
       } else {
-        this.currentPlaylist = playListUser.currentPlaylist;
+        this.currentPlaylist = playListUser.playlist;
         Meteor.call("addVideosToPlaylist", this.currentPlaylist, lVideoMetaId);
       }
     }else{
