@@ -30,7 +30,7 @@ import { VideoUser } from 'both/models/video-user.model';
 })
 @InjectUser('user')
 export class PlayerComponent implements OnInit, OnDestroy {
-  currentPlaylist: Observable<PlayList[]>;
+  currentPlaylist: PlayList;
 
   user: Meteor.User;
   videoReading: VideoMeta;
@@ -132,8 +132,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.playListUser = playListUserIds[0]
 
     if(this.playListUser){
-      this.currentPlaylist = PlayLists.find({_id: this.playListUser.playlist})
-
       this.initNavButtons()
     }
 
@@ -149,15 +147,16 @@ export class PlayerComponent implements OnInit, OnDestroy {
       if(!list || list.length ==0){
         return
       }
-      let playlist: PlayList = list[0]
 
-      if(!playlist || this.playListUser.currentPosition == 0){
+      this.currentPlaylist = list[0]
+
+      if(!this.currentPlaylist || this.playListUser.currentPosition == 0){
         this.displaySkipPrevious = false
       }else{
         this.displaySkipPrevious = true
       }
 
-      if(playlist && this.playListUser.currentPosition < playlist.list.length-1){
+      if(this.currentPlaylist && this.playListUser.currentPosition < this.currentPlaylist.list.length-1){
         this.displaySkipNext = true
       }else{
         this.displaySkipNext = false

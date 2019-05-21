@@ -19,7 +19,6 @@ import { User } from '../../../../both/models/user.model';
 
 @Component({
   selector: 'playlists-add-choose-dialog',
-  styles: ['./playlists-dialog.component.scss'],
   templateUrl: './playlists-add-choose-dialog.component.html'
 })
 export class PlayListsAddChooseDialog implements OnInit, OnDestroy{
@@ -62,13 +61,6 @@ export class PlayListsAddChooseDialog implements OnInit, OnDestroy{
     this.selectPlayList = this.formBuilder.group({
       playlist: ['', Validators.required]
 		});
-
-    // this.addForm = this.formBuilder.group({
-    //   name: ['', Validators.required],
-    //   description: [],
-    //   location: ['', Validators.required],
-    //   public: [false]
-    // });
   }
 
   ngOnDestroy() {

@@ -4,25 +4,18 @@
 <h1>{{ 'Add the video' | translate }} <i> {{videoToAdd.name}} </i> {{ 'to the playlist ...' | translate }}</h1>
 
 
-<form [formGroup]="selectPlayList" (ngSubmit)="selectPlayListFunction();">
-  <mat-radio-group name="my_playlists" [(ngModel)]="currentPlayListId" class="choixPlayLists" formControlName="playlist">
+
+<div [formGroup]="selectPlayList" (ngSubmit)="selectPlayListFunction();">
+  <mat-radio-group name="my_playlists" [(ngModel)]="currentPlayListId" style="display: flex; flex-direction: column;" formControlName="playlist">
     <mat-radio-button *ngFor="let playList of playlistsUsers | async" [value]="playList._id">
       <h1>{{playList.name}}</h1>
     </mat-radio-button>
   </mat-radio-group>
+
   <button color="primary" mat-raised-button type="submit">
     {{ 'SELECT' | translate }}
   </button>
   <button mat-raised-button color="primary" mat-dialog-close>
     {{ 'Close' | translate }}
   </button>
-  <!-- <mat-form-field>
-     <input matInput dividerColor="primary" formControlName="name" placeholder="Name"></input>
-  </mat-form-field>
-  <mat-form-field>
-     <input matInput dividerColor="primary" formControlName="description" placeholder="Description"></input>
-  </mat-form-field>
-  <button color="primary" mat-raised-button type="submit">
-    <mat-icon>add</mat-icon>
-  </button> -->
-</form>
+</div>
