@@ -144,7 +144,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
 
     PlayLists.find({_id: this.playListUser.playlist}).subscribe(list => {
-      if(!list || list.length ==0){
+      if(!list || list.length ==0 || list[0]._id !== this.playListUser.playlist){
         return
       }
 

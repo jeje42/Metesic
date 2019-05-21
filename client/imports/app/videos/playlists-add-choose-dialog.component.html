@@ -5,7 +5,7 @@
 
 
 
-<div [formGroup]="selectPlayList" (ngSubmit)="selectPlayListFunction();">
+<form [formGroup]="selectPlayList" (ngSubmit)="selectPlayListFunction();">
   <mat-radio-group name="my_playlists" [(ngModel)]="currentPlayListId" style="display: flex; flex-direction: column;" formControlName="playlist">
     <mat-radio-button *ngFor="let playList of playlistsUsers | async" [value]="playList._id">
       <h1>{{playList.name}}</h1>
@@ -18,4 +18,4 @@
   <button mat-raised-button color="primary" mat-dialog-close>
     {{ 'Close' | translate }}
   </button>
-</div>
+</form>

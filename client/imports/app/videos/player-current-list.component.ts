@@ -51,6 +51,8 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
 
   onSwitchTrack: boolean
 
+  currentId: string
+
   constructor (private displayVideoPlayListPipe:DisplayVideoPlayListPipe){}
 
   ngOnInit() {
@@ -68,10 +70,11 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
         if(listPlayListUser === undefined || listPlayListUser.length === 0){
           return false;
         }
+        this.currentId = listPlayListUser[0].playlist
 
-        PlayLists.find({_id: listPlayListUser[0].playlist}).subscribe(playlistsSearch => {
+        PlayLists.find({_id: this.currentId}).subscribe(playlistsSearch => {
           let currentPlaylist: PlayList = playlistsSearch[0]
-          if(currentPlaylist){
+          if(currentPlaylist && currentPlaylist._id === this.currentId){
             this.playList = currentPlaylist
             this.currentPlayListUser = listPlayListUser[0]
             this.videoPlayListToVideoMeta()

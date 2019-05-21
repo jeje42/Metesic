@@ -40,21 +40,20 @@ export class PlayListsAddChooseDialog implements OnInit, OnDestroy{
 
   ngOnInit() {
     this.playListSubs = MeteorObservable.subscribe('playLists', {}).subscribe(() => {
-      this.playlistsUsers = PlayLists.find({owner : this.user._id});
+      // this.playlistsUsers = PlayLists.find({owner : this.user._id});
     });
 
     this.playListUsersSub = MeteorObservable.subscribe('playlistsUsers', {}).subscribe(() => {
-      PlayListsUsers.find({user: this.user._id, active: true}).subscribe(list => {
+      PlayListsUsers.find({user: this.user._id, active: false}).subscribe(list => {
         if(list === undefined){
           return;
         }
 
-        let playUser: PlayListUser = list[0];
-
-        if(playUser === undefined){
-          return;
-        }
-        this.currentPlayListId = playUser.playlist;
+        let listIds: string[] = []
+        list.forEach(element => {
+          listIds.push(element.playlist)
+        })
+        this.playlistsUsers = PlayLists.find({_id : { $in : listIds } } )
       });
     });
 
@@ -70,7 +69,7 @@ export class PlayListsAddChooseDialog implements OnInit, OnDestroy{
 
   selectPlayListFunction(): void {
 		if(this.selectPlayList.valid){
-      Meteor.call("addVideosToPlaylist", this.currentPlayListId, this.videoToAdd._id);
+      Meteor.call("addVideosToPlaylist", this.currentPlayListId, [this.videoToAdd._id]);
 		}
 	}
 }
