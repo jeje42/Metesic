@@ -53,6 +53,8 @@ export class VideosListComponent implements OnInit, OnDestroy {
 
   subscriptionsDone: boolean
 
+  objectResearch: any
+
   /**
    * Config for the playlists's modal.
    */
@@ -170,18 +172,30 @@ export class VideosListComponent implements OnInit, OnDestroy {
     this.addListToCurrentPlayList(lVideoMetaId)
   }
 
+  addVideosOnSearch(){
+    let lVideoMetaId: string[] = []
+
+    VideosMetas.find({$and: this.objectResearch}).fetch().forEach(videoMeta => {
+      lVideoMetaId.push(videoMeta._id)
+    })
+
+    this.addListToCurrentPlayList(lVideoMetaId)
+  }
+
   addListToCurrentPlayList(lVideoMetaId: string[]): void {
     if(this.currentPlaylist === undefined || this.currentPlaylist === null){
       let playListUser: PlayListUser = PlayListsUsers.findOne({user: this.user._id, active: true});
 
       if(playListUser === undefined || playListUser === null || playListUser.playlist === undefined || playListUser.playlist === null){
         let lVideoPlayList: VideoPlayList[] = []
+        let position: number = lVideoPlayList.length
         lVideoMetaId.forEach(videoMetaId => {
           lVideoPlayList.push({
             id_videoMeta: videoMetaId,
             date : new Date(),
-            currentPosition: lVideoPlayList.length
+            currentPosition: position
           })
+          position++
         })
 
         Meteor.call('addPlayList',
@@ -225,8 +239,8 @@ export class VideosListComponent implements OnInit, OnDestroy {
 
   updateListedVideos(): void {
     MeteorObservable.call('countVideosMeta', this.searchRegEx, this.disabledCategories).subscribe((videosMetasCount: number) => {
-      var objectResearch = []
-      objectResearch.push({name: this.searchRegEx})
+      this.objectResearch = []
+      this.objectResearch.push({name: this.searchRegEx})
 
       this.isSearch = false
 
@@ -235,16 +249,16 @@ export class VideosListComponent implements OnInit, OnDestroy {
       }
 
 			if(this.disabledCategories != undefined && this.disabledCategories.length > 0){
-				objectResearch.push({categories: {$elemMatch: {$in : this.disabledCategories}}})
+				this.objectResearch.push({categories: {$elemMatch: {$in : this.disabledCategories}}})
         this.isSearch = true
 
 
 			}
 
       if(this.isSearch){
-        this.videosMetas = VideosMetas.find({$and: objectResearch})
+        this.videosMetas = VideosMetas.find({$and: this.objectResearch})
       }else{
-        this.videosMetas = VideosMetas.find({$and: objectResearch}, {limit: 10})
+        this.videosMetas = VideosMetas.find({$and: this.objectResearch}, {limit: 10})
       }
 
       this.videosMetas.subscribe(list => {

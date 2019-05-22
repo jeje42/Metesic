@@ -36,6 +36,7 @@ Meteor.methods({
 					date : new Date(),
 					currentPosition: position
 				})
+				position++
 			})
 
 			PlayLists.update({_id: playListId}, {$push: {list: { $each: lVideoPlayList}}});

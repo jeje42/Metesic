@@ -49,15 +49,11 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
   playListsSub: Subscription
   currentPlayListSubs: Subscription
 
-  onSwitchTrack: boolean
-
   currentId: string
 
   constructor (private displayVideoPlayListPipe:DisplayVideoPlayListPipe){}
 
   ngOnInit() {
-    this.onSwitchTrack = false
-
     this.playListsSub = MeteorObservable.subscribe('playLists', {}).subscribe();
 
     this.videosUsersSub = MeteorObservable.subscribe('videosUsers', {}).subscribe();
@@ -106,14 +102,9 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
   }
 
   private switchToNextVideo(): void {
-    if(this.onSwitchTrack){
-      return
-    }
-
     const playlist = PlayLists.findOne({_id: this.currentPlayListUser.playlist})
     if(this.currentPlayListUser.currentPosition < playlist.list.length-1){
       VideosUsers.update({_id: this.currentVideoUser._id},{$set : {currentTime: 0.000000}}).subscribe(() => {
-        this.onSwitchTrack = true
         PlayListsUsers.update({_id: this.currentPlayListUser._id}, {$set: {currentPosition: this.currentPlayListUser.currentPosition+1}})
       })
     }
@@ -209,18 +200,12 @@ export class PlayerCurrentListComponent implements OnInit, OnDestroy {
 
       let timeToSet:number = 0.000000
 
-
-      if(this.onSwitchTrack){
-        this.onSwitchTrack = false
-        videoTag.currentTime = timeToSet
-        videoTag.play()
-      }else{
-        if(this.currentVideoUser){
-          timeToSet = this.currentVideoUser.currentTime
-        }
-        videoTag.currentTime = timeToSet
-        videoTag.pause()
+      if(this.currentVideoUser){
+        timeToSet = this.currentVideoUser.currentTime
       }
+
+      videoTag.currentTime = timeToSet
+      videoTag.play()
     }
   }
 
